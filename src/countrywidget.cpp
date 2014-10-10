@@ -1,7 +1,6 @@
 #include "countrywidget.h"
 #include "ui_countrywidget.h"
 
-
 #include <QDebug>
 
 CountryWidget::CountryWidget(QWidget *parent) :

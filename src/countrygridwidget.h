@@ -25,8 +25,7 @@ public:
 private:
     Ui::CountryGridWidget *ui;
 
-    QHBoxLayout* hbox[100];
-    CountryWidget* cnt[100];
+    CountryWidget* cnt[98];
 };
 
 #endif // COUNTRIES_H

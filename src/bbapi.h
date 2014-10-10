@@ -22,6 +22,7 @@ public:
     ~BBApi();
 
     bool login(const QString &login, const QString &password);
+    bool countries();
     bool leagues(QList<int>& results, const LeagueDataList leagues);
     bool teams(QList<int>& results, QList<int> league);
     bool roster(PlayerList& results, QList<int> team);

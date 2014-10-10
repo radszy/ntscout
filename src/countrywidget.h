@@ -20,6 +20,12 @@ public:
 
 private:
     Ui::CountryWidget *ui;
+
+    QString name;
+    QString name_en;
+    int id;
+    int divisions;
+    int users;
 };
 
 #endif // COUNTRY_H
