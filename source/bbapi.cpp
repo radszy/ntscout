@@ -1,3 +1,18 @@
+//Copyright (C) <2014>  <RSX>
+
+//    This program is free software: you can redistribute it and/or modify
+//    it under the terms of the GNU General Public License as published by
+//    the Free Software Foundation, either version 3 of the License, or
+//    (at your option) any later version.
+
+//    This program is distributed in the hope that it will be useful,
+//    but WITHOUT ANY WARRANTY; without even the implied warranty of
+//    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//    GNU General Public License for more details.
+
+//    You should have received a copy of the GNU General Public License
+//    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 #include "bbapi.h"
 #include "network.h"
 
@@ -235,7 +250,7 @@ bool BBApi::roster(PlayerList& results, QList<int> team)
 void BBApi::namesEn(CountryList& countries)
 {
     QUrl url("https://raw.githubusercontent.com/"
-             "rsxee/NTScout/master/countries-en.txt");
+             "rsxee/NTScout/master/names-en.txt");
     QByteArray data = manager->get(url);
 
     QList<QByteArray> datalist = data.split('\n');
