@@ -18,14 +18,20 @@ public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
 
+
 public slots:
     void nextClicked();
+    void backClicked();
+    void updateTriggered();
+    void settingsTriggered();
+    void reportTriggered();
+    void aboutTriggered();
 
 private:
     Ui::MainWindow *ui;
 
     LoginWidget* loginWidget;
-    CountryGridWidget* countries;
+    CountryGridWidget* countryGridWidget;
 };
 
 #endif // MAINWINDOW_H

@@ -1,5 +1,7 @@
-#ifndef COUNTRY_H
-#define COUNTRY_H
+#ifndef COUNTRYWIDGET_H
+#define COUNTRYWIDGET_H
+
+#include "country.h"
 
 #include <QWidget>
 #include <QMouseEvent>
@@ -16,16 +18,15 @@ public:
     explicit CountryWidget(QWidget *parent = 0);
     ~CountryWidget();
 
+    void setFlag(const QPixmap pixmap);
+    void setName(const QString name);
+    void setDivisions(const QString divisions);
+    void setUsers(const QString users);
+
     void mousePressEvent(QMouseEvent* event);
 
 private:
     Ui::CountryWidget *ui;
-
-    QString name;
-    QString name_en;
-    int id;
-    int divisions;
-    int users;
 };
 
-#endif // COUNTRY_H
+#endif // COUNTRYWIDGET_H

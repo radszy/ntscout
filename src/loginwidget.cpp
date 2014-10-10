@@ -6,9 +6,6 @@ LoginWidget::LoginWidget(QWidget *parent) :
     ui(new Ui::LoginWidget)
 {
     ui->setupUi(this);
-
-    layout()->setAlignment(ui->usernameField, Qt::AlignHCenter);
-    layout()->setAlignment(ui->accessKeyField, Qt::AlignHCenter);
 }
 
 LoginWidget::~LoginWidget()
@@ -19,4 +16,14 @@ LoginWidget::~LoginWidget()
 void LoginWidget::setInformation(const QString information)
 {
     ui->informationLabel->setText(information);
+}
+
+QString LoginWidget::getLogin()
+{
+    return ui->usernameField->text();
+}
+
+QString LoginWidget::getPassword()
+{
+    return ui->accessKeyField->text();
 }

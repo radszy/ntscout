@@ -19,7 +19,7 @@ BBApi::~BBApi()
     delete manager;
 }
 
-bool BBApi::login(const QString& login, const QString& password)
+QString BBApi::login(const QString& login, const QString& password)
 {
     QUrl url = "http://bbapi.buzzerbeater.com/login.aspx"
                "?login=" + login + "&code=" + password;
@@ -27,18 +27,41 @@ bool BBApi::login(const QString& login, const QString& password)
 
     QXmlStreamReader reader(data);
     reader.readNextStartElement();
-    // <bbapi>
-
     reader.readNextStartElement();
     if (reader.name() == "loggedIn") {
-        qDebug() << "loggedin";
-        return true;
+//        qDebug() << "loggedin";
+        return "";
     }
     else if (reader.name() == "error") {
-        qDebug() << reader.attributes().value("message");
+        return reader.attributes().value("message").toString();
     }
 
-    return false;
+    return "???";
+}
+
+bool BBApi::countries(CountryList& result)
+{
+    QUrl url ("http://bbapi.buzzerbeater.com/countries.aspx");
+    QByteArray data = manager->get(url);
+
+    QXmlStreamReader reader(data);
+    reader.readNextStartElement();
+    reader.readNextStartElement();
+    reader.readNextStartElement();
+
+    while (reader.name() == "country") {
+        Country country;
+        country.id = reader.attributes().value("id").toInt();
+        country.divisions = reader.attributes().value("divisions").toInt();
+        country.users = reader.attributes().value("users").toInt();
+        country.name = reader.readElementText();
+        result.append(country);
+        reader.readNextStartElement();
+    }
+
+    qDebug() << result.count();
+
+    return true;
 }
 
 bool BBApi::leagues(QList<int>& results, const LeagueDataList leagues)
@@ -59,7 +82,6 @@ bool BBApi::leagues(QList<int>& results, const LeagueDataList leagues)
     for (int i = 0; i < data.count(); ++i) {
         QXmlStreamReader reader(data.at(i));
         reader.readNextStartElement();
-        // <bbapi>
         reader.readNextStartElement();
         if (reader.name() == "error") {
             return false;
@@ -208,4 +230,18 @@ bool BBApi::roster(PlayerList& results, QList<int> team)
     qDebug() << results.count();
 
     return true;
+}
+
+void BBApi::namesEn(CountryList& countries)
+{
+    QUrl url("https://raw.githubusercontent.com/"
+             "rsxee/NTScout/master/countries-en.txt");
+    QByteArray data = manager->get(url);
+
+    QList<QByteArray> datalist = data.split('\n');
+    for (int i = 0; i < countries.count(); ++i) {
+        countries[i].name_en = datalist.at(i);
+    }
+
+    // Q_ASSERT(names.count() < datalist.count());
 }

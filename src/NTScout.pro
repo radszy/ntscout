@@ -9,7 +9,6 @@ QT += core gui widgets network
 TARGET = NTScout
 TEMPLATE = app
 
-
 SOURCES += main.cpp\
         mainwindow.cpp \
     bbapi.cpp \
@@ -20,6 +19,7 @@ SOURCES += main.cpp\
 
 HEADERS  += mainwindow.h \
     bbapi.h \
+    country.h \
     countrygridwidget.h \
     countrywidget.h \
     loginwidget.h \
@@ -30,3 +30,6 @@ FORMS    += mainwindow.ui \
     countrygridwidget.ui \
     countrywidget.ui \
     loginwidget.ui
+
+RESOURCES += \
+    resource.qrc

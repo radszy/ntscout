@@ -1,0 +1,11 @@
+<RCC>
+    <qresource prefix="/icons">
+        <file alias="bug">icons/bug_000000_16.png</file>
+        <file alias="info">icons/info_000000_16.png</file>
+        <file alias="update">icons/refresh_000000_16.png</file>
+        <file alias="unselect">icons/table_000000_24.png</file>
+        <file alias="select">icons/th_000000_24.png</file>
+        <file alias="selected">icons/th-large_000000_24.png</file>
+        <file alias="settings">icons/wrench_000000_16.png</file>
+    </qresource>
+</RCC>

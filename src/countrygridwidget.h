@@ -1,12 +1,11 @@
-#ifndef COUNTRIES_H
-#define COUNTRIES_H
+#ifndef COUNTRYGRIDWIDGET_H
+#define COUNTRYGRIDWIDGET_H
 
+#include "country.h"
 #include "countrywidget.h"
 
 #include <QWidget>
 #include <QResizeEvent>
-
-#include <QHBoxLayout>
 
 namespace Ui {
 class CountryGridWidget;
@@ -20,12 +19,15 @@ public:
     explicit CountryGridWidget(QWidget *parent = 0);
     ~CountryGridWidget();
 
+    void setCountryList(CountryList clist);
+
     void resizeEvent(QResizeEvent* event);
 
 private:
-    Ui::CountryGridWidget *ui;
+    CountryList countryList;
+    QList<CountryWidget*> countryWidgets;
 
-    CountryWidget* cnt[98];
+    Ui::CountryGridWidget *ui;
 };
 
-#endif // COUNTRIES_H
+#endif // COUNTRYGRIDWIDGET_H

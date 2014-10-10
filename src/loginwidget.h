@@ -17,6 +17,9 @@ public:
 
     void setInformation(const QString information);
 
+    QString getLogin();
+    QString getPassword();
+
 private:
     Ui::LoginWidget *ui;
 };

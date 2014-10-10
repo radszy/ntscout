@@ -1,6 +1,7 @@
 #ifndef BBAPI_H
 #define BBAPI_H
 
+#include "country.h"
 #include "player.h"
 
 #include <QString>
@@ -21,11 +22,13 @@ public:
     BBApi();
     ~BBApi();
 
-    bool login(const QString &login, const QString &password);
-    bool countries();
+    QString login(const QString &login, const QString &password);
+    bool countries(CountryList& result);
     bool leagues(QList<int>& results, const LeagueDataList leagues);
     bool teams(QList<int>& results, QList<int> league);
     bool roster(PlayerList& results, QList<int> team);
+
+    void namesEn(CountryList& countries);
 
 private:
     Network* manager;
