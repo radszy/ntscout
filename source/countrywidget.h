@@ -55,6 +55,10 @@ public:
 
     void mousePressEvent(QMouseEvent* event);
 
+signals:
+    void selected(CountryWidget*);
+    void unselected(CountryWidget*);
+
 private:
     void updateFrame();
 

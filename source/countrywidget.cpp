@@ -111,20 +111,22 @@ void CountryWidget::updateFrame()
         case 0:
             ui->frame->setStyleSheet("");
             setToolTip(nameEn);
+            emit unselected(this);
             break;
         case 1:
             if (searchValues.countrySet) {
                 ui->frame->setStyleSheet(
-                        "#frame { border-color: rgb(4 171 147);"
+                        "#frame { border-color: rgb(4, 171, 147);"
                         "background-color: rgb(0, 255, 127);}");
                 setToolTip("Program will search for players in this country");
             }
             else {
                 ui->frame->setStyleSheet(
-                        "#frame { border-color: rgb(1 83 164);"
+                        "#frame { border-color: rgb(1, 83, 164);"
                         "background-color: rgb(0, 239, 239);}");
                 setToolTip("Program will search for players of this nationality");
             }
+            emit selected(this);
             break;
         case 2:
             ui->frame->setStyleSheet(
@@ -132,6 +134,7 @@ void CountryWidget::updateFrame()
                     "background-color: rgb(255, 85, 127);}");
             setToolTip("Program will search for players in this country\n"
                        "and of this nationality");
+            emit selected(this);
             break;
         default:
             break;
