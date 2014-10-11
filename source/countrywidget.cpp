@@ -16,13 +16,29 @@
 #include "countrywidget.h"
 #include "ui_countrywidget.h"
 
+#include "searchdialog.h"
+
 #include <QDebug>
+
+SearchDialog* CountryWidget::searchDialog = nullptr;
 
 CountryWidget::CountryWidget(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::CountryWidget)
 {
     ui->setupUi(this);
+
+    searchValues.countrySet = false;
+    for (int i = 0; i < 5; ++i) {
+        searchValues.div[i] = true;
+    }
+    searchValues.div[5] = false;
+
+    searchValues.nationalitySet = false;
+    searchValues.age = {18, 99};
+    searchValues.potential = {6, 11};
+    searchValues.salary = {0, 10000};
+    searchValues.dmi = {0, 0};
 }
 
 CountryWidget::~CountryWidget()
@@ -30,38 +46,114 @@ CountryWidget::~CountryWidget()
     delete ui;
 }
 
-void CountryWidget::setFlag(const QPixmap pixmap)
+void CountryWidget::setFlag(const QPixmap& pixmap)
 {
     ui->flagLabel->setPixmap(pixmap);
 }
 
-void CountryWidget::setName(const QString name)
+void CountryWidget::setName(const QString& name)
 {
+    this->name = name;
     QString shortened = name;
     int max = 15;
     if (name.count() > max) {
-        shortened = name.mid(0, max-3) + "...";
+        shortened = name.mid(0, max - 3) + "...";
     }
     ui->nameLabel->setText(shortened);
 }
 
-void CountryWidget::setDivisions(const QString divisions)
+void CountryWidget::setDivisions(int divisions)
 {
-    ui->divisionsLabel->setText("Divisions: " + divisions);
+    this->divisions = divisions;
+    ui->divisionsLabel->setText("Divisions: " + QString::number(divisions));
 }
 
-void CountryWidget::setUsers(const QString users)
+void CountryWidget::setUsers(int users)
 {
-    ui->usersLabel->setText("Users: " + users);
+    this->users = users;
+    ui->usersLabel->setText("Users: " + QString::number(users));
+}
+
+void CountryWidget::setID(int id)
+{
+    this->id = id;
+}
+
+void CountryWidget::setInitialToolTip(const QString& tooltip)
+{
+    nameEn = tooltip;
+    setToolTip(nameEn);
+}
+
+void CountryWidget::selectAsCountry()
+{
+    searchValues.countrySet = true;
+    updateFrame();
+}
+
+void CountryWidget::unselect()
+{
+    searchValues.countrySet = false;
+    searchValues.nationalitySet = false;
+    updateFrame();
+}
+
+bool CountryWidget::isSelected()
+{
+    return searchValues.countrySet || searchValues.nationalitySet;
+}
+
+void CountryWidget::updateFrame()
+{
+    int set = searchValues.countrySet +
+              searchValues.nationalitySet;
+    switch (set) {
+        case 0:
+            ui->frame->setStyleSheet("");
+            setToolTip(nameEn);
+            break;
+        case 1:
+            if (searchValues.countrySet) {
+                ui->frame->setStyleSheet(
+                        "#frame { border-color: rgb(4 171 147);"
+                        "background-color: rgb(0, 255, 127);}");
+                setToolTip("Program will search for players in this country");
+            }
+            else {
+                ui->frame->setStyleSheet(
+                        "#frame { border-color: rgb(1 83 164);"
+                        "background-color: rgb(0, 239, 239);}");
+                setToolTip("Program will search for players of this nationality");
+            }
+            break;
+        case 2:
+            ui->frame->setStyleSheet(
+                    "#frame { border-color: rgb(236, 27, 36);"
+                    "background-color: rgb(255, 85, 127);}");
+            setToolTip("Program will search for players in this country\n"
+                       "and of this nationality");
+            break;
+        default:
+            break;
+    }
 }
 
 void CountryWidget::mousePressEvent(QMouseEvent* event)
 {
-    if (event->button() == Qt::LeftButton) {
-        qDebug() << "left";
+    if (searchDialog == nullptr) {
+        searchDialog = new SearchDialog;
     }
-    else if (event->button() == Qt::RightButton) {
-        qDebug() << "right";
+
+    searchDialog->setWindowTitle(nameEn);
+    searchDialog->setValues(searchValues);
+
+    int ret = searchDialog->exec();
+    if (ret == QDialog::Accepted) {
+        searchValues = searchDialog->getValues();
+
+        updateFrame();
     }
+
+    QWidget::mousePressEvent(event);
 }
 

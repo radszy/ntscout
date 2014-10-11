@@ -13,40 +13,46 @@
 //    You should have received a copy of the GNU General Public License
 //    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef MAINWINDOW_H
-#define MAINWINDOW_H
+#ifndef COUNTRYGRIDWIDGET_H
+#define COUNTRYGRIDWIDGET_H
 
-#include <QMainWindow>
+#include "country.h"
+#include "countrywidget.h"
+
+#include <QWidget>
+#include <QResizeEvent>
 
 namespace Ui {
-class MainWindow;
+class GridWidget;
 }
 
-class LoginWidget;
-class GridWidget;
-
-class MainWindow : public QMainWindow
+class GridWidget : public QWidget
 {
     Q_OBJECT
 
 public:
-    explicit MainWindow(QWidget *parent = 0);
-    ~MainWindow();
+    explicit GridWidget(QWidget *parent = 0);
+    ~GridWidget();
 
+    void setCountryList(CountryList clist);
+
+    void reassignGrid();
+    void resizeEvent(QResizeEvent* event);
 
 public slots:
-    void nextClicked();
-    void backClicked();
-    void updateTriggered();
-    void settingsTriggered();
-    void reportTriggered();
-    void aboutTriggered();
+    void sortBy(int index);
+    void searchCountry(QString text);
+    void selectAll();
+    void unselectAll();
+    void showSelected();
 
 private:
-    Ui::MainWindow *ui;
 
-    LoginWidget* loginWidget;
-    GridWidget* gridWidget;
+    CountryList countryList;
+    QList<CountryWidget*> originalWidgets;
+    QList<CountryWidget*> countryWidgets;
+
+    Ui::GridWidget *ui;
 };
 
-#endif // MAINWINDOW_H
+#endif // COUNTRYGRIDWIDGET_H

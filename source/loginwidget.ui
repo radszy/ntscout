@@ -82,6 +82,9 @@
          <pointsize>12</pointsize>
         </font>
        </property>
+       <property name="text">
+        <string/>
+       </property>
        <property name="placeholderText">
         <string>Username</string>
        </property>
@@ -112,11 +115,20 @@
          <pointsize>12</pointsize>
         </font>
        </property>
+       <property name="text">
+        <string/>
+       </property>
        <property name="echoMode">
         <enum>QLineEdit::Password</enum>
        </property>
        <property name="placeholderText">
         <string>Accesskey</string>
+       </property>
+       <property name="cursorMoveStyle">
+        <enum>Qt::LogicalMoveStyle</enum>
+       </property>
+       <property name="clearButtonEnabled">
+        <bool>false</bool>
        </property>
       </widget>
      </item>

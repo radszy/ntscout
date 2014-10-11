@@ -16,7 +16,7 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
-#include "countrygridwidget.h"
+#include "gridwidget.h"
 #include "loginwidget.h"
 
 #include "bbapi.h"
@@ -34,10 +34,10 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->setupUi(this);
 
     loginWidget = new LoginWidget;
-    countryGridWidget = new CountryGridWidget;
+    gridWidget = new GridWidget;
 
     ui->stackedWidget->addWidget(loginWidget);
-    ui->stackedWidget->addWidget(countryGridWidget);
+    ui->stackedWidget->addWidget(gridWidget);
 }
 
 MainWindow::~MainWindow()
@@ -69,11 +69,9 @@ void MainWindow::nextClicked()
 
             CountryList clist;
             Util::readCountry(clist);
-            countryGridWidget->setCountryList(clist);
+            gridWidget->setCountryList(clist);
 
-            ui->stackedWidget->setCurrentWidget(countryGridWidget);
-            ui->backButton->setEnabled(true);
-
+            ui->stackedWidget->setCurrentWidget(gridWidget);
             break;
         }
         case 1:

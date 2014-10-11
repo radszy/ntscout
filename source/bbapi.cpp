@@ -36,15 +36,14 @@ BBApi::~BBApi()
 
 QString BBApi::login(const QString& login, const QString& password)
 {
-    QUrl url = "http://bbapi.buzzerbeater.com/login.aspx"
-               "?login=" + login + "&code=" + password;
+    QUrl url("http://bbapi.buzzerbeater.com/login.aspx"
+             "?login=" + login + "&code=" + password);
     QByteArray data = manager->get(url);
 
     QXmlStreamReader reader(data);
     reader.readNextStartElement();
     reader.readNextStartElement();
     if (reader.name() == "loggedIn") {
-//        qDebug() << "loggedin";
         return "";
     }
     else if (reader.name() == "error") {
@@ -56,7 +55,7 @@ QString BBApi::login(const QString& login, const QString& password)
 
 bool BBApi::countries(CountryList& result)
 {
-    QUrl url ("http://bbapi.buzzerbeater.com/countries.aspx");
+    QUrl url("http://bbapi.buzzerbeater.com/countries.aspx");
     QByteArray data = manager->get(url);
 
     QXmlStreamReader reader(data);
@@ -74,8 +73,6 @@ bool BBApi::countries(CountryList& result)
         reader.readNextStartElement();
     }
 
-    qDebug() << result.count();
-
     return true;
 }
 
@@ -85,9 +82,9 @@ bool BBApi::leagues(QList<int>& results, const LeagueDataList leagues)
     for (int i = 0; i < leagues.count(); ++i) {
         LeagueData data = leagues.at(i);
         for (int j = 0; j < data.divisions.count(); ++j) {
-            QUrl url = "http://bbapi.buzzerbeater.com/leagues.aspx"
-                       "?countryid=" + QString::number(data.countryid) +
-                       "&level=" + QString::number(data.divisions.at(j));
+            QUrl url("http://bbapi.buzzerbeater.com/leagues.aspx"
+                     "?countryid=" + QString::number(data.countryid) +
+                     "&level=" + QString::number(data.divisions.at(j)));
             urls.append(url);
         }
     }
@@ -117,8 +114,8 @@ bool BBApi::teams(QList<int>& results, QList<int> league)
 {
     QList <QUrl> urls;
     for (int i = 0; i < league.count(); ++i) {
-        QUrl url = "http://bbapi.buzzerbeater.com/standings.aspx?"
-                   "leagueid=" + QString::number(league.at(i));
+        QUrl url("http://bbapi.buzzerbeater.com/standings.aspx?"
+                 "leagueid=" + QString::number(league.at(i)));
         urls.append(url);
     }
 
@@ -168,8 +165,8 @@ bool BBApi::roster(PlayerList& results, QList<int> team)
 {
     QList <QUrl> urls;
     for (int i = 0; i < team.count(); ++i) {
-        QUrl url = "http://bbapi.buzzerbeater.com/roster.aspx?"
-                   "teamid=" + QString::number(team.at(i));
+        QUrl url("http://bbapi.buzzerbeater.com/roster.aspx?"
+                 "teamid=" + QString::number(team.at(i)));
         urls.append(url);
     }
 

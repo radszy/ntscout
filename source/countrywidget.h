@@ -17,9 +17,12 @@
 #define COUNTRYWIDGET_H
 
 #include "country.h"
+#include "searchdialog.h"
 
 #include <QWidget>
 #include <QMouseEvent>
+
+class SearchDialog;
 
 namespace Ui {
 class CountryWidget;
@@ -33,14 +36,36 @@ public:
     explicit CountryWidget(QWidget *parent = 0);
     ~CountryWidget();
 
-    void setFlag(const QPixmap pixmap);
-    void setName(const QString name);
-    void setDivisions(const QString divisions);
-    void setUsers(const QString users);
+    void setFlag(const QPixmap& pixmap);
+    void setName(const QString& name);
+    void setDivisions(int divisions);
+    void setUsers(int users);
+    void setID(int id);
+    void setInitialToolTip(const QString& tooltip);
+
+    QString getName() const {return name;}
+    QString getNameEn() const {return nameEn;}
+    int getID() const {return id;}
+    int getDivisions() const {return divisions;}
+    int getUsers() const {return users;}
+
+    void selectAsCountry();
+    void unselect();
+    bool isSelected();
 
     void mousePressEvent(QMouseEvent* event);
 
 private:
+    void updateFrame();
+
+    SearchValues searchValues;
+    QString name;
+    QString nameEn;
+    int id;
+    int divisions;
+    int users;
+
+    static SearchDialog* searchDialog;
     Ui::CountryWidget *ui;
 };
 
