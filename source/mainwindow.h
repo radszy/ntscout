@@ -33,7 +33,6 @@ public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
 
-
 public slots:
     void nextClicked();
     void backClicked();
@@ -41,6 +40,7 @@ public slots:
     void settingsTriggered();
     void reportTriggered();
     void aboutTriggered();
+    void enableNext(bool enabled);
 
 private:
     Ui::MainWindow *ui;

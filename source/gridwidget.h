@@ -34,9 +34,10 @@ public:
     explicit GridWidget(QWidget *parent = 0);
     ~GridWidget();
 
+    void rearrange();
     void setCountryList(CountryList clist);
+    void checkIfCanProceed();
 
-    void reassignGrid();
     void resizeEvent(QResizeEvent* event);
 
 public slots:
@@ -45,12 +46,17 @@ public slots:
     void selectAll();
     void unselectAll();
     void showSelected();
+    void countrySelected(CountryWidget* widget);
+    void countryUnselected(CountryWidget* widget);
+
+signals:
+    void canProceed(bool);
 
 private:
-
     CountryList countryList;
     QList<CountryWidget*> originalWidgets;
     QList<CountryWidget*> countryWidgets;
+    QList<CountryWidget*> selectedWidgets;
 
     Ui::GridWidget *ui;
 };

@@ -103,6 +103,16 @@ bool CountryWidget::isSelected()
     return searchValues.countrySet || searchValues.nationalitySet;
 }
 
+bool CountryWidget::isCountrySelected()
+{
+    return searchValues.countrySet;
+}
+
+bool CountryWidget::isNationalitySelected()
+{
+    return searchValues.nationalitySet;
+}
+
 void CountryWidget::updateFrame()
 {
     int set = searchValues.countrySet +

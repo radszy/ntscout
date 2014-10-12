@@ -52,6 +52,8 @@ public:
     void selectAsCountry();
     void unselect();
     bool isSelected();
+    bool isCountrySelected();
+    bool isNationalitySelected();
 
     void mousePressEvent(QMouseEvent* event);
 

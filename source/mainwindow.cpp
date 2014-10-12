@@ -38,6 +38,9 @@ MainWindow::MainWindow(QWidget *parent) :
 
     ui->stackedWidget->addWidget(loginWidget);
     ui->stackedWidget->addWidget(gridWidget);
+
+    connect(gridWidget, SIGNAL(canProceed(bool)),
+            this, SLOT(enableNext(bool)));
 }
 
 MainWindow::~MainWindow()
@@ -67,10 +70,11 @@ void MainWindow::nextClicked()
                 return;
             }
 
+            enableNext(false);
+
             CountryList clist;
             Util::readCountry(clist);
             gridWidget->setCountryList(clist);
-
             ui->stackedWidget->setCurrentWidget(gridWidget);
             break;
         }
@@ -104,4 +108,12 @@ void MainWindow::reportTriggered()
 void MainWindow::aboutTriggered()
 {
 
+}
+
+void MainWindow::enableNext(bool enabled)
+{
+    ui->nextButton->setEnabled(enabled);
+    ui->nextButton->setToolTip(
+                enabled ? "" : "You need to select at least "
+                               "one country and one nationality");
 }

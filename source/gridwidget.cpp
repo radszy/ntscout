@@ -49,10 +49,25 @@ void GridWidget::setCountryList(CountryList clist)
         widget->setVisible(true);
         originalWidgets.append(widget);
         countryWidgets.append(widget);
+        connect(widget, SIGNAL(selected(CountryWidget*)),
+                this, SLOT(countrySelected(CountryWidget*)));
+        connect(widget, SIGNAL(unselected(CountryWidget*)),
+                this, SLOT(countryUnselected(CountryWidget*)));
     }
 }
 
-void GridWidget::reassignGrid()
+void GridWidget::checkIfCanProceed()
+{
+    bool country = false;
+    bool nationality = false;
+    for (int i = 0; i < selectedWidgets.count(); ++i) {
+        country |= selectedWidgets.at(i)->isCountrySelected();
+        nationality |= selectedWidgets.at(i)->isNationalitySelected();
+    }
+    emit canProceed(country && nationality);
+}
+
+void GridWidget::rearrange()
 {
     if (countryWidgets.isEmpty()) {
         return;
@@ -75,7 +90,7 @@ void GridWidget::reassignGrid()
 
 void GridWidget::resizeEvent(QResizeEvent* event)
 {
-    reassignGrid();
+    rearrange();
 
     QWidget::resizeEvent(event);
 }
@@ -121,13 +136,13 @@ void GridWidget::sortBy(int index)
             break;
     }
 
-    // reassignGrid is based on countryWidgets
+    // rearrange is based on countryWidgets
     if (countryWidgets.count() >= originalWidgets.count()) {
         countryWidgets.clear();
         countryWidgets.append(originalWidgets);
     }
 
-    reassignGrid();
+    rearrange();
 }
 
 void GridWidget::searchCountry(QString text)
@@ -153,7 +168,7 @@ void GridWidget::searchCountry(QString text)
         }
     }
 
-    reassignGrid();
+    rearrange();
 }
 
 void GridWidget::selectAll()
@@ -189,5 +204,17 @@ void GridWidget::showSelected()
         searchCountry(ui->searchField->text());
     }
 
-    reassignGrid();
+    rearrange();
+}
+
+void GridWidget::countrySelected(CountryWidget* widget)
+{
+    selectedWidgets.append(widget);
+    checkIfCanProceed();
+}
+
+void GridWidget::countryUnselected(CountryWidget* widget)
+{
+    selectedWidgets.removeOne(widget);
+    checkIfCanProceed();
 }
