@@ -8,9 +8,6 @@ SearchDialog::SearchDialog(QWidget *parent) :
     ui(new Ui::SearchDialog)
 {
     ui->setupUi(this);
-
-    connect(ui->countryGroup, SIGNAL(toggled(bool)),
-            this, SLOT(enableCheckBoxes()));
 }
 
 SearchDialog::~SearchDialog()
@@ -68,14 +65,4 @@ void SearchDialog::setValues(SearchValues* values)
     ui->potMax->setValue(values->potential.second);
     ui->dmiMin->setValue(values->dmi.first);
     ui->dmiMax->setValue(values->dmi.second);
-}
-
-void SearchDialog::enableCheckBoxes()
-{
-//    if (ui->countryGroup->isEnabled()) {
-
-//    }
-//    else {
-
-//    }
 }

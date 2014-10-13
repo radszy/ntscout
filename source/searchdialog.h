@@ -20,9 +20,6 @@ public:
     void updateValues();
     void setValues(SearchValues* values);
 
-public slots:
-    void enableCheckBoxes();
-
 private:
     SearchValues* searchValues;
     Ui::SearchDialog *ui;
