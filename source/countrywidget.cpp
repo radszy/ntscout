@@ -33,13 +33,14 @@ CountryWidget::CountryWidget(QWidget *parent) :
         searchValues.div[i] = true;
     }
     searchValues.div[5] = false;
+    searchValues.divCount = 6;
     searchValues.countryid = id;
 
     searchValues.nationalitySet = false;
     searchValues.age = {18, 99};
     searchValues.potential = {6, 11};
     searchValues.salary = {0, 10000};
-    searchValues.dmi = {0, 0};
+    searchValues.dmi = {0, 100000};
 }
 
 CountryWidget::~CountryWidget()
@@ -67,6 +68,8 @@ void CountryWidget::setDivisions(int divisions)
 {
     this->divisions = divisions;
     ui->divisionsLabel->setText("Divisions: " + QString::number(divisions));
+
+    searchValues.divCount = divisions;
 }
 
 void CountryWidget::setUsers(int users)

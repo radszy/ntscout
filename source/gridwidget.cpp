@@ -34,6 +34,25 @@ GridWidget::~GridWidget()
     delete ui;
 }
 
+void GridWidget::reset()
+{
+    ui->showSelected->setChecked(false);
+    ui->searchField->setText("");
+
+    countryWidgets.clear();
+    for (int i = 0; i < originalWidgets.count(); ++i) {
+        originalWidgets.at(i)->setVisible(true);
+        originalWidgets.at(i)->unselect();
+        countryWidgets.append(originalWidgets.at(i));
+    }
+
+    if (ui->sortBox->currentIndex() != 0) {
+        ui->sortBox->setCurrentIndex(0);
+    } else {
+        sortBy(0);
+    }
+}
+
 void GridWidget::setCountryList(CountryList clist)
 {
     countryList = clist;
@@ -225,5 +244,11 @@ void GridWidget::countrySelected(CountryWidget* widget)
 void GridWidget::countryUnselected(CountryWidget* widget)
 {
     selectedWidgets.removeOne(widget);
+    if (selectedWidgets.count() == 0 &&
+        ui->showSelected->isChecked())
+    {
+        ui->showSelected->setChecked(false);
+        showSelected();
+    }
     checkIfCanProceed();
 }

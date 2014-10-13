@@ -4,6 +4,7 @@
 #include "bbapi.h"
 #include "network.h"
 #include "worker.h"
+#include "settings.h"
 
 #include <qmath.h>
 
@@ -29,6 +30,27 @@ ProgressWidget::~ProgressWidget()
     delete ui;
 }
 
+void ProgressWidget::reset()
+{
+    ui->progressBar->setValue(0);
+    ui->divisionTasks->setText("");
+    ui->divisionsProgress->setPixmap(QPixmap());
+    ui->divisionsProgress->setMovie(movie);
+    ui->leagueTasks->setText("");
+    ui->leaguesProgress->setPixmap(QPixmap());
+    ui->teamTasks->setText("");
+    ui->teamsProgress->setPixmap(QPixmap());
+    ui->playerTasks->setText("");
+    ui->playersProgress->setPixmap(QPixmap());
+
+    searchValues.clear();
+    playerLists.clear();
+    filteredPlayers.clear();
+
+    qDeleteAll(workers);
+    workers.clear();
+}
+
 void ProgressWidget::start(QList<SearchValues*>& values)
 {
     searchValues.append(values);
@@ -40,7 +62,7 @@ void ProgressWidget::start(QList<SearchValues*>& values)
         if (values.at(i)->countrySet) {
             LeagueData data;
             data.countryid = values.at(i)->countryid;
-            for (int j = 0; j < 6; ++j) {
+            for (int j = 0; j < values.at(i)->divCount; ++j) {
                 if (values.at(i)->div[j]) {
                     data.divisions.append(j + 1);
                     divCount++;
@@ -79,7 +101,7 @@ void ProgressWidget::start(QList<SearchValues*>& values)
     ui->leagueTasks->setText(QString::number(leagues.first) +
                              " / " + QString::number(leagues.second));
 
-    int tasks = 10;
+    int tasks = qMin(Settings::tasks, divisionList.count());
 
     QList<int> div[tasks];
     int count = (int)qFloor(divisionList.count() / tasks);
@@ -88,8 +110,6 @@ void ProgressWidget::start(QList<SearchValues*>& values)
         div[i].append(d);
     }
 
-    qDeleteAll(workers);
-    workers.clear();
     for (int i = 0; i < tasks; ++i) {
         Worker *worker = new Worker(div[i], this);
         connect(worker,SIGNAL(finished(PlayerList)), this, SLOT(searchDone(PlayerList)));
@@ -108,6 +128,7 @@ void ProgressWidget::filterPlayers()
     }
 
     players = {0, playerList.count()};
+
     for (int i = 0; i < playerList.count(); ++i) {
         const Player* p = &playerList.at(i);
 
@@ -124,11 +145,16 @@ void ProgressWidget::filterPlayers()
                     continue;
                 if (p->dmi < sv->dmi.first || p->dmi > sv->dmi.second)
                     continue;
-                filtered.append(*p);
+                filteredPlayers.append(*p);
             }
         }
 
         ui->playerTasks->setText(QString::number(i+1) +
+                                 " / " + QString::number(players.second));
+    }
+
+    if (players.second == 0) {
+        ui->playerTasks->setText(QString::number(players.first) +
                                  " / " + QString::number(players.second));
     }
 
@@ -139,7 +165,7 @@ void ProgressWidget::filterPlayers()
 
 PlayerList ProgressWidget::getResults()
 {
-    return filtered;
+    return filteredPlayers;
 }
 
 void ProgressWidget::requestDone()

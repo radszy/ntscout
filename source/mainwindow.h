@@ -26,6 +26,7 @@ class LoginWidget;
 class GridWidget;
 class ProgressWidget;
 class SummaryWidget;
+class SettingsDialog;
 
 class MainWindow : public QMainWindow
 {
@@ -51,6 +52,7 @@ private:
     GridWidget* gridWidget;
     ProgressWidget* progressWidget;
     SummaryWidget* summaryWidget;
+    SettingsDialog* settingsDialog;
 };
 
 #endif // MAINWINDOW_H

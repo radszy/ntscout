@@ -8,6 +8,9 @@ SearchDialog::SearchDialog(QWidget *parent) :
     ui(new Ui::SearchDialog)
 {
     ui->setupUi(this);
+
+    connect(ui->countryGroup, SIGNAL(toggled(bool)),
+            this, SLOT(enableCheckBoxes()));
 }
 
 SearchDialog::~SearchDialog()
@@ -36,14 +39,26 @@ void SearchDialog::setValues(SearchValues* values)
 {
     searchValues = values;
 
-    ui->countryGroup->setChecked(values->countrySet);
     ui->div1Check->setChecked(values->div[0]);
     ui->div2Check->setChecked(values->div[1]);
+
+    if (values->divCount <= 2)
+        ui->div3Check->setDisabled(true);
     ui->div3Check->setChecked(values->div[2]);
+
+    if (values->divCount <= 3)
+        ui->div4Check->setDisabled(true);
     ui->div4Check->setChecked(values->div[3]);
+
+    if (values->divCount <= 4)
+        ui->div5Check->setDisabled(true);
     ui->div5Check->setChecked(values->div[4]);
+
+    if (values->divCount <= 5)
+        ui->div6Check->setDisabled(true);
     ui->div6Check->setChecked(values->div[5]);
 
+    ui->countryGroup->setChecked(values->countrySet);
     ui->nationalityGroup->setChecked(values->nationalitySet);
     ui->ageMin->setValue(values->age.first);
     ui->ageMax->setValue(values->age.second);
@@ -53,4 +68,14 @@ void SearchDialog::setValues(SearchValues* values)
     ui->potMax->setValue(values->potential.second);
     ui->dmiMin->setValue(values->dmi.first);
     ui->dmiMax->setValue(values->dmi.second);
+}
+
+void SearchDialog::enableCheckBoxes()
+{
+//    if (ui->countryGroup->isEnabled()) {
+
+//    }
+//    else {
+
+//    }
 }

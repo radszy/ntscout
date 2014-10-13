@@ -22,7 +22,9 @@ SOURCES += main.cpp\
     searchdialog.cpp \
     progresswidget.cpp \
     worker.cpp \
-    summarywidget.cpp
+    summarywidget.cpp \
+    settingsdialog.cpp \
+    settings.cpp
 
 HEADERS  += mainwindow.h \
     bbapi.h \
@@ -37,7 +39,9 @@ HEADERS  += mainwindow.h \
     progresswidget.h \
     searchvalues.h \
     worker.h \
-    summarywidget.h
+    summarywidget.h \
+    settingsdialog.h \
+    settings.h
 
 FORMS    += mainwindow.ui \
     countrywidget.ui \
@@ -45,7 +49,8 @@ FORMS    += mainwindow.ui \
     gridwidget.ui \
     searchdialog.ui \
     progresswidget.ui \
-    summarywidget.ui
+    summarywidget.ui \
+    settingsdialog.ui
 
 RESOURCES += \
     resource.qrc

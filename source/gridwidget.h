@@ -36,6 +36,7 @@ public:
     explicit GridWidget(QWidget *parent = 0);
     ~GridWidget();
 
+    void reset();
     void rearrange();
     void setCountryList(CountryList clist);
     void checkIfCanProceed();

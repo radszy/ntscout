@@ -17,7 +17,12 @@ public:
     explicit SummaryWidget(QWidget *parent = 0);
     ~SummaryWidget();
 
+    void reset();
     void setResults(PlayerList p);
+
+public slots:
+    void openFile();
+    void openDirectory();
 
 private:
     Ui::SummaryWidget *ui;

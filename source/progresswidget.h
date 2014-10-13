@@ -23,6 +23,7 @@ public:
     explicit ProgressWidget(QWidget *parent = 0);
     ~ProgressWidget();
 
+    void reset();
     void start(QList<SearchValues*>& values);
     void filterPlayers();
 
@@ -48,7 +49,7 @@ private:
     QList<SearchValues*> searchValues;
     QList<Worker*> workers;
     QList<PlayerList> playerLists;
-    PlayerList filtered;
+    PlayerList filteredPlayers;
 
     int state;
 };

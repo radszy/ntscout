@@ -21,6 +21,7 @@
 #include "loginwidget.h"
 #include "progresswidget.h"
 #include "summarywidget.h"
+#include "settingsdialog.h"
 
 #include "bbapi.h"
 #include "country.h"
@@ -29,7 +30,9 @@
 
 #include <QMessageBox>
 #include <QDesktopWidget>
+#include <QDesktopServices>
 #include <QAction>
+#include <QProcess>
 #include <QDebug>
 
 MainWindow::MainWindow(QWidget *parent) :
@@ -42,11 +45,14 @@ MainWindow::MainWindow(QWidget *parent) :
     gridWidget = new GridWidget;
     progressWidget = new ProgressWidget;
     summaryWidget = new SummaryWidget;
+    settingsDialog = new SettingsDialog;
 
     ui->stackedWidget->addWidget(loginWidget);
     ui->stackedWidget->addWidget(gridWidget);
     ui->stackedWidget->addWidget(progressWidget);
     ui->stackedWidget->addWidget(summaryWidget);
+
+    ui->actionUpdate->setDisabled(true);
 
     connect(gridWidget, SIGNAL(canProceed(bool)),
             this, SLOT(enableNext(bool)));
@@ -60,11 +66,11 @@ MainWindow::MainWindow(QWidget *parent) :
 
     QDesktopWidget desktop;
     QRect screen = desktop.screenGeometry();
-    int width = 600;
-    int height = 400;
+    int width = 640;
+    int height = 480;
     setGeometry(screen.width() / 2 - width / 2,
                 screen.height() / 2 - height / 2,
-                600, 400);
+                width, height);
 }
 
 MainWindow::~MainWindow()
@@ -111,6 +117,8 @@ void MainWindow::nextClicked()
             msgBox.setInformativeText("<p align=\"center\" style=\"font-size:14px\">Do you want to proceed?</p>");
             int ret = msgBox.exec();
             if (ret == QMessageBox::Yes) {
+//                ui->actionUpdate->setDisabled(true);
+                progressWidget->reset();
                 ui->stackedWidget->setCurrentWidget(progressWidget);
                 ui->backButton->setEnabled(true);
                 ui->nextButton->setDisabled(true);
@@ -127,9 +135,12 @@ void MainWindow::nextClicked()
             PlayerList players = progressWidget->getResults();
             summaryWidget->setResults(players);
             ui->stackedWidget->setCurrentWidget(summaryWidget);
+//            ui->actionUpdate->setEnabled(true);
             break;
         }
         case 3:
+            gridWidget->reset();
+            ui->stackedWidget->setCurrentWidget(gridWidget);
             break;
     }
 }
@@ -151,22 +162,34 @@ void MainWindow::backClicked()
 
 void MainWindow::updateTriggered()
 {
+    BBApi bb;
+    if (bb.login() != "") {
+        QMessageBox::warning(this, "Error", "Please login first", QMessageBox::Ok);
+        return;
+    }
 
+    CountryList clist;
+    bb.countries(clist);
+    bb.namesEn(clist);
+
+    Util::writeCountry(clist);
+
+    QMessageBox::information(this, "Done", "You need to restart application to take effect.");
 }
 
 void MainWindow::settingsTriggered()
 {
-
+    settingsDialog->exec();
 }
 
 void MainWindow::reportTriggered()
 {
-
+    QDesktopServices::openUrl(QUrl("https://github.com/rsxee/NTScout/issues"));
 }
 
 void MainWindow::aboutTriggered()
 {
-
+    QDesktopServices::openUrl(QUrl("http://www.buzzerbeater.com/community/forum/read.aspx?thread=218184&m=1"));
 }
 
 void MainWindow::enableNext(bool enabled)
