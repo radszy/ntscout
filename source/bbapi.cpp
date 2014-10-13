@@ -24,9 +24,19 @@
 
 #include <QDebug>
 
+QString BBApi::name = QString();
+QString BBApi::pass = QString();
+
 BBApi::BBApi() :
     manager(new Network)
 {
+}
+
+BBApi::BBApi(const QString& login, const QString& password) :
+    manager(new Network)
+{
+    name = login;
+    pass = password;
 }
 
 BBApi::~BBApi()
@@ -51,6 +61,11 @@ QString BBApi::login(const QString& login, const QString& password)
     }
 
     return "???";
+}
+
+QString BBApi::login()
+{
+    return login(name, pass);
 }
 
 bool BBApi::countries(CountryList& result)
@@ -99,10 +114,12 @@ bool BBApi::leagues(QList<int>& results, const LeagueDataList leagues)
             return false;
         }
 
+        reader.readNextStartElement();
         while (reader.name() == "league") {
             int id = reader.attributes().value("id").toInt();
             results.append(id);
 
+            reader.readNextStartElement();
             reader.readNextStartElement();
         }
     }
@@ -238,8 +255,6 @@ bool BBApi::roster(PlayerList& results, QList<int> team)
             results.append(player);
         }
     }
-
-    qDebug() << results.count();
 
     return true;
 }

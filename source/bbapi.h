@@ -18,6 +18,7 @@
 
 #include "country.h"
 #include "player.h"
+#include "progresswidget.h"
 
 #include <QString>
 #include <QList>
@@ -35,9 +36,11 @@ class BBApi
 {
 public:
     BBApi();
+    BBApi(const QString &login, const QString &password);
     ~BBApi();
 
     QString login(const QString &login, const QString &password);
+    QString login();
     bool countries(CountryList& result);
     bool leagues(QList<int>& results, const LeagueDataList leagues);
     bool teams(QList<int>& results, QList<int> league);
@@ -45,8 +48,13 @@ public:
 
     void namesEn(CountryList& countries);
 
+    Network* getNetwork() {return manager;}
+
 private:
     Network* manager;
+
+    static QString name;
+    static QString pass;
 };
 
 #endif // BBAPI_H

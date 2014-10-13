@@ -19,7 +19,10 @@ SOURCES += main.cpp\
     network.cpp \
     util.cpp \
     gridwidget.cpp \
-    searchdialog.cpp
+    searchdialog.cpp \
+    progresswidget.cpp \
+    worker.cpp \
+    summarywidget.cpp
 
 HEADERS  += mainwindow.h \
     bbapi.h \
@@ -30,13 +33,19 @@ HEADERS  += mainwindow.h \
     player.h \
     util.h \
     gridwidget.h \
-    searchdialog.h
+    searchdialog.h \
+    progresswidget.h \
+    searchvalues.h \
+    worker.h \
+    summarywidget.h
 
 FORMS    += mainwindow.ui \
     countrywidget.ui \
     loginwidget.ui \
     gridwidget.ui \
-    searchdialog.ui
+    searchdialog.ui \
+    progresswidget.ui \
+    summarywidget.ui
 
 RESOURCES += \
     resource.qrc

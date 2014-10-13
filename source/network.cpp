@@ -52,7 +52,7 @@ QList<QByteArray> Network::get(const QList<QUrl> urls)
 
         QNetworkReply* reply = QNetworkAccessManager::get(request);
         connect(reply, SIGNAL(finished()), this, SLOT(onFinished()));
-        connect(reply, SIGNAL(finished()), reply, SLOT(deleteLater()));
+//        connect(reply, SIGNAL(finished()), reply, SLOT(deleteLater()));
         replies.append(reply);
     }
 

@@ -67,6 +67,15 @@ void GridWidget::checkIfCanProceed()
     emit canProceed(country && nationality);
 }
 
+QList<SearchValues*> GridWidget::getSearchValues()
+{
+    QList<SearchValues*> searchValues;
+    for (int i = 0; i < selectedWidgets.count(); ++i) {
+        searchValues.append(selectedWidgets.at(i)->getSearchValues());
+    }
+    return searchValues;
+}
+
 void GridWidget::rearrange()
 {
     if (countryWidgets.isEmpty()) {

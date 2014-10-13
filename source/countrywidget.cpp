@@ -15,9 +15,9 @@
 
 #include "countrywidget.h"
 #include "ui_countrywidget.h"
-
 #include "searchdialog.h"
 
+#include <QMouseEvent>
 #include <QDebug>
 
 SearchDialog* CountryWidget::searchDialog = nullptr;
@@ -33,6 +33,7 @@ CountryWidget::CountryWidget(QWidget *parent) :
         searchValues.div[i] = true;
     }
     searchValues.div[5] = false;
+    searchValues.countryid = id;
 
     searchValues.nationalitySet = false;
     searchValues.age = {18, 99};
@@ -77,6 +78,7 @@ void CountryWidget::setUsers(int users)
 void CountryWidget::setID(int id)
 {
     this->id = id;
+    searchValues.countryid = id;
 }
 
 void CountryWidget::setInitialToolTip(const QString& tooltip)
@@ -158,15 +160,13 @@ void CountryWidget::mousePressEvent(QMouseEvent* event)
     }
 
     searchDialog->setWindowTitle(nameEn);
-    searchDialog->setValues(searchValues);
+    searchDialog->setValues(&searchValues);
 
     int ret = searchDialog->exec();
     if (ret == QDialog::Accepted) {
-        searchValues = searchDialog->getValues();
-
+        searchDialog->updateValues();
         updateFrame();
     }
 
     QWidget::mousePressEvent(event);
 }
-

@@ -3,19 +3,11 @@
 
 #include <QDialog>
 
-struct SearchValues {
-    bool div[6];
-    QPair<int,int> age;
-    QPair<int,int> potential;
-    QPair<int,int> salary;
-    QPair<int,int> dmi;
-    bool countrySet;
-    bool nationalitySet;
-};
-
 namespace Ui {
 class SearchDialog;
 }
+
+struct SearchValues;
 
 class SearchDialog : public QDialog
 {
@@ -25,10 +17,11 @@ public:
     explicit SearchDialog(QWidget *parent = 0);
     ~SearchDialog();
 
-    SearchValues getValues();
-    void setValues(SearchValues values);
+    void updateValues();
+    void setValues(SearchValues* values);
 
 private:
+    SearchValues* searchValues;
     Ui::SearchDialog *ui;
 };
 

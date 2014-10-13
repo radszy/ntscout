@@ -24,6 +24,8 @@ class MainWindow;
 
 class LoginWidget;
 class GridWidget;
+class ProgressWidget;
+class SummaryWidget;
 
 class MainWindow : public QMainWindow
 {
@@ -47,6 +49,8 @@ private:
 
     LoginWidget* loginWidget;
     GridWidget* gridWidget;
+    ProgressWidget* progressWidget;
+    SummaryWidget* summaryWidget;
 };
 
 #endif // MAINWINDOW_H

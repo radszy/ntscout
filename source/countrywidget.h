@@ -17,10 +17,9 @@
 #define COUNTRYWIDGET_H
 
 #include "country.h"
-#include "searchdialog.h"
+#include "searchvalues.h"
 
 #include <QWidget>
-#include <QMouseEvent>
 
 class SearchDialog;
 
@@ -48,6 +47,7 @@ public:
     int getID() const {return id;}
     int getDivisions() const {return divisions;}
     int getUsers() const {return users;}
+    SearchValues* getSearchValues() {return &searchValues;}
 
     void selectAsCountry();
     void unselect();

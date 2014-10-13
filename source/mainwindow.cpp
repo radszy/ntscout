@@ -15,17 +15,22 @@
 
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
+#include "ui_proceeddialog.h"
 
 #include "gridwidget.h"
 #include "loginwidget.h"
+#include "progresswidget.h"
+#include "summarywidget.h"
 
 #include "bbapi.h"
 #include "country.h"
 #include "player.h"
 #include "util.h"
 
+#include <QMessageBox>
+#include <QDesktopWidget>
+#include <QAction>
 #include <QDebug>
-#include <QFile>
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -35,12 +40,31 @@ MainWindow::MainWindow(QWidget *parent) :
 
     loginWidget = new LoginWidget;
     gridWidget = new GridWidget;
+    progressWidget = new ProgressWidget;
+    summaryWidget = new SummaryWidget;
 
     ui->stackedWidget->addWidget(loginWidget);
     ui->stackedWidget->addWidget(gridWidget);
+    ui->stackedWidget->addWidget(progressWidget);
+    ui->stackedWidget->addWidget(summaryWidget);
 
     connect(gridWidget, SIGNAL(canProceed(bool)),
             this, SLOT(enableNext(bool)));
+    connect(progressWidget, SIGNAL(finished(bool)),
+            ui->nextButton, SLOT(setEnabled(bool)));
+
+    QAction* act = new QAction(this);
+    act->setShortcut(Qt::Key_Return);
+    addAction(act);
+    connect(act, SIGNAL(triggered()), this, SLOT(nextClicked()));
+
+    QDesktopWidget desktop;
+    QRect screen = desktop.screenGeometry();
+    int width = 600;
+    int height = 400;
+    setGeometry(screen.width() / 2 - width / 2,
+                screen.height() / 2 - height / 2,
+                600, 400);
 }
 
 MainWindow::~MainWindow()
@@ -59,8 +83,8 @@ void MainWindow::nextClicked()
             QString user = loginWidget->getLogin();
             QString pass = loginWidget->getPassword();
 
-            BBApi bb;
-            QString error = bb.login(user, pass);
+            BBApi bb(user, pass);
+            QString error = bb.login();
             if (!error.isEmpty()) {
                 loginWidget->setInformation(
                             "<html><font color=\"red\">"
@@ -79,15 +103,50 @@ void MainWindow::nextClicked()
             break;
         }
         case 1:
+        {
+            QMessageBox msgBox;
+            msgBox.setTextFormat(Qt::RichText);
+            msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
+            msgBox.setText("<p align=\"center\" style=\"font-size:14px\">Program is going to start searching now.</p>");
+            msgBox.setInformativeText("<p align=\"center\" style=\"font-size:14px\">Do you want to proceed?</p>");
+            int ret = msgBox.exec();
+            if (ret == QMessageBox::Yes) {
+                ui->stackedWidget->setCurrentWidget(progressWidget);
+                ui->backButton->setEnabled(true);
+                ui->nextButton->setDisabled(true);
+                QList<SearchValues*> values = gridWidget->getSearchValues();
+                progressWidget->start(values);
+            }
+            break;
+        }
+        case 2:
+        {
+            ui->backButton->setDisabled(true);
+            ui->nextButton->setEnabled(true);
+
+            PlayerList players = progressWidget->getResults();
+            summaryWidget->setResults(players);
+            ui->stackedWidget->setCurrentWidget(summaryWidget);
+            break;
+        }
+        case 3:
             break;
     }
 }
 
 void MainWindow::backClicked()
 {
-//    switch (ui->stackedWidget->currentIndex()) {
-
-    //    }
+    switch (ui->stackedWidget->currentIndex()) {
+        case 0:
+            break;
+        case 1:
+            break;
+        case 2:
+            ui->stackedWidget->setCurrentWidget(gridWidget);
+            ui->nextButton->setEnabled(true);
+            ui->backButton->setDisabled(true);
+            break;
+    }
 }
 
 void MainWindow::updateTriggered()

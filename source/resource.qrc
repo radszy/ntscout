@@ -7,5 +7,7 @@
         <file alias="select">icons/th_000000_24.png</file>
         <file alias="selected">icons/th-large_000000_24.png</file>
         <file alias="settings">icons/wrench_000000_16.png</file>
+        <file alias="done">icons/check_008000_16.png</file>
+        <file alias="progress">icons/done.gif</file>
     </qresource>
 </RCC>

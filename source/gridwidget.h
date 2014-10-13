@@ -22,6 +22,8 @@
 #include <QWidget>
 #include <QResizeEvent>
 
+struct SearchValues;
+
 namespace Ui {
 class GridWidget;
 }
@@ -37,6 +39,7 @@ public:
     void rearrange();
     void setCountryList(CountryList clist);
     void checkIfCanProceed();
+    QList<SearchValues*> getSearchValues();
 
     void resizeEvent(QResizeEvent* event);
 
