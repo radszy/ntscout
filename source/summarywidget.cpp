@@ -113,7 +113,10 @@ QString SummaryWidget::toCentimeters(int value)
 
 QString SummaryWidget::toMeters(int value)
 {
-    return QString::number(int(value * 2.54 + 0.5) / 100.0);
+    QString result = QString::number(int(value * 2.54 + 0.5) / 100.0);
+    if (result.count() == 3)
+        result.append("0");
+    return result;
 }
 
 QString SummaryWidget::toInches(int value)
