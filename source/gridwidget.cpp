@@ -236,7 +236,9 @@ void GridWidget::showSelected()
 
 void GridWidget::countrySelected(CountryWidget* widget)
 {
-    selectedWidgets.append(widget);
+    if (!selectedWidgets.contains(widget)) {
+        selectedWidgets.append(widget);
+    }
     checkIfCanProceed();
 }
 
