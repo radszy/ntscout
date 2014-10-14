@@ -17,12 +17,12 @@
 #define COUNTRYGRIDWIDGET_H
 
 #include "country.h"
-#include "countrywidget.h"
 
 #include <QWidget>
 #include <QResizeEvent>
 
 struct SearchValues;
+class CountryWidget;
 
 namespace Ui {
 class GridWidget;

@@ -33,7 +33,6 @@ struct Player {
     int gameshape;
     int potential;
 };
-//Q_DECLARE_METATYPE(Player);
 
 typedef QList<Player> PlayerList;
 

@@ -32,7 +32,7 @@ void SummaryWidget::reset()
     ui->openDirectory->setEnabled(true);
 }
 
-void SummaryWidget::setResults(PlayerList p)
+void SummaryWidget::setResults(const PlayerList& p)
 {
     if (p.empty()) {
         ui->resultsLabel->setText("No players found.");

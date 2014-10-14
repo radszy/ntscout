@@ -1,13 +1,12 @@
 #ifndef WORKER_H
 #define WORKER_H
 
-#include "bbapi.h"
 #include "player.h"
-#include "progresswidget.h"
 
 #include <QThread>
 
 class Network;
+class ProgressWidget;
 
 class Worker : public QThread
 {
@@ -29,7 +28,6 @@ private:
     PlayerList players;
 
     ProgressWidget* parent;
-
 };
 
 #endif // WORKER_H

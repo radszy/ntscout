@@ -1,9 +1,9 @@
 #ifndef SUMMARYWIDGET_H
 #define SUMMARYWIDGET_H
 
-#include <QWidget>
-
 #include "player.h"
+
+#include <QWidget>
 
 namespace Ui {
 class SummaryWidget;
@@ -18,7 +18,7 @@ public:
     ~SummaryWidget();
 
     void reset();
-    void setResults(PlayerList p);
+    void setResults(const PlayerList& p);
 
 public slots:
     void openFile();

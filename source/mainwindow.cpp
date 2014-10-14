@@ -78,69 +78,94 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
+void MainWindow::proceedToCountryWidget()
+{
+    loginWidget->setInformation("");
+    ui->nextButton->setDisabled(true);
+
+    QString user = loginWidget->getLogin();
+    QString pass = loginWidget->getPassword();
+
+    BBApi bb(user, pass);
+    QString error = bb.login();
+    if (!error.isEmpty()) {
+        loginWidget->setInformation(
+                    "<html><font color=\"red\">"
+                    "Unable to login: " +
+                    error + "</color></html>");
+        ui->nextButton->setEnabled(true);
+        return;
+    }
+
+    enableNext(false);
+
+    CountryList clist;
+    Util::readCountry(clist);
+    gridWidget->setCountryList(clist);
+    ui->stackedWidget->setCurrentWidget(gridWidget);
+}
+
+void MainWindow::proceedToProgressWidget()
+{
+    QMessageBox msgBox;
+    msgBox.setTextFormat(Qt::RichText);
+    msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
+    msgBox.setText("<p align=\"center\" style=\"font-size:14px\">Program is going to start searching now.</p>");
+    msgBox.setInformativeText("<p align=\"center\" style=\"font-size:14px\">Do you want to proceed?</p>");
+    int ret = msgBox.exec();
+    if (ret == QMessageBox::Yes) {
+        progressWidget->reset();
+        ui->stackedWidget->setCurrentWidget(progressWidget);
+        ui->backButton->setEnabled(true);
+        ui->nextButton->setDisabled(true);
+        QList<SearchValues*> values = gridWidget->getSearchValues();
+        progressWidget->start(values);
+    }
+}
+
+void MainWindow::proceedToSummaryWidget()
+{
+    ui->backButton->setDisabled(true);
+    ui->nextButton->setEnabled(true);
+
+    PlayerList players = progressWidget->getResults();
+    summaryWidget->setResults(players);
+    ui->stackedWidget->setCurrentWidget(summaryWidget);
+}
+
+void MainWindow::goBackToCountryWidget()
+{
+    ui->backButton->setDisabled(true);
+    enableNext(false);
+
+    gridWidget->reset();
+    ui->stackedWidget->setCurrentWidget(gridWidget);
+}
+
+void MainWindow::closeEvent(QCloseEvent* event)
+{
+    if (ui->stackedWidget->currentIndex() == Progress) {
+        progressWidget->stop();
+    }
+
+    QMainWindow::closeEvent(event);
+}
+
 void MainWindow::nextClicked()
 {
     switch (ui->stackedWidget->currentIndex()) {
-        case 0:
-        {
-            loginWidget->setInformation("");
-            ui->nextButton->setDisabled(true);
-
-            QString user = loginWidget->getLogin();
-            QString pass = loginWidget->getPassword();
-
-            BBApi bb(user, pass);
-            QString error = bb.login();
-            if (!error.isEmpty()) {
-                loginWidget->setInformation(
-                            "<html><font color=\"red\">"
-                            "Unable to login: " +
-                            error + "</color></html>");
-                ui->nextButton->setEnabled(true);
-                return;
-            }
-
-            enableNext(false);
-
-            CountryList clist;
-            Util::readCountry(clist);
-            gridWidget->setCountryList(clist);
-            ui->stackedWidget->setCurrentWidget(gridWidget);
+        case Login:
+            proceedToCountryWidget();
             break;
-        }
-        case 1:
-        {
-            QMessageBox msgBox;
-            msgBox.setTextFormat(Qt::RichText);
-            msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
-            msgBox.setText("<p align=\"center\" style=\"font-size:14px\">Program is going to start searching now.</p>");
-            msgBox.setInformativeText("<p align=\"center\" style=\"font-size:14px\">Do you want to proceed?</p>");
-            int ret = msgBox.exec();
-            if (ret == QMessageBox::Yes) {
-//                ui->actionUpdate->setDisabled(true);
-                progressWidget->reset();
-                ui->stackedWidget->setCurrentWidget(progressWidget);
-                ui->backButton->setEnabled(true);
-                ui->nextButton->setDisabled(true);
-                QList<SearchValues*> values = gridWidget->getSearchValues();
-                progressWidget->start(values);
-            }
+        case Country:
+            proceedToProgressWidget();
             break;
-        }
-        case 2:
-        {
-            ui->backButton->setDisabled(true);
-            ui->nextButton->setEnabled(true);
-
-            PlayerList players = progressWidget->getResults();
-            summaryWidget->setResults(players);
-            ui->stackedWidget->setCurrentWidget(summaryWidget);
-//            ui->actionUpdate->setEnabled(true);
+        case Progress:
+            proceedToSummaryWidget();
             break;
-        }
-        case 3:
-            gridWidget->reset();
-            ui->stackedWidget->setCurrentWidget(gridWidget);
+        case Summary:
+            // prepare for new search
+            goBackToCountryWidget();
             break;
     }
 }
@@ -148,14 +173,14 @@ void MainWindow::nextClicked()
 void MainWindow::backClicked()
 {
     switch (ui->stackedWidget->currentIndex()) {
-        case 0:
-            break;
-        case 1:
-            break;
-        case 2:
+        case Progress:
+            progressWidget->stop();
             ui->stackedWidget->setCurrentWidget(gridWidget);
             ui->nextButton->setEnabled(true);
             ui->backButton->setDisabled(true);
+            break;
+        default:
+            // enabled only in Progress
             break;
     }
 }

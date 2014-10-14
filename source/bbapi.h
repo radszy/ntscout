@@ -18,7 +18,6 @@
 
 #include "country.h"
 #include "player.h"
-#include "progresswidget.h"
 
 #include <QString>
 #include <QList>

@@ -32,9 +32,23 @@ class MainWindow : public QMainWindow
 {
     Q_OBJECT
 
+    enum Page {
+        Login,
+        Country,
+        Progress,
+        Summary
+    };
+
 public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
+
+    void proceedToCountryWidget();
+    void proceedToProgressWidget();
+    void proceedToSummaryWidget();
+    void goBackToCountryWidget();
+
+    void closeEvent(QCloseEvent* event);
 
 public slots:
     void nextClicked();

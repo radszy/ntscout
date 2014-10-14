@@ -5,7 +5,6 @@
 #include "searchvalues.h"
 
 #include <QWidget>
-#include <QMutex>
 #include <QPair>
 
 namespace Ui {
@@ -19,19 +18,32 @@ class ProgressWidget : public QWidget
 {
     Q_OBJECT
 
+    enum State {
+        Divisions,
+        Leagues,
+        Teams,
+        Players
+    };
+
 public:
     explicit ProgressWidget(QWidget *parent = 0);
     ~ProgressWidget();
 
     void reset();
+    void stop();
     void start(QList<SearchValues*>& values);
     void filterPlayers();
+    void nextState();
+
+    void progressDivisions();
+    void progressLeagues();
+    void progressTeams();
 
     PlayerList getResults();
 
 public slots:
     void requestDone();
-    void searchDone(PlayerList playerList);
+    void workerFinished(PlayerList playerList);
 
 signals:
     void finished(bool);

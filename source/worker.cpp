@@ -1,5 +1,8 @@
 #include "worker.h"
 #include "network.h"
+#include "bbapi.h"
+
+#include "progresswidget.h"
 
 #include <QDebug>
 
