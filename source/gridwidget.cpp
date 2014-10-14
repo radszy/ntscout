@@ -65,7 +65,6 @@ void GridWidget::setCountryList(CountryList clist)
         widget->setDivisions(countryList.at(i).divisions);
         widget->setUsers(countryList.at(i).users);
         widget->setID(clist.at(i).id);
-        widget->setVisible(true);
         originalWidgets.append(widget);
         countryWidgets.append(widget);
         connect(widget, SIGNAL(selected(CountryWidget*)),

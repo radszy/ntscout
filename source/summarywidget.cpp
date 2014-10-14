@@ -97,13 +97,13 @@ void SummaryWidget::setResults(const PlayerList& p)
 void SummaryWidget::openFile()
 {
     QFileInfo info("results/" + ui->fileLabel->text());
-    QDesktopServices::openUrl(QUrl("file://" + info.absoluteFilePath()));
+    QDesktopServices::openUrl(QUrl::fromLocalFile(info.absoluteFilePath()));
 }
 
 void SummaryWidget::openDirectory()
 {
     QFileInfo info("results/" + ui->fileLabel->text());
-    QDesktopServices::openUrl(QUrl("file://" + info.absolutePath()));
+    QDesktopServices::openUrl(QUrl::fromLocalFile(info.absolutePath()));
 }
 
 QString SummaryWidget::toCentimeters(int value)
