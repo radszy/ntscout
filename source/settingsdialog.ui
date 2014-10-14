@@ -52,7 +52,17 @@
        </item>
        <item>
         <property name="text">
+         <string>Meters</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
          <string>Inches</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Feet</string>
         </property>
        </item>
       </widget>

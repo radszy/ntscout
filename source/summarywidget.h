@@ -25,6 +25,11 @@ public slots:
     void openDirectory();
 
 private:
+    QString toCentimeters(int value);
+    QString toMeters(int value);
+    QString toInches(int value);
+    QString toFeet(int value);
+
     Ui::SummaryWidget *ui;
 };
 

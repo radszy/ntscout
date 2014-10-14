@@ -21,7 +21,6 @@
 class Util
 {
 public:
-
     static void readCountry(CountryList& countryList);
     static void writeCountry(CountryList& countryList);
 };

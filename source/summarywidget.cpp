@@ -59,10 +59,20 @@ void SummaryWidget::setResults(const PlayerList& p)
     QTextStream f(&file);
     f << "id;Name;Position;Age;Height;Salary;Potential;DMI;Nationality;Link\n";
 
-    double metrics = 1, rounding = 0;
-    if (Settings::metrics == 0) {
-        metrics = 2.54;
-        rounding = 0.5;
+    QString (SummaryWidget::*convert)(int) = nullptr;
+    switch (Settings::metrics) {
+        case Centimeters:
+            convert = &SummaryWidget::toCentimeters;
+            break;
+        case Meters:
+            convert = &SummaryWidget::toMeters;
+            break;
+        case Inches:
+            convert = &SummaryWidget::toInches;
+            break;
+        case Feet:
+            convert = &SummaryWidget::toFeet;
+            break;
     }
 
     for (int i = 0; i < p.count(); i++) {
@@ -70,7 +80,7 @@ void SummaryWidget::setResults(const PlayerList& p)
         f << p.at(i).firstname + " " + p.at(i).lastname << ";";
         f << p.at(i).bestpos << ";";
         f << p.at(i).age << ";";
-        f << int(p.at(i).height * metrics + rounding) << ";";
+        f << ((this->*convert)(p.at(i).height)) << ";";
         f << p.at(i).salary << ";";
         f << p.at(i).potential << ";";
         f << p.at(i).dmi << ";";
@@ -94,4 +104,25 @@ void SummaryWidget::openDirectory()
 {
     QFileInfo info("results/" + ui->fileLabel->text());
     QDesktopServices::openUrl(QUrl("file://" + info.absolutePath()));
+}
+
+QString SummaryWidget::toCentimeters(int value)
+{
+    return QString::number(int(value * 2.54 + 0.5));
+}
+
+QString SummaryWidget::toMeters(int value)
+{
+    return QString::number(int(value * 2.54 + 0.5) / 100.0);
+}
+
+QString SummaryWidget::toInches(int value)
+{
+    return QString::number(value);
+}
+
+QString SummaryWidget::toFeet(int value)
+{
+    return QString::number(value / 12) + "'" +
+            QString::number(value % 12) + "\"";
 }
