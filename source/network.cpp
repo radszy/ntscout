@@ -22,7 +22,7 @@
 Network::Network(QObject *parent) :
     QNetworkAccessManager(parent)
 {
-    running_requests = 0;
+    runningRequests = 0;
 }
 
 QByteArray Network::get(const QUrl url)
@@ -45,7 +45,7 @@ QList<QByteArray> Network::get(const QList<QUrl> urls)
     QList<QByteArray> result;
     QList<QNetworkReply*> replies;
 
-    running_requests += urls.count();
+    runningRequests += urls.count();
     for (int i = 0; i < urls.count(); ++i) {
         QNetworkRequest request(urls.at(i));
         request.setAttribute(QNetworkRequest::HttpPipeliningAllowedAttribute, true);
@@ -68,8 +68,8 @@ QList<QByteArray> Network::get(const QList<QUrl> urls)
 
 void Network::onFinished()
 {
-    running_requests--;
-    if (running_requests == 0) {
+    runningRequests--;
+    if (runningRequests == 0) {
         emit finishedAll();
     }
 }

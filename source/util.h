@@ -21,8 +21,8 @@
 class Util
 {
 public:
-    static void readCountry(CountryList& countryList);
-    static void writeCountry(CountryList& countryList);
+    static bool readCountry(CountryList& countryList);
+    static bool writeCountry(CountryList& countryList);
 };
 
 #endif // UTIL_H

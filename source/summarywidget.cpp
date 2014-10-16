@@ -47,9 +47,9 @@ void SummaryWidget::reset()
     ui->openDirectory->setEnabled(true);
 }
 
-void SummaryWidget::setResults(const PlayerList& p)
+void SummaryWidget::setResults(const PlayerList& playerList)
 {
-    if (p.empty()) {
+    if (playerList.empty()) {
         ui->resultsLabel->setText("No players found.");
         ui->openFile->setDisabled(true);
         ui->openDirectory->setDisabled(true);
@@ -67,12 +67,9 @@ void SummaryWidget::setResults(const PlayerList& p)
 
     QFile file("results/" + date + ".csv");
     if (!file.open(QIODevice::WriteOnly | QIODevice::Text)) {
-        QMessageBox::information(this, "File Error", "Could not save results.", QMessageBox::Ok);
+        QMessageBox::critical(this, "File Error", "Could not save results.", QMessageBox::Ok);
         return;
     }
-
-    QTextStream f(&file);
-    f << "id;Name;Position;Age;Height;Salary;Potential;DMI;Nationality;Link\n";
 
     QString (SummaryWidget::*convert)(int) = nullptr;
     switch (Settings::metrics) {
@@ -90,21 +87,24 @@ void SummaryWidget::setResults(const PlayerList& p)
             break;
     }
 
-    for (int i = 0; i < p.count(); i++) {
-        f << p.at(i).id << ";";
-        f << p.at(i).firstname + " " + p.at(i).lastname << ";";
-        f << p.at(i).bestpos << ";";
-        f << p.at(i).age << ";";
-        f << ((this->*convert)(p.at(i).height)) << ";";
-        f << p.at(i).salary << ";";
-        f << p.at(i).potential << ";";
-        f << p.at(i).dmi << ";";
-        f << p.at(i).nationalityname << ";";
-        f << "http://www.buzzerbeater.com/player/" + QString::number(p.at(i).id) + "/overview.aspx\n";
+    QTextStream stream(&file);
+    stream << "teamID;ID;Name;Position;Age;Height;Salary;Potential;DMI;Nationality;Link\n";
+    for (const auto& player : playerList) {
+        stream << player.teamid << ";";
+        stream << player.id << ";";
+        stream << player.firstname + " " + player.lastname << ";";
+        stream << player.bestpos << ";";
+        stream << player.age << ";";
+        stream << ((this->*convert)(player.height)) << ";";
+        stream << player.salary << ";";
+        stream << player.potential << ";";
+        stream << player.dmi << ";";
+        stream << player.nationalityname << ";";
+        stream << "http://www.buzzerbeater.com/player/" + QString::number(player.id) + "/overview.aspx\n";
     }
 
     ui->resultsLabel->setText(QString("Found ") +
-                              QString::number(p.count()) +
+                              QString::number(playerList.count()) +
                               QString(" players."));
     ui->fileLabel->setText(QString(date + ".csv"));
 }
@@ -129,8 +129,9 @@ QString SummaryWidget::toCentimeters(int value)
 QString SummaryWidget::toMeters(int value)
 {
     QString result = QString::number(int(value * 2.54 + 0.5) / 100.0);
-    if (result.count() == 3)
+    if (result.count() == 3) {
         result.append("0");
+    }
     return result;
 }
 

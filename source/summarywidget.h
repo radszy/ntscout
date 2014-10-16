@@ -33,7 +33,7 @@ public:
     ~SummaryWidget();
 
     void reset();
-    void setResults(const PlayerList& p);
+    void setResults(const PlayerList& playerList);
 
 public slots:
     void openFile();

@@ -94,7 +94,7 @@ QList<SearchValues*> GridWidget::getSearchValues()
     return searchValues;
 }
 
-void GridWidget::rearrange()
+void GridWidget::updateGrid()
 {
     if (countryWidgets.isEmpty()) {
         return;
@@ -117,7 +117,7 @@ void GridWidget::rearrange()
 
 void GridWidget::resizeEvent(QResizeEvent* event)
 {
-    rearrange();
+    updateGrid();
 
     QWidget::resizeEvent(event);
 }
@@ -163,13 +163,13 @@ void GridWidget::sortBy(int index)
             break;
     }
 
-    // rearrange is based on countryWidgets
+    // updateGrid is based on countryWidgets
     if (countryWidgets.count() >= originalWidgets.count()) {
         countryWidgets.clear();
         countryWidgets.append(originalWidgets);
     }
 
-    rearrange();
+    updateGrid();
 }
 
 void GridWidget::searchCountry(QString text)
@@ -195,7 +195,7 @@ void GridWidget::searchCountry(QString text)
         }
     }
 
-    rearrange();
+    updateGrid();
 }
 
 void GridWidget::selectAll()
@@ -231,7 +231,7 @@ void GridWidget::showSelected()
         searchCountry(ui->searchField->text());
     }
 
-    rearrange();
+    updateGrid();
 }
 
 void GridWidget::countrySelected(CountryWidget* widget)

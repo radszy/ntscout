@@ -21,7 +21,6 @@
 #include <QNetworkAccessManager>
 #include <QNetworkReply>
 #include <QEventLoop>
-#include <QXmlStreamReader>
 
 #include <QDomDocument>
 #include <QDomNodeList>
@@ -55,14 +54,18 @@ QString BBApi::login(const QString& login, const QString& password)
              "?login=" + login + "&code=" + password);
     QByteArray data = manager->get(url);
 
-    QXmlStreamReader reader(data);
-    reader.readNextStartElement();
-    reader.readNextStartElement();
-    if (reader.name() == "loggedIn") {
-        return "";
+    QDomDocument doc;
+    doc.setContent(data);
+    const QDomNodeList& error = doc.elementsByTagName("error");
+    if (!error.isEmpty()) {
+        return error.item(0).attributes()
+                .namedItem("message")
+                .toAttr().value();
     }
-    else if (reader.name() == "error") {
-        return reader.attributes().value("message").toString();
+
+    const QDomNodeList& loggedIn = doc.elementsByTagName("loggedIn");
+    if (!loggedIn.isEmpty()) {
+        return "";
     }
 
     return "???";
@@ -78,19 +81,23 @@ bool BBApi::countries(CountryList& result)
     QUrl url("http://bbapi.buzzerbeater.com/countries.aspx");
     QByteArray data = manager->get(url);
 
-    QXmlStreamReader reader(data);
-    reader.readNextStartElement();
-    reader.readNextStartElement();
-    reader.readNextStartElement();
+    QDomDocument doc;
+    doc.setContent(data);
+    const auto& nodes = doc.elementsByTagName("country");
 
-    while (reader.name() == "country") {
+    for (int i = 0; i < nodes.count(); ++i) {
+        const auto& node = nodes.at(i);
+        const auto& attr = node.attributes();
+
         Country country;
-        country.id = reader.attributes().value("id").toInt();
-        country.divisions = reader.attributes().value("divisions").toInt();
-        country.users = reader.attributes().value("users").toInt();
-        country.name = reader.readElementText();
+        country.id = attr.namedItem("id")
+                     .toAttr().value().toInt();
+        country.divisions = attr.namedItem("divisions")
+                            .toAttr().value().toInt();
+        country.users = attr.namedItem("users")
+                        .toAttr().value().toInt();
+        country.name = node.toElement().text();
         result.append(country);
-        reader.readNextStartElement();
     }
 
     return true;
@@ -108,7 +115,6 @@ bool BBApi::leagues(QList<int>& results, const LeagueDataList leagues)
             urls.append(url);
         }
     }
-
     QList<QByteArray> data = manager->get(urls);
 
     for (int i = 0; i < data.count(); ++i) {
@@ -134,7 +140,6 @@ bool BBApi::teams(QList<int>& results, QList<int> league)
                  "leagueid=" + QString::number(league.at(i)));
         urls.append(url);
     }
-
     QList<QByteArray> data = manager->get(urls);
 
     for (int i = 0; i < data.count(); ++i) {
@@ -170,19 +175,22 @@ bool BBApi::roster(PlayerList& results, QList<int> team)
                  "teamid=" + QString::number(team.at(i)));
         urls.append(url);
     }
-
     QList<QByteArray> data = manager->get(urls);
-
 
     for (int i = 0; i < data.count(); ++i) {
         QDomDocument doc;
         doc.setContent(data.at(i));
+        int teamid = doc.elementsByTagName("roster")
+                     .at(0).attributes().namedItem("teamid")
+                     .toAttr().value().toInt();
+
         const auto& nodes = doc.elementsByTagName("player");
 
         for (int j = 0; j < nodes.count(); ++j) {
             const auto& node = nodes.at(j);
 
             Player player;
+            player.teamid = teamid;
             player.id = node.attributes().namedItem("id")
                      .toAttr().value().toInt();
             player.firstname = node.firstChildElement("firstName").text();

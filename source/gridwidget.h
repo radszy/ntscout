@@ -37,9 +37,9 @@ public:
     ~GridWidget();
 
     void reset();
-    void rearrange();
-    void setCountryList(CountryList clist);
+    void updateGrid();
     void checkIfCanProceed();
+    void setCountryList(CountryList clist);
     QList<SearchValues*> getSearchValues();
 
     void resizeEvent(QResizeEvent* event);

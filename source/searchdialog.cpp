@@ -54,50 +54,17 @@ void SearchDialog::setValues(SearchValues* values)
     ui->div1Check->setChecked(values->div[0]);
     ui->div2Check->setChecked(values->div[1]);
 
-    bool disabled;
-    disabled = values->divCount <= 2;
-    if (disabled)
-        ui->div3Check->setDisabled(true);
-    else
-        ui->div3Check->setEnabled(true);
-    ui->div3Check->setChecked(values->div[2] && !disabled);
+    ui->div3Check->setChecked(values->div[2]);
+    ui->div3Check->setVisible(values->divCount > 2);
 
-    disabled = values->divCount <= 3;
-    if (disabled)
-        ui->div4Check->setDisabled(true);
-    else
-        ui->div4Check->setEnabled(true);
-    ui->div4Check->setChecked(values->div[3] && !disabled);
+    ui->div4Check->setChecked(values->div[3]);
+    ui->div4Check->setVisible(values->divCount > 3);
 
-    disabled = values->divCount <= 4;
-    if (disabled)
-        ui->div5Check->setDisabled(true);
-    else
-        ui->div5Check->setEnabled(true);
-    ui->div5Check->setChecked(values->div[4] && !disabled);
+    ui->div5Check->setChecked(values->div[4]);
+    ui->div5Check->setVisible(values->divCount > 4);
 
-    disabled = values->divCount <= 5;
-    if (disabled)
-        ui->div6Check->setDisabled(true);
-    else
-        ui->div6Check->setEnabled(true);
-    ui->div6Check->setChecked(values->div[5] && !disabled);
-
-//    if (values->divCount <= 2)
-//        ui->div3Check->setDisabled(true);
-//    ui->div3Check->setChecked(values->div[2]);
-
-//    if (values->divCount <= 3)
-//        ui->div4Check->setDisabled(true);
-//    ui->div4Check->setChecked(values->div[3]);
-
-//    if (values->divCount <= 4)
-//        ui->div5Check->setDisabled(true);
-//    ui->div5Check->setChecked(values->div[4]);
-
-//    if (values->divCount <= 5)
-//        ui->div6Check->setDisabled(true);
-//    ui->div6Check->setChecked(values->div[5]);
+    ui->div6Check->setChecked(values->div[5]);
+    ui->div6Check->setVisible(values->divCount > 5);
 
     ui->countryGroup->setChecked(values->countrySet);
     ui->nationalityGroup->setChecked(values->nationalitySet);

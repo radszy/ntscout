@@ -45,16 +45,9 @@ public:
     explicit ProgressWidget(QWidget *parent = 0);
     ~ProgressWidget();
 
+    void start(QList<SearchValues*>& values);
     void reset();
     void stop();
-    void start(QList<SearchValues*>& values);
-    void filterPlayers();
-    void nextState() {state++;}
-    void setAsDone(QLabel* progress);
-
-    void progressDivisions();
-    void progressLeagues();
-    void progressTeams();
 
     PlayerList getResults() {return filteredPlayers;}
 
@@ -67,6 +60,13 @@ signals:
     void finished(bool);
 
 private:
+    void filterPlayers();
+    void setAsDone(QLabel* progress);
+    void nextState() {state++;}
+    void progressDivisions();
+    void progressLeagues();
+    void progressTeams();
+
     QList<SearchValues*> searchValues;
     QList<Worker*> workers;
     QList<PlayerList> playerLists;

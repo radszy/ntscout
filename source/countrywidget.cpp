@@ -29,11 +29,10 @@ CountryWidget::CountryWidget(QWidget *parent) :
     ui->setupUi(this);
 
     searchValues.countrySet = false;
-    for (int i = 0; i < 5; ++i) {
+    searchValues.divCount = 6;
+    for (int i = 0; i < searchValues.divCount; ++i) {
         searchValues.div[i] = true;
     }
-    searchValues.div[5] = false;
-    searchValues.divCount = 6;
     searchValues.countryid = id;
 
     searchValues.nationalitySet = false;
@@ -70,6 +69,12 @@ void CountryWidget::setDivisions(int divisions)
     ui->divisionsLabel->setText("Divisions: " + QString::number(divisions));
 
     searchValues.divCount = divisions;
+    for (int i = 0; i < searchValues.divCount; ++i) {
+        searchValues.div[i] = true;
+    }
+    for (int i = searchValues.divCount; i < 6; ++i) {
+        searchValues.div[i] = false;
+    }
 }
 
 void CountryWidget::setUsers(int users)

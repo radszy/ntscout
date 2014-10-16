@@ -27,14 +27,14 @@ public:
     QByteArray get(const QUrl url);
     QList<QByteArray> get(const QList<QUrl> urls);
 
-signals:
-    void finishedAll();
-
 public slots:
     void onFinished();
 
+signals:
+    void finishedAll();
+
 private:
-    int running_requests;
+    int runningRequests;
 
 };
 

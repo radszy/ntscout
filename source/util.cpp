@@ -19,13 +19,15 @@
 #include <QTextStream>
 #include <QString>
 
-void Util::readCountry(CountryList& countryList)
+bool Util::readCountry(CountryList& countryList)
 {
-    QFile file("country,txt");
-    file.open(QIODevice::ReadOnly | QIODevice::Text);
-    QTextStream in(&file);
+    QFile file("data/country,dat");
+    if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
+        return false;
+    }
+    QTextStream stream(&file);
     QString input;
-    while (!(input = in.readLine()).isEmpty()) {
+    while (!(input = stream.readLine()).isEmpty()) {
         QStringList list = input.split(",");
         Country country;
         country.id = list.at(0).toInt();
@@ -35,18 +37,22 @@ void Util::readCountry(CountryList& countryList)
         country.users = list.at(4).toInt();
         countryList.append(country);
     }
+    return true;
 }
 
-void Util::writeCountry(CountryList& countryList)
+bool Util::writeCountry(CountryList& countryList)
 {
-    QFile file("country,txt");
-    file.open(QIODevice::WriteOnly | QIODevice::Text);
-    QTextStream out(&file);
-    for (int i = 0; i < countryList.count(); ++i) {
-        out << countryList.at(i).id << ","
-            << countryList.at(i).name << ","
-            << countryList.at(i).name_en << ","
-            << countryList.at(i).divisions << ","
-            << countryList.at(i).users << "\n";
+    QFile file("data/country,dat");
+    if (!file.open(QIODevice::WriteOnly | QIODevice::Text)) {
+        return false;
     }
+    QTextStream stream(&file);
+    for (const auto& country : countryList) {
+        stream << country.id << ","
+            << country.name << ","
+            << country.name_en << ","
+            << country.divisions << ","
+            << country.users << "\n";
+    }
+    return true;
 }

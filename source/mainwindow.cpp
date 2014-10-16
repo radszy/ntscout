@@ -100,7 +100,10 @@ void MainWindow::proceedToCountryWidget()
     enableNext(false);
 
     CountryList clist;
-    Util::readCountry(clist);
+    if (!Util::readCountry(clist)) {
+        QMessageBox::critical(this, "Error", "Could not read country.dat!");
+        qApp->exit();
+    }
     gridWidget->setCountryList(clist);
     ui->stackedWidget->setCurrentWidget(gridWidget);
 }
@@ -142,15 +145,6 @@ void MainWindow::goBackToCountryWidget()
     ui->stackedWidget->setCurrentWidget(gridWidget);
 }
 
-void MainWindow::closeEvent(QCloseEvent* event)
-{
-    if (ui->stackedWidget->currentIndex() == Progress) {
-        progressWidget->stop();
-    }
-
-    QMainWindow::closeEvent(event);
-}
-
 void MainWindow::nextClicked()
 {
     switch (ui->stackedWidget->currentIndex()) {
@@ -183,6 +177,15 @@ void MainWindow::backClicked()
             // enabled only in Progress
             break;
     }
+}
+
+void MainWindow::closeEvent(QCloseEvent* event)
+{
+    if (ui->stackedWidget->currentIndex() == Progress) {
+        progressWidget->stop();
+    }
+
+    QMainWindow::closeEvent(event);
 }
 
 void MainWindow::updateTriggered()
