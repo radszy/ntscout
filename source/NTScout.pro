@@ -4,10 +4,11 @@
 #
 #-------------------------------------------------
 
-QT += core gui widgets network
+QT += core gui widgets network xml
 
 TARGET = NTScout
 TEMPLATE = app
+VERSION = 7.2.0
 
 QMAKE_CXXFLAGS = -std=c++11
 

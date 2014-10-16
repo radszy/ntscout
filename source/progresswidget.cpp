@@ -1,3 +1,18 @@
+//Copyright (C) <2014>  <RSX>
+
+//    This program is free software: you can redistribute it and/or modify
+//    it under the terms of the GNU General Public License as published by
+//    the Free Software Foundation, either version 3 of the License, or
+//    (at your option) any later version.
+
+//    This program is distributed in the hope that it will be useful,
+//    but WITHOUT ANY WARRANTY; without even the implied warranty of
+//    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//    GNU General Public License for more details.
+
+//    You should have received a copy of the GNU General Public License
+//    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 #include "progresswidget.h"
 #include "ui_progresswidget.h"
 
@@ -5,6 +20,7 @@
 #include "network.h"
 #include "worker.h"
 #include "settings.h"
+#include "searchvalues.h"
 
 #include <qmath.h>
 
@@ -19,6 +35,11 @@ ProgressWidget::ProgressWidget(QWidget *parent) :
     ui->setupUi(this);
 
     state = 0;
+    divisions = {0,0};
+    leagues = {0,0};
+    teams = {0,0};
+    players = {0,0};
+
     movie = new QMovie(":/icons/progress");
     ui->divisionsProgress->setMovie(movie);
     movie->start();
@@ -34,6 +55,11 @@ ProgressWidget::~ProgressWidget()
 void ProgressWidget::reset()
 {
     state = 0;
+
+    divisions = {0,0};
+    leagues = {0,0};
+    teams = {0,0};
+    players = {0,0};
 
     ui->progressBar->setValue(0);
     ui->divisionTasks->setText("");
@@ -92,11 +118,10 @@ void ProgressWidget::start(QList<SearchValues*>& values)
         }
     }
 
-    ui->progressBar->setMaximum(divCount + leagueCount + leagueCount * 16);
-
     divisions = {0, divCount};
-    ui->divisionTasks->setText(QString::number(divisions.first) +
-                               " / " + QString::number(divisions.second));
+    ui->divisionTasks->setText(
+                QString::number(divisions.first) + " / " +
+                QString::number(divisions.second));
 
     BBApi bb;
     bb.login();
@@ -108,8 +133,9 @@ void ProgressWidget::start(QList<SearchValues*>& values)
     bb.leagues(divisionList, dataList);
 
     leagues = {0, divisionList.count()};
-    ui->leagueTasks->setText(QString::number(leagues.first) +
-                             " / " + QString::number(leagues.second));
+    ui->leagueTasks->setText(
+                QString::number(leagues.first) + " / " +
+                QString::number(leagues.second));
 
     int tasks = qMin(Settings::tasks, divisionList.count());
 
@@ -123,6 +149,7 @@ void ProgressWidget::start(QList<SearchValues*>& values)
     for (int i = 0; i < tasks; ++i) {
         Worker *worker = new Worker(div[i], this);
         connect(worker,SIGNAL(finished(PlayerList)), this, SLOT(workerFinished(PlayerList)));
+        connect(worker, SIGNAL(foundTeams(int)), this, SLOT(teamsFound(int)));
         worker->start();
         workers.append(worker);
     }
@@ -159,23 +186,28 @@ void ProgressWidget::filterPlayers()
             }
         }
 
-        ui->playerTasks->setText(QString::number(i+1) +
-                                 " / " + QString::number(players.second));
+        ui->playerTasks->setText(
+                    QString::number(i + 1) + " / " +
+                    QString::number(players.second));
     }
 
     if (players.second == 0) {
-        ui->playerTasks->setText(QString::number(players.first) +
-                                 " / " + QString::number(players.second));
+        setAsDone(ui->teamsProgress);
+        ui->playerTasks->setText(
+                    QString::number(players.first) + " / " +
+                    QString::number(players.second));
     }
 
     ui->playersProgress->setMovie(nullptr);
     ui->playersProgress->setPixmap(QPixmap(":/icons/done"));
+    ui->progressBar->setValue(ui->progressBar->maximum());
     emit finished(true);
 }
 
-void ProgressWidget::nextState()
+void ProgressWidget::setAsDone(QLabel* progress)
 {
-    state++;
+    progress->setMovie(nullptr);
+    progress->setPixmap(QPixmap(":/icons/done"));
 }
 
 void ProgressWidget::progressDivisions()
@@ -184,10 +216,12 @@ void ProgressWidget::progressDivisions()
     ui->divisionTasks->setText(QString::number(divisions.first) +
                                " / " + QString::number(divisions.second));
     if (divisions.first == divisions.second) {
-        ui->divisionsProgress->setMovie(nullptr);
-        ui->divisionsProgress->setPixmap(QPixmap(":/icons/done"));
+        setAsDone(ui->divisionsProgress);
         ui->leaguesProgress->setMovie(movie);
     }
+    int n = divisions.first * 100 / divisions.second;
+    int x = 5 * n / 100;
+    ui->progressBar->setValue(x);
 }
 
 void ProgressWidget::progressLeagues()
@@ -197,11 +231,12 @@ void ProgressWidget::progressLeagues()
                              " / " + QString::number(leagues.second));
     if (leagues.first == leagues.second) {
         nextState();
-        ui->leaguesProgress->setMovie(nullptr);
-        ui->leaguesProgress->setPixmap(QPixmap(":/icons/done"));
+        setAsDone(ui->leaguesProgress);
         ui->teamsProgress->setMovie(movie);
-        teams = {0, leagues.second * 16};
     }
+    int n = leagues.first * 100 / leagues.second;
+    int x = 15 * n / 100 + 5;
+    ui->progressBar->setValue(x);
 }
 
 void ProgressWidget::progressTeams()
@@ -210,15 +245,12 @@ void ProgressWidget::progressTeams()
     ui->teamTasks->setText(QString::number(teams.first) +
                              " / " + QString::number(teams.second));
     if (teams.first == teams.second) {
-        ui->teamsProgress->setMovie(nullptr);
-        ui->teamsProgress->setPixmap(QPixmap(":/icons/done"));
+        setAsDone(ui->teamsProgress);
         ui->playersProgress->setMovie(movie);
     }
-}
-
-PlayerList ProgressWidget::getResults()
-{
-    return filteredPlayers;
+    int n = teams.first * 100 / teams.second;
+    int x = 80 * n / 100 + 20;
+    ui->progressBar->setValue(x);
 }
 
 void ProgressWidget::requestDone()
@@ -236,15 +268,26 @@ void ProgressWidget::requestDone()
         default:
             break;
     }
+}
 
-    ui->progressBar->setValue(ui->progressBar->value() + 1);
+void ProgressWidget::teamsFound(int count)
+{
+    teams.second += count;
+    ui->teamTasks->setText(
+                QString::number(teams.first) +" / " +
+                QString::number(teams.second));
 }
 
 void ProgressWidget::workerFinished(PlayerList playerList)
 {
     playerLists.append(playerList);
 
-    if (playerLists.count() == workers.count()) {
+    bool done = true;
+    for (int i = 0; i < workers.count(); ++i) {
+        done &= workers.at(i)->isDone();
+    }
+
+    if (done) {
         filterPlayers();
     }
 }

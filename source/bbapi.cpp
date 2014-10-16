@@ -15,12 +15,17 @@
 
 #include "bbapi.h"
 #include "network.h"
+#include "settings.h"
 
 #include <QUrl>
 #include <QNetworkAccessManager>
 #include <QNetworkReply>
 #include <QEventLoop>
 #include <QXmlStreamReader>
+
+#include <QDomDocument>
+#include <QDomNodeList>
+#include <QDomElement>
 
 #include <QDebug>
 
@@ -107,20 +112,14 @@ bool BBApi::leagues(QList<int>& results, const LeagueDataList leagues)
     QList<QByteArray> data = manager->get(urls);
 
     for (int i = 0; i < data.count(); ++i) {
-        QXmlStreamReader reader(data.at(i));
-        reader.readNextStartElement();
-        reader.readNextStartElement();
-        if (reader.name() == "error") {
-            return false;
-        }
+        QDomDocument doc;
+        doc.setContent(data.at(i));
+        const auto& nodes = doc.elementsByTagName("league");
 
-        reader.readNextStartElement();
-        while (reader.name() == "league") {
-            int id = reader.attributes().value("id").toInt();
+        for (int j = 0; j < nodes.count(); ++j) {
+            int id = nodes.at(j).attributes()
+                     .namedItem("id").toAttr().value().toInt();
             results.append(id);
-
-            reader.readNextStartElement();
-            reader.readNextStartElement();
         }
     }
 
@@ -139,41 +138,26 @@ bool BBApi::teams(QList<int>& results, QList<int> league)
     QList<QByteArray> data = manager->get(urls);
 
     for (int i = 0; i < data.count(); ++i) {
-        QXmlStreamReader reader(data.at(i));
-        reader.readNextStartElement();
-        reader.readNextStartElement();
-        if (reader.name() == "error") {
-            return false;
-        }
+        QDomDocument doc;
+        doc.setContent(data.at(i));
+        const auto& nodes = doc.elementsByTagName("team");
 
-        reader.readNextStartElement();
-        reader.readNextStartElement();
-        reader.readNextStartElement();
-        reader.readNextStartElement();
-        reader.readNextStartElement();
-        reader.readNextStartElement();
-        reader.readNextStartElement();
-
-        while (reader.name() == "team") {
-            int id = reader.attributes().value("id").toInt();
-            results.append(id);
-
-            reader.skipCurrentElement();
-            reader.readNextStartElement();
-        }
-
-        reader.readNextStartElement();
-        reader.readNextStartElement();
-        while (reader.name() == "team") {
-            int id = reader.attributes().value("id").toInt();
-            results.append(id);
-
-            reader.skipCurrentElement();
-            reader.readNextStartElement();
+        for (int j = 0; j < nodes.count(); ++j) {
+            int id = nodes.at(j).attributes().namedItem("id")
+                     .toAttr().value().toInt();
+            if (Settings::searchBots == false) {
+                bool isBot = nodes.at(j)
+                             .firstChildElement("isBot")
+                             .text().toInt() == 1;
+                if (isBot == false) {
+                    results.append(id);
+                }
+            }
+            else {
+                results.append(id);
+            }
         }
     }
-
-//    Q_ASSERT(results.count() == 16);
 
     return true;
 }
@@ -189,78 +173,32 @@ bool BBApi::roster(PlayerList& results, QList<int> team)
 
     QList<QByteArray> data = manager->get(urls);
 
-    for (int i = 0; i < data.count(); ++i) {
-        QXmlStreamReader reader(data.at(i));
-        reader.readNextStartElement();
-        reader.readNextStartElement();
-        if (reader.name() == "error") {
-            return false;
-        }
 
-        reader.readNextStartElement();
-        while (reader.name() == "player") {
+    for (int i = 0; i < data.count(); ++i) {
+        QDomDocument doc;
+        doc.setContent(data.at(i));
+        const auto& nodes = doc.elementsByTagName("player");
+
+        for (int j = 0; j < nodes.count(); ++j) {
+            const auto& node = nodes.at(j);
 
             Player player;
+            player.id = node.attributes().namedItem("id")
+                     .toAttr().value().toInt();
+            player.firstname = node.firstChildElement("firstName").text();
+            player.lastname = node.firstChildElement("lastName").text();
 
-            player.id = reader.attributes().value("id").toInt();
-//            qDebug() << reader.attributes().value("id");
+            const auto& nationality = node.firstChildElement("nationality");
+            player.nationalityname = nationality.text();
+            player.nationalityid = nationality.attribute("id").toInt();
 
-            reader.readNextStartElement();
-            player.firstname = reader.readElementText();
-//            qDebug() << "firstname:" << reader.readElementText();
-
-            reader.readNextStartElement();
-            player.lastname = reader.readElementText();
-//            qDebug() << "lastname:" << reader.readElementText();
-
-            reader.readNextStartElement();
-            player.nationalityid = reader.attributes().value("id").toInt();
-            player.nationalityname = reader.readElementText();
-//            qDebug() << "nationalityid:" << reader.attributes().value("id");
-
-            reader.readNextStartElement();
-            player.age = reader.readElementText().toInt();
-//            qDebug() << "age:" << reader.readElementText();
-
-            reader.readNextStartElement();
-            player.height = reader.readElementText().toInt();
-//            qDebug() << "height:" << reader.readElementText();
-
-            reader.readNextStartElement();
-            player.dmi = reader.readElementText().toInt();
-//            qDebug() << "dmi:" << reader.readElementText();
-
-
-            reader.readNextStartElement();
-            if (reader.name() == "injury") {
-                reader.skipCurrentElement();
-                reader.readNextStartElement();
-            }
-            if (reader.name() == "jersey") {
-                reader.skipCurrentElement();
-                reader.readNextStartElement();
-            }
-
-            player.salary = reader.readElementText().toInt();
-//            qDebug() << "salary:" << reader.readElementText();
-
-            reader.readNextStartElement();
-            player.bestpos = reader.readElementText();
-//            qDebug() << "bestpos:" << reader.readElementText();
-
-            reader.readNextStartElement();
-            reader.readNextStartElement();
-            player.gameshape = reader.readElementText().toInt();
-//            qDebug() << "gameshape:" << reader.readElementText();
-
-            reader.readNextStartElement();
-            player.potential = reader.readElementText().toInt();
-//            qDebug() << "potential:" << reader.readElementText();
-
-            reader.skipCurrentElement();
-            reader.skipCurrentElement();
-            reader.readNextStartElement();
-
+            player.age = node.firstChildElement("age").text().toInt();
+            player.height = node.firstChildElement("height").text().toInt();
+            player.dmi = node.firstChildElement("dmi").text().toInt();
+            player.salary = node.firstChildElement("salary").text().toInt();
+            player.bestpos = node.firstChildElement("bestPosition").text();
+            player.potential = node.firstChildElement("skills")
+                               .firstChildElement("potential").text().toInt();
             results.append(player);
         }
     }

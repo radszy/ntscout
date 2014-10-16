@@ -199,6 +199,8 @@ void MainWindow::updateTriggered()
 
     Util::writeCountry(clist);
 
+    // download flags
+
     QMessageBox::information(this, "Done", "You need to restart application to take effect.");
 }
 
