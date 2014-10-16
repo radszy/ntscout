@@ -198,7 +198,6 @@ bool BBApi::roster(PlayerList& results, QList<int> team)
         }
 
         reader.readNextStartElement();
-
         while (reader.name() == "player") {
 
             Player player;
@@ -231,7 +230,17 @@ bool BBApi::roster(PlayerList& results, QList<int> team)
             player.dmi = reader.readElementText().toInt();
 //            qDebug() << "dmi:" << reader.readElementText();
 
+
             reader.readNextStartElement();
+            if (reader.name() == "injury") {
+                reader.skipCurrentElement();
+                reader.readNextStartElement();
+            }
+            if (reader.name() == "jersey") {
+                reader.skipCurrentElement();
+                reader.readNextStartElement();
+            }
+
             player.salary = reader.readElementText().toInt();
 //            qDebug() << "salary:" << reader.readElementText();
 
