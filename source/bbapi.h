@@ -45,8 +45,6 @@ public:
     bool teams(QList<int>& results, QList<int> league);
     bool roster(PlayerList& results, QList<int> team);
 
-    void namesEn(CountryList& countries);
-
     Network* getNetwork() {return manager;}
 
 private:

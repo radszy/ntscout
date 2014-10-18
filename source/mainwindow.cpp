@@ -173,38 +173,15 @@ void MainWindow::backClicked()
             ui->nextButton->setEnabled(true);
             ui->backButton->setDisabled(true);
             break;
+        // enabled only in Progress
         default:
-            // enabled only in Progress
             break;
     }
 }
 
-void MainWindow::closeEvent(QCloseEvent* event)
-{
-    if (ui->stackedWidget->currentIndex() == Progress) {
-        progressWidget->stop();
-    }
-
-    QMainWindow::closeEvent(event);
-}
-
 void MainWindow::updateTriggered()
 {
-    BBApi bb;
-    if (bb.login() != "") {
-        QMessageBox::warning(this, "Error", "Please login first", QMessageBox::Ok);
-        return;
-    }
-
-    CountryList clist;
-    bb.countries(clist);
-    bb.namesEn(clist);
-
-    Util::writeCountry(clist);
-
-    // download flags
-
-    QMessageBox::information(this, "Done", "You need to restart application to take effect.");
+    // call external program
 }
 
 void MainWindow::settingsTriggered()
@@ -228,4 +205,13 @@ void MainWindow::enableNext(bool enabled)
     ui->nextButton->setToolTip(
                 enabled ? "" : "You need to select at least "
                                "one country and one nationality");
+}
+
+void MainWindow::closeEvent(QCloseEvent* event)
+{
+    if (ui->stackedWidget->currentIndex() == Progress) {
+        progressWidget->stop();
+    }
+
+    QMainWindow::closeEvent(event);
 }

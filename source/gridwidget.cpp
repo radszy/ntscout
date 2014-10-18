@@ -48,7 +48,8 @@ void GridWidget::reset()
 
     if (ui->sortBox->currentIndex() != 0) {
         ui->sortBox->setCurrentIndex(0);
-    } else {
+    }
+    else {
         sortBy(0);
     }
 }
@@ -184,7 +185,8 @@ void GridWidget::searchCountry(QString text)
             originalWidgets.at(i)->setVisible(true);
             countryWidgets.append(originalWidgets.at(i));
         }
-    } else {
+    }
+    else {
         for (int i = 0; i < originalWidgets.count(); ++i) {
             if (originalWidgets.at(i)->getName().contains(text, Qt::CaseInsensitive) ||
                 originalWidgets.at(i)->getNameEn().contains(text, Qt::CaseInsensitive))

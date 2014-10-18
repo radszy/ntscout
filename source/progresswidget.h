@@ -66,6 +66,8 @@ private:
     void progressDivisions();
     void progressLeagues();
     void progressTeams();
+    void updateProgress(const QPair<int,int>& pair,
+                        int curr, int prev);
 
     QList<SearchValues*> searchValues;
     QList<Worker*> workers;

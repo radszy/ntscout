@@ -213,17 +213,3 @@ bool BBApi::roster(PlayerList& results, QList<int> team)
 
     return true;
 }
-
-void BBApi::namesEn(CountryList& countries)
-{
-    QUrl url("https://raw.githubusercontent.com/"
-             "rsxee/NTScout/master/names-en.txt");
-    QByteArray data = manager->get(url);
-
-    QList<QByteArray> datalist = data.split('\n');
-    for (int i = 0; i < countries.count(); ++i) {
-        countries[i].name_en = datalist.at(i);
-    }
-
-    // Q_ASSERT(names.count() < datalist.count());
-}

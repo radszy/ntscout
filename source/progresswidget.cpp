@@ -213,15 +213,13 @@ void ProgressWidget::setAsDone(QLabel* progress)
 void ProgressWidget::progressDivisions()
 {
     divisions.first++;
-    ui->divisionTasks->setText(QString::number(divisions.first) +
-                               " / " + QString::number(divisions.second));
+    ui->divisionTasks->setText(QString::number(divisions.first) +" / " +
+                               QString::number(divisions.second));
     if (divisions.first == divisions.second) {
         setAsDone(ui->divisionsProgress);
         ui->leaguesProgress->setMovie(movie);
     }
-    int n = divisions.first * 100 / divisions.second;
-    int x = 5 * n / 100;
-    ui->progressBar->setValue(x);
+    updateProgress(divisions, 5, 0);
 }
 
 void ProgressWidget::progressLeagues()
@@ -234,9 +232,7 @@ void ProgressWidget::progressLeagues()
         setAsDone(ui->leaguesProgress);
         ui->teamsProgress->setMovie(movie);
     }
-    int n = leagues.first * 100 / leagues.second;
-    int x = 15 * n / 100 + 5;
-    ui->progressBar->setValue(x);
+    updateProgress(leagues, 15, 5);
 }
 
 void ProgressWidget::progressTeams()
@@ -248,8 +244,14 @@ void ProgressWidget::progressTeams()
         setAsDone(ui->teamsProgress);
         ui->playersProgress->setMovie(movie);
     }
-    int n = teams.first * 100 / teams.second;
-    int x = 80 * n / 100 + 20;
+    updateProgress(teams, 80, 20);
+}
+
+void ProgressWidget::updateProgress(const QPair<int,int>& pair,
+                                    int curr, int prev)
+{
+    int n = pair.first * 100 / pair.second;
+    int x = curr * n / 100 + prev;
     ui->progressBar->setValue(x);
 }
 
@@ -274,7 +276,7 @@ void ProgressWidget::teamsFound(int count)
 {
     teams.second += count;
     ui->teamTasks->setText(
-                QString::number(teams.first) +" / " +
+                QString::number(teams.first) + " / " +
                 QString::number(teams.second));
 }
 
