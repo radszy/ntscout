@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"encoding/json"
 	"encoding/xml"
-	"errors"
 	"io"
 	"io/ioutil"
 	"net/http"
@@ -33,27 +32,33 @@ type Country struct {
 	NameEn    string
 }
 
-func login(username, password *string) (bool, error) {
+func login(username, password *string) bool {
 	url := "http://bbapi.buzzerbeater.com/login.aspx?" +
 		"login=" + *username + "&code=" + *password
 
 	res, err := client.Get(url)
 	if err != nil {
-		return false, err
+		logger.Println(err)
+		return false
 	}
 	defer res.Body.Close()
 
 	data, err := ioutil.ReadAll(res.Body)
+	if err != nil {
+		logger.Println(err)
+		return false
+	}
 
-	return bytes.Contains(data, []byte("loggedIn")), nil
+	return bytes.Contains(data, []byte("loggedIn"))
 }
 
-func countries() (*Countries, error) {
+func countries() *Countries {
 	url := "http://bbapi.buzzerbeater.com/countries.aspx"
 
 	res, err := client.Get(url)
 	if err != nil {
-		return nil, err
+		logger.Println(err)
+		return nil
 	}
 	defer res.Body.Close()
 
@@ -61,36 +66,45 @@ func countries() (*Countries, error) {
 	countries := new(Countries)
 	err = xml.Unmarshal(data, countries)
 	if err != nil {
-		return nil, err
+		logger.Println(err)
+		return nil
 	}
 
-	return countries, nil
+	return countries
 }
 
-func namesEn() ([]string, error) {
+func namesEn() []string {
 	url := "https://raw.githubusercontent.com/" +
 		"rsxee/NTScout/master/names-en.txt"
 
 	res, err := client.Get(url)
 	if err != nil {
-		return nil, nil
+		return nil
 	}
 	defer res.Body.Close()
 
 	data, err := ioutil.ReadAll(res.Body)
-	names := strings.Split(string(data), "\n")
+	if err != nil {
+		logger.Println(err)
+		return nil
+	}
 
-	return names, nil
+	return strings.Split(string(data), "\n")
 }
 
-func releases() (string, error) {
+func releases() string {
 	url := "https://api.github.com/repos/rsxee/NTScout/releases"
 	res, err := client.Get(url)
 	if err != nil {
-		return "", err
+		logger.Println(err)
+		return ""
 	}
 	defer res.Body.Close()
 	data, err := ioutil.ReadAll(res.Body)
+	if err != nil {
+		logger.Println(err)
+		return ""
+	}
 
 	type Releases struct {
 		Url      string
@@ -102,33 +116,38 @@ func releases() (string, error) {
 	var releases []Releases
 	err = json.Unmarshal(data, &releases)
 	if err != nil {
-		return "", err
+		logger.Println(err)
+		return ""
 	}
 
 	if len(releases) == 0 {
-		return "", errors.New("No releases found.")
+		logger.Println("no releases found")
+		return ""
 	}
 
-	return releases[0].Assets[0].Browser_download_url, nil
+	return releases[0].Assets[0].Browser_download_url
 }
 
-func download(url, dir string) error {
+func download(url, dir string) bool {
 	res, err := client.Get(url)
 	if err != nil {
-		return err
+		logger.Println(err)
+		return false
 	}
 	defer res.Body.Close()
 
 	out, err := os.Create(dir + "/NTScout.zip")
 	if err != nil {
-		return err
+		logger.Println(err)
+		return false
 	}
 	defer out.Close()
 
 	_, err = io.Copy(out, res.Body)
 	if err != nil {
-		return err
+		logger.Println(err)
+		return false
 	}
 
-	return nil
+	return true
 }

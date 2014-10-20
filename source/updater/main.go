@@ -2,15 +2,18 @@ package main
 
 import (
 	"archive/zip"
-	"errors"
+	"bytes"
 	"flag"
 	"fmt"
 	"io"
 	"io/ioutil"
 	"log"
 	"os"
+	"os/exec"
 	"path/filepath"
+	"strconv"
 	"strings"
+	"time"
 )
 
 const APP_VERSION = "0.1"
@@ -19,6 +22,12 @@ var appver *bool = flag.Bool("v", false, "Print the version number.")
 var ntsver *float64 = flag.Float64("n", 0.0, "Version of NTScout")
 var user *string = flag.String("u", "", "Username used to login.")
 var pass *string = flag.String("p", "", "Password used to login.")
+
+var pwd, _ = filepath.Abs(filepath.Dir(os.Args[0]))
+var tmp = os.TempDir() + "/NTScout"
+
+var buf bytes.Buffer
+var logger = log.New(&buf, "logger: ", log.Lshortfile)
 
 func main() {
 	flag.Parse()
@@ -34,47 +43,62 @@ func main() {
 		return
 	}
 
-	fmt.Print("Updating binary files... ")
-	err := updateBinary()
-	if err != nil {
-		fmt.Println(err)
+	logger.Println("Updater version:", APP_VERSION)
+	logger.Println("NTScout version:", *ntsver)
+
+	fmt.Print("Updating binary files ")
+	if updateBinary() {
+		fmt.Println("[X]")
 	} else {
-		fmt.Println("done.")
+		fmt.Println("[ ]")
 	}
 
-	fmt.Print("Updating country data... ")
-	err = updateCountry()
-	if err != nil {
-		fmt.Println(err)
+	fmt.Print("Updating country data ")
+	if updateCountry() {
+		fmt.Println("[X]")
 	} else {
-		fmt.Println("done.")
+		fmt.Println("[ ]")
 	}
 
+	cmd := exec.Command(pwd+"/NTScout", "--post-update")
+	err := cmd.Start()
+	if err != nil {
+		logger.Println(err)
+	}
+
+	timestr := strconv.FormatInt(time.Now().Unix(), 10)
+	file, err := os.Create("logs/updater-" + timestr)
+	if err != nil {
+		fmt.Println("Could not create logfile!")
+	}
+	defer file.Close()
+	file.Write(buf.Bytes())
 }
 
-func updateCountry() error {
-	if ret, err := login(user, pass); !ret {
-		return err
+func updateCountry() bool {
+	if !login(user, pass) {
+		return false
 	}
 
-	countries, err := countries()
-	if err != nil {
-		return err
+	countries := countries()
+	if countries == nil {
+		return false
 	}
 
-	name, err := namesEn()
-	if err != nil {
-		return err
+	names := namesEn()
+	if names == nil {
+		return false
 	}
 
 	length := len(countries.Country)
 	for i := 0; i < length; i++ {
-		countries.Country[i].NameEn = name[i]
+		countries.Country[i].NameEn = names[i]
 	}
 
 	file, err := os.OpenFile("country.dat", os.O_WRONLY|os.O_TRUNC, 0777)
 	if err != nil {
-		return err
+		logger.Println(err)
+		return false
 	}
 	defer file.Close()
 
@@ -83,116 +107,97 @@ func updateCountry() error {
 			c.Divisions + "," + c.Users + "\n")
 	}
 
-	return nil
+	return true
 }
 
-func updateBinary() error {
-	url, err := releases()
-	if err != nil {
-		return err
-	}
-
+func updateBinary() bool {
+	url := releases()
 	if url == "" {
-		return errors.New("Nothing to update.")
+		return false
 	}
 
-	err = download(url, os.TempDir())
-	if err != nil {
-		return err
+	if !download(url, os.TempDir()) ||
+		!unzip(tmp+".zip", os.TempDir()) ||
+		!removeOldFiles() || !moveNewFiles() {
+		return false
 	}
+	clean()
 
-	pwd, err := filepath.Abs(filepath.Dir(os.Args[0]))
-	tmp := os.TempDir() + "/NTScout"
-
-	err = unzip(tmp+".zip", os.TempDir())
-	if err != nil {
-		return err
-	}
-
-	err = removeOldStuff(pwd)
-	if err != nil {
-		fmt.Println(err)
-	}
-
-	err = moveNewStuff(pwd, tmp)
-	if err != nil {
-		fmt.Println(err)
-	}
-
-	err = clean(tmp)
-	if err != nil {
-		return err
-	}
-
-	return nil
+	return true
 }
 
-func removeOldStuff(src string) error {
-	entries, err := ioutil.ReadDir(src)
+func removeOldFiles() bool {
+	entries, err := ioutil.ReadDir(pwd)
 	if err != nil {
-		return err
+		logger.Println(err)
+		return false
 	}
 
 	for _, entry := range entries {
 		if entry.Name() == "Updater" {
 			continue
 		}
-		err = os.RemoveAll(src + "/" + entry.Name())
+		err = os.RemoveAll(pwd + "/" + entry.Name())
 		if err != nil {
-			return err
+			logger.Println(err)
+			return false
 		}
 	}
 
-	return nil
+	return true
 }
 
-func moveNewStuff(dst, src string) error {
-	entries, err := ioutil.ReadDir(src)
+func moveNewFiles() bool {
+	entries, err := ioutil.ReadDir(tmp)
 	if err != nil {
-		return err
+		logger.Println(err)
+		return false
 	}
 
 	for _, entry := range entries {
 		if entry.Name() == "Updater" {
-			err = os.Rename(src+"/"+entry.Name(), dst+"/"+entry.Name()+"-new")
+			err = os.Rename(tmp+"/"+entry.Name(), pwd+"/"+entry.Name()+"-new")
 			if err != nil {
-				return err
+				logger.Println(err)
+				return false
 			}
 			continue
 		}
-		err = os.Rename(src+"/"+entry.Name(), dst+"/"+entry.Name())
+		err = os.Rename(tmp+"/"+entry.Name(), pwd+"/"+entry.Name())
 		if err != nil {
-			return err
+			logger.Println(err)
+			return false
 		}
 	}
 
-	return nil
+	return true
 }
 
-func clean(dir string) error {
-	err := os.RemoveAll(dir)
+func clean() {
+	err := os.RemoveAll(tmp)
 	if err != nil {
-		return err
+		logger.Println(err)
 	}
 
-	err = os.Remove(dir + ".zip")
+	err = os.Remove(tmp + ".zip")
 	if err != nil {
-		return err
+		logger.Println(err)
 	}
-	return nil
 }
 
-func unzip(src, dest string) error {
+func unzip(src, dest string) bool {
 	r, err := zip.OpenReader(src)
 	if err != nil {
-		return err
+		logger.Println(err)
+		return false
 	}
 	defer r.Close()
 
 	for _, f := range r.File {
 		rc, err := f.Open()
 		if err != nil {
-			return err
+			logger.Println(err)
+			return false
 		}
 		defer rc.Close()
 
@@ -207,21 +212,23 @@ func unzip(src, dest string) error {
 
 			err = os.MkdirAll(fdir, f.Mode())
 			if err != nil {
-				log.Fatal(err)
-				return err
+				logger.Println(err)
+				return false
 			}
 			f, err := os.OpenFile(
 				fpath, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, f.Mode())
 			if err != nil {
-				return err
+				logger.Println(err)
+				return false
 			}
 			defer f.Close()
 
 			_, err = io.Copy(f, rc)
 			if err != nil {
-				return err
+				logger.Println(err)
+				return false
 			}
 		}
 	}
-	return nil
+	return true
 }
