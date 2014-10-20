@@ -137,7 +137,7 @@ void ProgressWidget::start(QList<SearchValues*>& values)
                 QString::number(leagues.first) + " / " +
                 QString::number(leagues.second));
 
-    int tasks = qMin(Settings::tasks, divisionList.count());
+    int tasks = qMin((int)Settings::tasks, divisionList.count());
 
     QList<int> div[tasks];
     int count = (int)qFloor(divisionList.count() / tasks);

@@ -16,7 +16,42 @@
 #include "settings.h"
 
 #include <QThread>
+#include <QDir>
+#include <QFile>
+#include <QDataStream>
+#include <QDebug>
 
-int Settings::tasks = QThread::idealThreadCount();
-int Settings::metrics = 0;
+quint8 Settings::tasks = QThread::idealThreadCount();
+quint8 Settings::metrics = 0;
 bool Settings::searchBots = false;
+bool Settings::checkUpdates = false;
+
+bool Settings::read()
+{
+    QFile file("data/settings.dat");
+    if (!file.exists() || !file.open(QIODevice::ReadOnly)) {
+        return false;
+    }
+
+    QDataStream stream(&file);
+    stream >> tasks;
+    stream >> metrics;
+    stream >> searchBots;
+    stream >> checkUpdates;
+    return true;
+}
+
+bool Settings::save()
+{
+    QFile file("data/settings.dat");
+    if (!file.open(QIODevice::WriteOnly)) {
+        return false;
+    }
+
+    QDataStream stream(&file);
+    stream << tasks;
+    stream << metrics;
+    stream << searchBots;
+    stream << checkUpdates;
+    return true;
+}

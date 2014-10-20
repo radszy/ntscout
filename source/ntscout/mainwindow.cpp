@@ -26,6 +26,7 @@
 #include "bbapi.h"
 #include "country.h"
 #include "player.h"
+#include "settings.h"
 #include "util.h"
 
 #include <QMessageBox>
@@ -213,5 +214,6 @@ void MainWindow::closeEvent(QCloseEvent* event)
         progressWidget->stop();
     }
 
+    Settings::save();
     QMainWindow::closeEvent(event);
 }

@@ -18,9 +18,8 @@
 
 #include <QString>
 
-class Country
+struct Country
 {
-public:
     QString name;
     QString name_en;
     int id;

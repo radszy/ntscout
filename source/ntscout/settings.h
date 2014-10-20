@@ -16,6 +16,8 @@
 #ifndef SETTINGS_H
 #define SETTINGS_H
 
+#include <QtGlobal>
+
 enum Metrics {
     Centimeters,
     Meters,
@@ -26,9 +28,13 @@ enum Metrics {
 class Settings
 {
 public:
-    static int tasks;
-    static int metrics;
+    static bool read();
+    static bool save();
+
+    static quint8 tasks;
+    static quint8 metrics;
     static bool searchBots;
+    static bool checkUpdates;
 };
 
 #endif // SETTINGS_H
