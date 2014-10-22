@@ -16,7 +16,7 @@
 #ifndef SETTINGS_H
 #define SETTINGS_H
 
-#include <QtGlobal>
+#include <QPair>
 
 enum Metrics {
     Centimeters,
@@ -34,7 +34,13 @@ public:
     static quint8 tasks;
     static quint8 metrics;
     static bool searchBots;
-    static bool checkUpdates;
+
+    static QPair <quint8, quint8> age;
+    static QPair <quint8, quint8> pot;
+    static QPair <quint32, quint32> sal;
+    static QPair <quint32, quint32> dmi;
+
 };
 
 #endif // SETTINGS_H
+

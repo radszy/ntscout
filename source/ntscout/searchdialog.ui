@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>434</width>
-    <height>394</height>
+    <width>422</width>
+    <height>439</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -244,7 +244,7 @@
              <number>99999999</number>
             </property>
             <property name="value">
-             <number>100000</number>
+             <number>99999999</number>
             </property>
            </widget>
           </item>
@@ -370,7 +370,7 @@
              <number>11</number>
             </property>
             <property name="value">
-             <number>6</number>
+             <number>0</number>
             </property>
            </widget>
           </item>
@@ -394,10 +394,37 @@
              <bool>false</bool>
             </property>
             <property name="minimum">
-             <number>11</number>
+             <number>0</number>
             </property>
             <property name="maximum">
              <number>11</number>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="2">
+           <widget class="QSpinBox" name="salMax">
+            <property name="font">
+             <font>
+              <pointsize>10</pointsize>
+             </font>
+            </property>
+            <property name="buttonSymbols">
+             <enum>QAbstractSpinBox::UpDownArrows</enum>
+            </property>
+            <property name="specialValueText">
+             <string/>
+            </property>
+            <property name="accelerated">
+             <bool>true</bool>
+            </property>
+            <property name="showGroupSeparator" stdset="0">
+             <bool>false</bool>
+            </property>
+            <property name="maximum">
+             <number>999999</number>
+            </property>
+            <property name="value">
+             <number>999999</number>
             </property>
            </widget>
           </item>
@@ -437,33 +464,6 @@
             </property>
            </widget>
           </item>
-          <item row="3" column="2">
-           <widget class="QSpinBox" name="salMax">
-            <property name="font">
-             <font>
-              <pointsize>10</pointsize>
-             </font>
-            </property>
-            <property name="buttonSymbols">
-             <enum>QAbstractSpinBox::UpDownArrows</enum>
-            </property>
-            <property name="specialValueText">
-             <string/>
-            </property>
-            <property name="accelerated">
-             <bool>true</bool>
-            </property>
-            <property name="showGroupSeparator" stdset="0">
-             <bool>false</bool>
-            </property>
-            <property name="maximum">
-             <number>999999</number>
-            </property>
-            <property name="value">
-             <number>10000</number>
-            </property>
-           </widget>
-          </item>
           <item row="0" column="1">
            <widget class="QLabel" name="label_5">
             <property name="font">
@@ -491,6 +491,26 @@
             </property>
             <property name="alignment">
              <set>Qt::AlignCenter</set>
+            </property>
+           </widget>
+          </item>
+          <item row="6" column="0">
+           <widget class="QWidget" name="widget" native="true">
+            <property name="minimumSize">
+             <size>
+              <width>0</width>
+              <height>15</height>
+             </size>
+            </property>
+           </widget>
+          </item>
+          <item row="7" column="0" colspan="3">
+           <widget class="QCheckBox" name="saveAsDefault">
+            <property name="layoutDirection">
+             <enum>Qt::LeftToRight</enum>
+            </property>
+            <property name="text">
+             <string>Save as default</string>
             </property>
            </widget>
           </item>
@@ -549,3 +569,4 @@
   </connection>
  </connections>
 </ui>
+

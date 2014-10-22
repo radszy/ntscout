@@ -57,7 +57,7 @@ public slots:
     void settingsTriggered();
     void reportTriggered();
     void aboutTriggered();
-    void enableNext(bool enabled);
+    void enableNextButton(bool enabled);
 
 private:
     Ui::MainWindow *ui;

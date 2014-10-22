@@ -47,11 +47,13 @@ public:
 public slots:
     void sortBy(int index);
     void searchCountry(QString text);
-    void selectAll();
+    void selectAllCountry();
+    void selectAllNationality();
     void unselectAll();
     void showSelected();
     void countrySelected(CountryWidget* widget);
     void countryUnselected(CountryWidget* widget);
+    void updateCountryWidgets();
 
 signals:
     void canProceed(bool);
@@ -66,3 +68,4 @@ private:
 };
 
 #endif // COUNTRYGRIDWIDGET_H
+

@@ -16,6 +16,7 @@
 #include "countrywidget.h"
 #include "ui_countrywidget.h"
 #include "searchdialog.h"
+#include "settings.h"
 
 #include <QMouseEvent>
 #include <QDebug>
@@ -36,15 +37,24 @@ CountryWidget::CountryWidget(QWidget *parent) :
     searchValues.countryid = id;
 
     searchValues.nationalitySet = false;
-    searchValues.age = {18, 99};
-    searchValues.potential = {6, 11};
-    searchValues.salary = {0, 10000};
-    searchValues.dmi = {0, 100000};
+    loadNationalityValues();
+
+    if (searchDialog == nullptr) {
+        searchDialog = new SearchDialog;
+    }
 }
 
 CountryWidget::~CountryWidget()
 {
     delete ui;
+}
+
+void CountryWidget::loadNationalityValues()
+{
+    searchValues.age = Settings::age;
+    searchValues.potential = Settings::pot;
+    searchValues.salary = Settings::sal;
+    searchValues.dmi = Settings::dmi;
 }
 
 void CountryWidget::setFlag(const QPixmap& pixmap)
@@ -98,6 +108,12 @@ void CountryWidget::setInitialToolTip(const QString& tooltip)
 void CountryWidget::selectAsCountry()
 {
     searchValues.countrySet = true;
+    updateFrame();
+}
+
+void CountryWidget::selectAsNationality()
+{
+    searchValues.nationalitySet = true;
     updateFrame();
 }
 
@@ -163,10 +179,6 @@ void CountryWidget::updateFrame()
 
 void CountryWidget::mousePressEvent(QMouseEvent* event)
 {
-    if (searchDialog == nullptr) {
-        searchDialog = new SearchDialog;
-    }
-
     searchDialog->setWindowTitle(nameEn);
     searchDialog->setValues(&searchValues);
 

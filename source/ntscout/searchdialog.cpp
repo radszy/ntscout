@@ -17,6 +17,7 @@
 #include "ui_searchdialog.h"
 
 #include "searchvalues.h"
+#include "settings.h"
 
 SearchDialog::SearchDialog(QWidget *parent) :
     QDialog(parent),
@@ -45,6 +46,18 @@ void SearchDialog::updateValues()
     searchValues->salary = {ui->salMin->value(), ui->salMax->value()};
     searchValues->potential = {ui->potMin->value(), ui->potMax->value()};
     searchValues->dmi = {ui->dmiMin->value(), ui->dmiMax->value()};
+
+    if (ui->saveAsDefault->isChecked()) {
+        Settings::age = {(quint8)ui->ageMin->value(),
+                         (quint8)ui->ageMax->value()};
+        Settings::pot = {(quint8)ui->potMin->value(),
+                         (quint8)ui->potMax->value()};
+        Settings::sal = {(quint32)ui->salMin->value(),
+                         (quint32)ui->salMax->value()};
+        Settings::dmi = {(quint32)ui->dmiMin->value(),
+                         (quint32)ui->dmiMax->value()};
+        emit updateDefaultValues();
+    }
 }
 
 void SearchDialog::setValues(SearchValues* values)
@@ -68,12 +81,16 @@ void SearchDialog::setValues(SearchValues* values)
 
     ui->countryGroup->setChecked(values->countrySet);
     ui->nationalityGroup->setChecked(values->nationalitySet);
+
     ui->ageMin->setValue(values->age.first);
     ui->ageMax->setValue(values->age.second);
-    ui->salMax->setValue(values->salary.first);
-    ui->salMax->setValue(values->salary.second);
     ui->potMin->setValue(values->potential.first);
     ui->potMax->setValue(values->potential.second);
+    ui->salMin->setValue(values->salary.first);
+    ui->salMax->setValue(values->salary.second);
     ui->dmiMin->setValue(values->dmi.first);
     ui->dmiMax->setValue(values->dmi.second);
+
+    ui->saveAsDefault->setChecked(false);
 }
+

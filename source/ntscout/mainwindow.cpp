@@ -15,7 +15,6 @@
 
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
-#include "ui_proceeddialog.h"
 
 #include "gridwidget.h"
 #include "loginwidget.h"
@@ -53,10 +52,8 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->stackedWidget->addWidget(progressWidget);
     ui->stackedWidget->addWidget(summaryWidget);
 
-    ui->actionUpdate->setDisabled(true);
-
     connect(gridWidget, SIGNAL(canProceed(bool)),
-            this, SLOT(enableNext(bool)));
+            this, SLOT(enableNextButton(bool)));
     connect(progressWidget, SIGNAL(finished(bool)),
             ui->nextButton, SLOT(setEnabled(bool)));
 
@@ -98,7 +95,7 @@ void MainWindow::proceedToCountryWidget()
         return;
     }
 
-    enableNext(false);
+    enableNextButton(false);
 
     CountryList clist;
     if (!Util::readCountry(clist)) {
@@ -139,8 +136,8 @@ void MainWindow::proceedToSummaryWidget()
 
 void MainWindow::goBackToCountryWidget()
 {
-    ui->backButton->setDisabled(true);
-    enableNext(false);
+    ui->backButton->setEnabled(true);
+    enableNextButton(false);
 
     gridWidget->reset();
     ui->stackedWidget->setCurrentWidget(gridWidget);
@@ -174,15 +171,35 @@ void MainWindow::backClicked()
             ui->nextButton->setEnabled(true);
             ui->backButton->setDisabled(true);
             break;
-        // enabled only in Progress
-        default:
+        case Country:
+            ui->stackedWidget->setCurrentWidget(summaryWidget);
+            ui->nextButton->setEnabled(true);
+            ui->backButton->setDisabled(true);
+            break;
+        case Login:
+        case Summary:
+            Q_UNREACHABLE();
             break;
     }
 }
 
 void MainWindow::updateTriggered()
 {
-    // call external program
+    qDebug() << "App path : " << qApp->applicationDirPath();
+    if (BBApi::getName().isEmpty()) {
+        QMessageBox::information(this,
+            "Error", "Please login first", QMessageBox::Ok);
+        return;
+    }
+
+    QString path = qApp->applicationDirPath() + "/Updater";
+    QStringList params;
+    params << "-u" << BBApi::getName()
+           << "-p" << BBApi::getPass()
+           << "-n" << "7.3";
+
+    QProcess::startDetached(path, params);
+    qApp->exit();
 }
 
 void MainWindow::settingsTriggered()
@@ -200,7 +217,7 @@ void MainWindow::aboutTriggered()
     QDesktopServices::openUrl(QUrl("http://www.buzzerbeater.com/community/forum/read.aspx?thread=218184&m=1"));
 }
 
-void MainWindow::enableNext(bool enabled)
+void MainWindow::enableNextButton(bool enabled)
 {
     ui->nextButton->setEnabled(enabled);
     ui->nextButton->setToolTip(
@@ -217,3 +234,4 @@ void MainWindow::closeEvent(QCloseEvent* event)
     Settings::save();
     QMainWindow::closeEvent(event);
 }
+

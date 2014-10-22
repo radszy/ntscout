@@ -96,7 +96,7 @@
         <string/>
        </property>
        <property name="icon">
-        <iconset resource="resource.qrc">
+        <iconset>
          <normaloff>:/icons/select</normaloff>:/icons/select</iconset>
        </property>
        <property name="iconSize">
@@ -121,7 +121,7 @@
         <string/>
        </property>
        <property name="icon">
-        <iconset resource="resource.qrc">
+        <iconset>
          <normaloff>:/icons/unselect</normaloff>:/icons/unselect</iconset>
        </property>
        <property name="iconSize">
@@ -149,7 +149,7 @@
         <string/>
        </property>
        <property name="icon">
-        <iconset resource="resource.qrc">
+        <iconset>
          <normaloff>:/icons/selected</normaloff>:/icons/selected</iconset>
        </property>
        <property name="iconSize">
@@ -204,9 +204,7 @@
    </item>
   </layout>
  </widget>
- <resources>
-  <include location="resource.qrc"/>
- </resources>
+ <resources/>
  <connections>
   <connection>
    <sender>sortBox</sender>
@@ -237,22 +235,6 @@
     <hint type="destinationlabel">
      <x>228</x>
      <y>3</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>selectAll</sender>
-   <signal>clicked()</signal>
-   <receiver>GridWidget</receiver>
-   <slot>selectAll()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>486</x>
-     <y>35</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>477</x>
-     <y>0</y>
     </hint>
    </hints>
   </connection>
@@ -292,8 +274,8 @@
  <slots>
   <slot>sortBy(int)</slot>
   <slot>searchCountry(QString)</slot>
-  <slot>selectAll()</slot>
   <slot>unselectAll()</slot>
   <slot>showSelected()</slot>
  </slots>
 </ui>
+

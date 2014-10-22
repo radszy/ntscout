@@ -35,7 +35,6 @@ void SettingsDialog::apply()
     Settings::tasks = ui->tasks->value();
     Settings::metrics = ui->metrics->currentIndex();
     Settings::searchBots = ui->bots->isChecked();
-    Settings::checkUpdates = ui->updates->isChecked();
 }
 
 int SettingsDialog::exec()
@@ -43,7 +42,7 @@ int SettingsDialog::exec()
     ui->tasks->setValue(Settings::tasks);
     ui->metrics->setCurrentIndex(Settings::metrics);
     ui->bots->setChecked(Settings::searchBots);
-    ui->updates->setChecked(Settings::checkUpdates);
 
     return QDialog::exec();
 }
+

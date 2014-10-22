@@ -17,16 +17,27 @@
 #include "ui_gridwidget.h"
 
 #include "countrywidget.h"
+#include "searchdialog.h"
 
 #include <qmath.h>
 
 #include <QDebug>
+
+#include <QMenu>
+#include <QAction>
 
 GridWidget::GridWidget(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::GridWidget)
 {
     ui->setupUi(this);
+
+    QMenu* menu = new QMenu(ui->selectAll);
+    QAction* actCountry = menu->addAction("Country");
+    QAction* actNationality = menu->addAction("Nationality");
+    ui->selectAll->setMenu(menu);
+    connect(actCountry, SIGNAL(triggered()), this, SLOT(selectAllCountry()));
+    connect(actNationality, SIGNAL(triggered()), this, SLOT(selectAllNationality()));
 }
 
 GridWidget::~GridWidget()
@@ -72,6 +83,13 @@ void GridWidget::setCountryList(CountryList clist)
                 this, SLOT(countrySelected(CountryWidget*)));
         connect(widget, SIGNAL(unselected(CountryWidget*)),
                 this, SLOT(countryUnselected(CountryWidget*)));
+    }
+
+    if (!originalWidgets.isEmpty()) {
+        SearchDialog* dialog = originalWidgets
+            .front()->getSearchDialog();
+        connect(dialog, SIGNAL(updateDefaultValues()),
+                this, SLOT(updateCountryWidgets()));
     }
 }
 
@@ -200,10 +218,17 @@ void GridWidget::searchCountry(QString text)
     updateGrid();
 }
 
-void GridWidget::selectAll()
+void GridWidget::selectAllCountry()
 {
     for (int i = 0; i < countryWidgets.count(); ++i) {
         countryWidgets.at(i)->selectAsCountry();
+    }
+}
+
+void GridWidget::selectAllNationality()
+{
+    for (int i = 0; i < countryWidgets.count(); ++i) {
+        countryWidgets.at(i)->selectAsNationality();
     }
 }
 
@@ -211,6 +236,7 @@ void GridWidget::unselectAll()
 {
     for (int i = 0; i < countryWidgets.count(); ++i) {
         countryWidgets.at(i)->unselect();
+        countryWidgets.at(i)->loadNationalityValues();
     }
 }
 
@@ -255,3 +281,13 @@ void GridWidget::countryUnselected(CountryWidget* widget)
     }
     checkIfCanProceed();
 }
+
+void GridWidget::updateCountryWidgets()
+{
+    for (CountryWidget* country : originalWidgets) {
+        if (!country->isSelected()) {
+            country->loadNationalityValues();
+        }
+    }
+}
+

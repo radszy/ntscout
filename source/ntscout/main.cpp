@@ -19,7 +19,7 @@
 #include <QApplication>
 #include <QCommandLineParser>
 #include <QFile>
-#include <QDebug>
+#include <QThread>
 
 int main(int argc, char *argv[])
 {
@@ -36,6 +36,7 @@ int main(int argc, char *argv[])
     parser.parse(args);
     bool isPostUpdate = parser.isSet("post-update");
     if (isPostUpdate) {
+        QThread::msleep(100);
         QFile oldu("Updater"), newu("Updater-new");
         if (oldu.exists() && newu.exists()) {
             oldu.remove();
@@ -44,14 +45,10 @@ int main(int argc, char *argv[])
     }
 
     Settings::read();
-    if (Settings::checkUpdates && !isPostUpdate) {
-        qDebug() << "checking for update";
-        // call updater
-        return 0;
-    }
 
     MainWindow w;
     w.show();
 
     return a.exec();
 }
+

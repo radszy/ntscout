@@ -35,6 +35,7 @@ public:
     explicit CountryWidget(QWidget *parent = 0);
     ~CountryWidget();
 
+    void loadNationalityValues();
     void setFlag(const QPixmap& pixmap);
     void setName(const QString& name);
     void setDivisions(int divisions);
@@ -50,12 +51,17 @@ public:
     SearchValues* getSearchValues() {return &searchValues;}
 
     void selectAsCountry();
+    void selectAsNationality();
     void unselect();
     bool isSelected();
     bool isCountrySelected();
     bool isNationalitySelected();
 
     void mousePressEvent(QMouseEvent* event);
+
+    static SearchDialog* getSearchDialog() {
+        return searchDialog;
+    }
 
 signals:
     void selected(CountryWidget*);
@@ -76,3 +82,4 @@ private:
 };
 
 #endif // COUNTRYWIDGET_H
+

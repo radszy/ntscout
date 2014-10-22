@@ -35,6 +35,9 @@ public:
     void updateValues();
     void setValues(SearchValues* values);
 
+signals:
+    void updateDefaultValues();
+
 private:
     SearchValues* searchValues;
     Ui::SearchDialog *ui;

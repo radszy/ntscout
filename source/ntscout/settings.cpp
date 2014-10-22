@@ -24,7 +24,10 @@
 quint8 Settings::tasks = QThread::idealThreadCount();
 quint8 Settings::metrics = 0;
 bool Settings::searchBots = false;
-bool Settings::checkUpdates = false;
+QPair <quint8, quint8> Settings::age = {18, 99};
+QPair <quint8, quint8> Settings::pot = {0, 11};
+QPair <quint32, quint32> Settings::sal = {0, 999999};
+QPair <quint32, quint32> Settings::dmi = {0, 99999999};
 
 bool Settings::read()
 {
@@ -37,14 +40,17 @@ bool Settings::read()
     stream >> tasks;
     stream >> metrics;
     stream >> searchBots;
-    stream >> checkUpdates;
+    stream >> age;
+    stream >> pot;
+    stream >> sal;
+    stream >> dmi;
     return true;
 }
 
 bool Settings::save()
 {
     QFile file("data/settings.dat");
-    if (!file.open(QIODevice::WriteOnly)) {
+    if (!file.open(QIODevice::WriteOnly | QIODevice::Truncate)) {
         return false;
     }
 
@@ -52,6 +58,10 @@ bool Settings::save()
     stream << tasks;
     stream << metrics;
     stream << searchBots;
-    stream << checkUpdates;
+    stream << age;
+    stream << pot;
+    stream << sal;
+    stream << dmi;
     return true;
 }
+

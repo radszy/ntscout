@@ -267,7 +267,8 @@ void ProgressWidget::requestDone()
         case Teams:
             progressTeams();
             break;
-        default:
+        case Players:
+            Q_UNREACHABLE();
             break;
     }
 }
@@ -293,3 +294,4 @@ void ProgressWidget::workerFinished(PlayerList playerList)
         filterPlayers();
     }
 }
+

@@ -47,6 +47,9 @@ public:
 
     Network* getNetwork() {return manager;}
 
+    static QString getName() {return name;}
+    static QString getPass() {return pass;}
+
 private:
     Network* manager;
 
@@ -55,3 +58,4 @@ private:
 };
 
 #endif // BBAPI_H
+
