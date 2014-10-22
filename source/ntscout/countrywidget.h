@@ -36,6 +36,7 @@ public:
     ~CountryWidget();
 
     void loadNationalityValues();
+    void loadCountryValues();
     void setFlag(const QPixmap& pixmap);
     void setName(const QString& name);
     void setDivisions(int divisions);

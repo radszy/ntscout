@@ -237,6 +237,7 @@ void GridWidget::unselectAll()
     for (int i = 0; i < countryWidgets.count(); ++i) {
         countryWidgets.at(i)->unselect();
         countryWidgets.at(i)->loadNationalityValues();
+        countryWidgets.at(i)->loadCountryValues();
     }
 }
 
@@ -287,6 +288,7 @@ void GridWidget::updateCountryWidgets()
     for (CountryWidget* country : originalWidgets) {
         if (!country->isSelected()) {
             country->loadNationalityValues();
+            country->loadCountryValues();
         }
     }
 }

@@ -28,6 +28,8 @@ QPair <quint8, quint8> Settings::age = {18, 99};
 QPair <quint8, quint8> Settings::pot = {0, 11};
 QPair <quint32, quint32> Settings::sal = {0, 999999};
 QPair <quint32, quint32> Settings::dmi = {0, 99999999};
+bool Settings::checkedDiv[6] = {true, true, true,
+                                true, true, true};
 
 bool Settings::read()
 {
@@ -44,6 +46,9 @@ bool Settings::read()
     stream >> pot;
     stream >> sal;
     stream >> dmi;
+    for (int i = 0; i < 6; ++i) {
+        stream >> checkedDiv[i];
+    }
     return true;
 }
 
@@ -62,6 +67,9 @@ bool Settings::save()
     stream << pot;
     stream << sal;
     stream << dmi;
+    for (int i = 0; i < 6; ++i) {
+        stream << checkedDiv[i];
+    }
     return true;
 }
 

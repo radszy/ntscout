@@ -19,6 +19,8 @@
 #include "searchvalues.h"
 #include "settings.h"
 
+#include <QDebug>
+
 SearchDialog::SearchDialog(QWidget *parent) :
     QDialog(parent),
     ui(new Ui::SearchDialog)
@@ -47,7 +49,23 @@ void SearchDialog::updateValues()
     searchValues->potential = {ui->potMin->value(), ui->potMax->value()};
     searchValues->dmi = {ui->dmiMin->value(), ui->dmiMax->value()};
 
-    if (ui->saveAsDefault->isChecked()) {
+    if (ui->saveDefaultCountry->isChecked()) {
+        Settings::checkedDiv[0] = ui->div1Check->isChecked() &&
+                                  !ui->div1Check->isHidden();
+        Settings::checkedDiv[1] = ui->div2Check->isChecked() &&
+                                  !ui->div2Check->isHidden();
+        Settings::checkedDiv[2] = ui->div3Check->isChecked() &&
+                                  !ui->div3Check->isHidden();
+        Settings::checkedDiv[3] = ui->div4Check->isChecked() &&
+                                  !ui->div4Check->isHidden();
+        Settings::checkedDiv[4] = ui->div5Check->isChecked() &&
+                                  !ui->div5Check->isHidden();
+        Settings::checkedDiv[5] = ui->div6Check->isChecked() &&
+                                  !ui->div6Check->isHidden();
+        emit updateDefaultValues();
+
+    }
+    if (ui->saveDefaultNationality->isChecked()) {
         Settings::age = {(quint8)ui->ageMin->value(),
                          (quint8)ui->ageMax->value()};
         Settings::pot = {(quint8)ui->potMin->value(),
@@ -91,6 +109,7 @@ void SearchDialog::setValues(SearchValues* values)
     ui->dmiMin->setValue(values->dmi.first);
     ui->dmiMax->setValue(values->dmi.second);
 
-    ui->saveAsDefault->setChecked(false);
+    ui->saveDefaultCountry->setChecked(false);
+    ui->saveDefaultNationality->setChecked(false);
 }
 

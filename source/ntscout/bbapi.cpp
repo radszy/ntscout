@@ -213,4 +213,3 @@ bool BBApi::roster(PlayerList& results, QList<int> team)
 
     return true;
 }
-

@@ -13,8 +13,8 @@
 //    You should have received a copy of the GNU General Public License
 //    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef COUNTRYGRIDWIDGET_H
-#define COUNTRYGRIDWIDGET_H
+#ifndef GRIDWIDGET_H
+#define GRIDWIDGET_H
 
 #include "country.h"
 
@@ -67,5 +67,5 @@ private:
     Ui::GridWidget *ui;
 };
 
-#endif // COUNTRYGRIDWIDGET_H
+#endif // GRIDWIDGET_H
 

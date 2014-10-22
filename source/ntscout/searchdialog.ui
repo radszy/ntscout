@@ -39,7 +39,7 @@
            <widget class="QCheckBox" name="div1Check">
             <property name="font">
              <font>
-              <pointsize>10</pointsize>
+              <pointsize>11</pointsize>
              </font>
             </property>
             <property name="layoutDirection">
@@ -57,7 +57,7 @@
            <widget class="QCheckBox" name="div2Check">
             <property name="font">
              <font>
-              <pointsize>10</pointsize>
+              <pointsize>11</pointsize>
              </font>
             </property>
             <property name="layoutDirection">
@@ -75,7 +75,7 @@
            <widget class="QCheckBox" name="div3Check">
             <property name="font">
              <font>
-              <pointsize>10</pointsize>
+              <pointsize>11</pointsize>
              </font>
             </property>
             <property name="layoutDirection">
@@ -93,7 +93,7 @@
            <widget class="QCheckBox" name="div4Check">
             <property name="font">
              <font>
-              <pointsize>10</pointsize>
+              <pointsize>11</pointsize>
              </font>
             </property>
             <property name="layoutDirection">
@@ -111,7 +111,7 @@
            <widget class="QCheckBox" name="div5Check">
             <property name="font">
              <font>
-              <pointsize>10</pointsize>
+              <pointsize>11</pointsize>
              </font>
             </property>
             <property name="layoutDirection">
@@ -129,7 +129,7 @@
            <widget class="QCheckBox" name="div6Check">
             <property name="font">
              <font>
-              <pointsize>10</pointsize>
+              <pointsize>11</pointsize>
              </font>
             </property>
             <property name="toolTip">
@@ -142,11 +142,11 @@
              <string>Div VI</string>
             </property>
             <property name="checked">
-             <bool>false</bool>
+             <bool>true</bool>
             </property>
            </widget>
           </item>
-          <item row="2" column="0">
+          <item row="4" column="0">
            <spacer name="horizontalSpacer">
             <property name="orientation">
              <enum>Qt::Horizontal</enum>
@@ -159,7 +159,7 @@
             </property>
            </spacer>
           </item>
-          <item row="2" column="1">
+          <item row="4" column="1">
            <spacer name="horizontalSpacer_2">
             <property name="orientation">
              <enum>Qt::Horizontal</enum>
@@ -172,7 +172,7 @@
             </property>
            </spacer>
           </item>
-          <item row="2" column="2">
+          <item row="4" column="2">
            <spacer name="horizontalSpacer_3">
             <property name="orientation">
              <enum>Qt::Horizontal</enum>
@@ -184,6 +184,28 @@
              </size>
             </property>
            </spacer>
+          </item>
+          <item row="3" column="0" colspan="3">
+           <widget class="QCheckBox" name="saveDefaultCountry">
+            <property name="font">
+             <font>
+              <pointsize>11</pointsize>
+             </font>
+            </property>
+            <property name="text">
+             <string>Save as default</string>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="0">
+           <widget class="QWidget" name="widget_2" native="true">
+            <property name="minimumSize">
+             <size>
+              <width>0</width>
+              <height>15</height>
+             </size>
+            </property>
+           </widget>
           </item>
          </layout>
         </item>
@@ -505,7 +527,12 @@
            </widget>
           </item>
           <item row="7" column="0" colspan="3">
-           <widget class="QCheckBox" name="saveAsDefault">
+           <widget class="QCheckBox" name="saveDefaultNationality">
+            <property name="font">
+             <font>
+              <pointsize>11</pointsize>
+             </font>
+            </property>
             <property name="layoutDirection">
              <enum>Qt::LeftToRight</enum>
             </property>
@@ -569,4 +596,3 @@
   </connection>
  </connections>
 </ui>
-

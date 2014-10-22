@@ -31,9 +31,7 @@ CountryWidget::CountryWidget(QWidget *parent) :
 
     searchValues.countrySet = false;
     searchValues.divCount = 6;
-    for (int i = 0; i < searchValues.divCount; ++i) {
-        searchValues.div[i] = true;
-    }
+    loadCountryValues();
     searchValues.countryid = id;
 
     searchValues.nationalitySet = false;
@@ -55,6 +53,13 @@ void CountryWidget::loadNationalityValues()
     searchValues.potential = Settings::pot;
     searchValues.salary = Settings::sal;
     searchValues.dmi = Settings::dmi;
+}
+
+void CountryWidget::loadCountryValues()
+{
+    for (int i = 0; i < searchValues.divCount; ++i) {
+        searchValues.div[i] = Settings::checkedDiv[i];
+    }
 }
 
 void CountryWidget::setFlag(const QPixmap& pixmap)

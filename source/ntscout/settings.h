@@ -40,6 +40,8 @@ public:
     static QPair <quint32, quint32> sal;
     static QPair <quint32, quint32> dmi;
 
+    static bool checkedDiv[6];
+
 };
 
 #endif // SETTINGS_H
