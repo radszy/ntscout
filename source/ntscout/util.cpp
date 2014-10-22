@@ -21,7 +21,7 @@
 
 bool Util::readCountry(CountryList& countryList)
 {
-    QFile file("data/country,dat");
+    QFile file("data/country.dat");
     if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
         return false;
     }
@@ -42,7 +42,7 @@ bool Util::readCountry(CountryList& countryList)
 
 bool Util::writeCountry(CountryList& countryList)
 {
-    QFile file("data/country,dat");
+    QFile file("data/country.dat");
     if (!file.open(QIODevice::WriteOnly | QIODevice::Text)) {
         return false;
     }
