@@ -110,15 +110,15 @@ void CountryWidget::setInitialToolTip(const QString& tooltip)
     setToolTip(nameEn);
 }
 
-void CountryWidget::selectAsCountry()
+void CountryWidget::selectAsCountry(bool select)
 {
-    searchValues.countrySet = true;
+    searchValues.countrySet = select;
     updateFrame();
 }
 
-void CountryWidget::selectAsNationality()
+void CountryWidget::selectAsNationality(bool select)
 {
-    searchValues.nationalitySet = true;
+    searchValues.nationalitySet = select;
     updateFrame();
 }
 
@@ -142,6 +142,17 @@ bool CountryWidget::isCountrySelected()
 bool CountryWidget::isNationalitySelected()
 {
     return searchValues.nationalitySet;
+}
+
+
+void CountryWidget::markFrame()
+{
+    setStyleSheet("#frame {border: 3px dashed yellow;}");
+}
+
+void CountryWidget::unmarkFrame()
+{
+    setStyleSheet("#frame {border: 1px solid grey;}");
 }
 
 void CountryWidget::updateFrame()

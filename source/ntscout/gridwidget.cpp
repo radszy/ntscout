@@ -32,12 +32,55 @@ GridWidget::GridWidget(QWidget *parent) :
 {
     ui->setupUi(this);
 
+    markedWidget = nullptr;
+
     QMenu* menu = new QMenu(ui->selectAll);
     QAction* actCountry = menu->addAction("Country");
     QAction* actNationality = menu->addAction("Nationality");
     ui->selectAll->setMenu(menu);
     connect(actCountry, SIGNAL(triggered()), this, SLOT(selectAllCountry()));
     connect(actNationality, SIGNAL(triggered()), this, SLOT(selectAllNationality()));
+
+    QAction* actFind = new QAction(ui->searchField);
+    actFind->setShortcut(Qt::CTRL + Qt::Key_F);
+    ui->searchField->addAction(actFind);
+    connect(actFind, SIGNAL(triggered()), ui->searchField, SLOT(setFocus()));
+
+    QAction* actGrid = new QAction(ui->scrollArea);
+    actGrid->setShortcut(Qt::CTRL + Qt::Key_G);
+    ui->scrollArea->addAction(actGrid);
+    connect(actGrid, SIGNAL(triggered()), ui->scrollArea, SLOT(setFocus()));
+
+    QAction* actRight = new QAction(this);
+    actRight->setShortcut(Qt::Key_Right);
+    addAction(actRight);
+    connect(actRight, SIGNAL(triggered()), this, SLOT(markRight()));
+
+    QAction* actLeft = new QAction(this);
+    actLeft->setShortcut(Qt::Key_Left);
+    addAction(actLeft);
+    connect(actLeft, SIGNAL(triggered()), this, SLOT(markLeft()));
+
+    QAction* actUp = new QAction(this);
+    actUp->setShortcut(Qt::Key_Up);
+    addAction(actUp);
+    connect(actUp, SIGNAL(triggered()), this, SLOT(markUp()));
+
+    QAction* actDown = new QAction(this);
+    actDown->setShortcut(Qt::Key_Down);
+    addAction(actDown);
+    connect(actDown, SIGNAL(triggered()), this, SLOT(markDown()));
+
+    QAction* actSelectCountry = new QAction(this);
+    actSelectCountry->setShortcut(Qt::Key_C);
+    addAction(actSelectCountry);
+    connect(actSelectCountry, SIGNAL(triggered()), this, SLOT(selectMarkedCountry()));
+
+    QAction* actSelectNationality = new QAction(this);
+    actSelectNationality->setShortcut(Qt::Key_N);
+    addAction(actSelectNationality);
+    connect(actSelectNationality, SIGNAL(triggered()), this, SLOT(selectMarkedNationality()));
+
 }
 
 GridWidget::~GridWidget()
@@ -291,5 +334,117 @@ void GridWidget::updateCountryWidgets()
             country->loadCountryValues();
         }
     }
+}
+
+void GridWidget::markRight()
+{
+    if (!ui->scrollArea->hasFocus() ||
+        countryWidgets.isEmpty()) {
+        return;
+    }
+
+    if (markedWidget != nullptr) {
+        markedWidget->unmarkFrame();
+        if (markedWidget == countryWidgets.last()) {
+            markedWidget = countryWidgets.front();
+        } else {
+            int index = countryWidgets.indexOf(markedWidget);
+            markedWidget = countryWidgets.at(index + 1);
+        }
+    } else {
+        markedWidget = countryWidgets.first();
+    }
+    markedWidget->markFrame();
+    ui->scrollArea->ensureWidgetVisible(markedWidget);
+}
+
+void GridWidget::markLeft()
+{
+    if (!ui->scrollArea->hasFocus() ||
+        countryWidgets.isEmpty()) {
+        return;
+    }
+
+    if (markedWidget != nullptr) {
+        markedWidget->unmarkFrame();
+        if (markedWidget == countryWidgets.first()) {
+            markedWidget = countryWidgets.last();
+        } else {
+            int index = countryWidgets.indexOf(markedWidget);
+            markedWidget = countryWidgets.at(index - 1);
+        }
+    } else {
+        markedWidget = countryWidgets.first();
+    }
+    markedWidget->markFrame();
+    ui->scrollArea->ensureWidgetVisible(markedWidget);
+}
+
+void GridWidget::markDown()
+{
+    if (!ui->scrollArea->hasFocus() ||
+        countryWidgets.isEmpty()) {
+        return;
+    }
+
+    if (markedWidget != nullptr) {
+        markedWidget->unmarkFrame();
+
+        int cols = ui->gridLayout->columnCount();
+        int index = countryWidgets.indexOf(markedWidget);
+
+        if (index + cols < countryWidgets.count()) {
+            markedWidget = countryWidgets.at(index + cols);
+        }
+    } else {
+        markedWidget = countryWidgets.first();
+    }
+    markedWidget->markFrame();
+    ui->scrollArea->ensureWidgetVisible(markedWidget);
+}
+
+void GridWidget::selectMarkedCountry()
+{
+    if (!ui->scrollArea->hasFocus() ||
+        markedWidget == nullptr) {
+        return;
+    }
+
+    bool select = !markedWidget->isCountrySelected();
+    markedWidget->selectAsCountry(select);
+}
+
+void GridWidget::selectMarkedNationality()
+{
+    if (!ui->scrollArea->hasFocus() ||
+        markedWidget == nullptr) {
+        return;
+    }
+
+    bool select = !markedWidget->isNationalitySelected();
+    markedWidget->selectAsNationality(select);
+}
+
+void GridWidget::markUp()
+{
+    if (!ui->scrollArea->hasFocus() ||
+        countryWidgets.isEmpty()) {
+        return;
+    }
+
+    if (markedWidget != nullptr) {
+        markedWidget->unmarkFrame();
+
+        int cols = ui->gridLayout->columnCount();
+        int index = countryWidgets.indexOf(markedWidget);
+
+        if (index >= cols) {
+            markedWidget = countryWidgets.at(index - cols);
+        }
+    } else {
+        markedWidget = countryWidgets.first();
+    }
+    markedWidget->markFrame();
+    ui->scrollArea->ensureWidgetVisible(markedWidget);
 }
 

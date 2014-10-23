@@ -96,7 +96,7 @@
         <string/>
        </property>
        <property name="icon">
-        <iconset>
+        <iconset resource="resource.qrc">
          <normaloff>:/icons/select</normaloff>:/icons/select</iconset>
        </property>
        <property name="iconSize">
@@ -121,7 +121,7 @@
         <string/>
        </property>
        <property name="icon">
-        <iconset>
+        <iconset resource="resource.qrc">
          <normaloff>:/icons/unselect</normaloff>:/icons/unselect</iconset>
        </property>
        <property name="iconSize">
@@ -149,7 +149,7 @@
         <string/>
        </property>
        <property name="icon">
-        <iconset>
+        <iconset resource="resource.qrc">
          <normaloff>:/icons/selected</normaloff>:/icons/selected</iconset>
        </property>
        <property name="iconSize">
@@ -204,7 +204,9 @@
    </item>
   </layout>
  </widget>
- <resources/>
+ <resources>
+  <include location="resource.qrc"/>
+ </resources>
  <connections>
   <connection>
    <sender>sortBox</sender>
@@ -278,4 +280,3 @@
   <slot>showSelected()</slot>
  </slots>
 </ui>
-

@@ -31,8 +31,8 @@
 #include <QMessageBox>
 #include <QDesktopWidget>
 #include <QDesktopServices>
-#include <QAction>
 #include <QProcess>
+#include <QUrl>
 #include <QDebug>
 
 MainWindow::MainWindow(QWidget *parent) :
@@ -56,11 +56,6 @@ MainWindow::MainWindow(QWidget *parent) :
             this, SLOT(enableNextButton(bool)));
     connect(progressWidget, SIGNAL(finished(bool)),
             ui->nextButton, SLOT(setEnabled(bool)));
-
-    QAction* act = new QAction(this);
-    act->setShortcut(Qt::Key_Return);
-    addAction(act);
-    connect(act, SIGNAL(triggered()), this, SLOT(nextClicked()));
 
     QDesktopWidget desktop;
     QRect screen = desktop.screenGeometry();

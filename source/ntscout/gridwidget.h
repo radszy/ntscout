@@ -19,8 +19,8 @@
 #include "country.h"
 
 #include <QWidget>
-#include <QResizeEvent>
 
+class QResizeEvent;
 struct SearchValues;
 class CountryWidget;
 
@@ -55,6 +55,13 @@ public slots:
     void countryUnselected(CountryWidget* widget);
     void updateCountryWidgets();
 
+    void markRight();
+    void markLeft();
+    void markUp();
+    void markDown();
+    void selectMarkedCountry();
+    void selectMarkedNationality();
+
 signals:
     void canProceed(bool);
 
@@ -63,6 +70,7 @@ private:
     QList<CountryWidget*> originalWidgets;
     QList<CountryWidget*> countryWidgets;
     QList<CountryWidget*> selectedWidgets;
+    CountryWidget* markedWidget;
 
     Ui::GridWidget *ui;
 };

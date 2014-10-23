@@ -51,12 +51,15 @@ public:
     int getUsers() const {return users;}
     SearchValues* getSearchValues() {return &searchValues;}
 
-    void selectAsCountry();
-    void selectAsNationality();
+    void selectAsCountry(bool select = true);
+    void selectAsNationality(bool select = true);
     void unselect();
     bool isSelected();
     bool isCountrySelected();
     bool isNationalitySelected();
+
+    void markFrame();
+    void unmarkFrame();
 
     void mousePressEvent(QMouseEvent* event);
 
