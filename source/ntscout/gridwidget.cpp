@@ -41,51 +41,29 @@ GridWidget::GridWidget(QWidget *parent) :
     connect(actCountry, SIGNAL(triggered()), this, SLOT(selectAllCountry()));
     connect(actNationality, SIGNAL(triggered()), this, SLOT(selectAllNationality()));
 
-    QAction* actFind = new QAction(ui->searchField);
-    actFind->setShortcut(Qt::CTRL + Qt::Key_F);
-    ui->searchField->addAction(actFind);
-    connect(actFind, SIGNAL(triggered()), ui->searchField, SLOT(setFocus()));
-
-    QAction* actGrid = new QAction(ui->scrollArea);
-    actGrid->setShortcut(Qt::CTRL + Qt::Key_G);
-    ui->scrollArea->addAction(actGrid);
-    connect(actGrid, SIGNAL(triggered()), ui->scrollArea, SLOT(setFocus()));
-
-    QAction* actRight = new QAction(this);
-    actRight->setShortcut(Qt::Key_Right);
-    addAction(actRight);
-    connect(actRight, SIGNAL(triggered()), this, SLOT(markRight()));
-
-    QAction* actLeft = new QAction(this);
-    actLeft->setShortcut(Qt::Key_Left);
-    addAction(actLeft);
-    connect(actLeft, SIGNAL(triggered()), this, SLOT(markLeft()));
-
-    QAction* actUp = new QAction(this);
-    actUp->setShortcut(Qt::Key_Up);
-    addAction(actUp);
-    connect(actUp, SIGNAL(triggered()), this, SLOT(markUp()));
-
-    QAction* actDown = new QAction(this);
-    actDown->setShortcut(Qt::Key_Down);
-    addAction(actDown);
-    connect(actDown, SIGNAL(triggered()), this, SLOT(markDown()));
-
-    QAction* actSelectCountry = new QAction(this);
-    actSelectCountry->setShortcut(Qt::Key_C);
-    addAction(actSelectCountry);
-    connect(actSelectCountry, SIGNAL(triggered()), this, SLOT(selectMarkedCountry()));
-
-    QAction* actSelectNationality = new QAction(this);
-    actSelectNationality->setShortcut(Qt::Key_N);
-    addAction(actSelectNationality);
-    connect(actSelectNationality, SIGNAL(triggered()), this, SLOT(selectMarkedNationality()));
-
+    createShortcut(ui->searchField, Qt::CTRL + Qt::Key_F, "setFocus()");
+    createShortcut(ui->scrollArea, Qt::CTRL + Qt::Key_G, "setFocus()");
+    createShortcut(this, Qt::Key_Right, "markRight()");
+    createShortcut(this, Qt::Key_Left, "markLeft()");
+    createShortcut(this, Qt::Key_Up, "markUp()");
+    createShortcut(this, Qt::Key_Down, "markDown()");
+    createShortcut(this, Qt::Key_C, "selectMarkedCountry()");
+    createShortcut(this, Qt::Key_N, "selectMarkedNationality()");
 }
 
 GridWidget::~GridWidget()
 {
     delete ui;
+}
+
+QAction* GridWidget::createShortcut(QWidget* widget,
+    QKeySequence sequence, QString func)
+{
+    QAction* act = new QAction(widget);
+    act->setShortcut(sequence);
+    widget->addAction(act);
+    connect(act, "2triggered()", widget, QString("1" + func).toLatin1());
+    return act;
 }
 
 void GridWidget::reset()

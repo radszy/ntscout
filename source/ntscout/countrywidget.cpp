@@ -147,12 +147,12 @@ bool CountryWidget::isNationalitySelected()
 
 void CountryWidget::markFrame()
 {
-    setStyleSheet("#frame {border: 3px dashed yellow;}");
+    setStyleSheet("#frame {border: 2px dotted rgb(59, 57, 54);}");
 }
 
 void CountryWidget::unmarkFrame()
 {
-    setStyleSheet("#frame {border: 1px solid grey;}");
+    setStyleSheet("#frame {border: 1px solid rgb(159, 157, 154);}");
 }
 
 void CountryWidget::updateFrame()

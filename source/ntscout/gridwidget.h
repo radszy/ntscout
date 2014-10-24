@@ -36,6 +36,8 @@ public:
     explicit GridWidget(QWidget *parent = 0);
     ~GridWidget();
 
+    QAction* createShortcut(QWidget* widget,
+        QKeySequence sequence, QString func);
     void reset();
     void updateGrid();
     void checkIfCanProceed();
