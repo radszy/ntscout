@@ -61,15 +61,18 @@ public:
     void markFrame();
     void unmarkFrame();
 
-    void mousePressEvent(QMouseEvent* event);
-
+    void showSearchDialog();
     static SearchDialog* getSearchDialog() {
         return searchDialog;
     }
 
+    void mousePressEvent(QMouseEvent* event);
+    void mouseMoveEvent(QMouseEvent* event);
+
 signals:
     void selected(CountryWidget*);
     void unselected(CountryWidget*);
+    void hovered(CountryWidget*);
 
 private:
     void updateFrame();

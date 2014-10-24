@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>422</width>
-    <height>439</height>
+    <height>482</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -560,6 +560,26 @@
    </item>
   </layout>
  </widget>
+ <tabstops>
+  <tabstop>countryGroup</tabstop>
+  <tabstop>div1Check</tabstop>
+  <tabstop>div2Check</tabstop>
+  <tabstop>div3Check</tabstop>
+  <tabstop>div4Check</tabstop>
+  <tabstop>div5Check</tabstop>
+  <tabstop>div6Check</tabstop>
+  <tabstop>saveDefaultCountry</tabstop>
+  <tabstop>nationalityGroup</tabstop>
+  <tabstop>ageMin</tabstop>
+  <tabstop>ageMax</tabstop>
+  <tabstop>potMin</tabstop>
+  <tabstop>potMax</tabstop>
+  <tabstop>salMin</tabstop>
+  <tabstop>salMax</tabstop>
+  <tabstop>dmiMin</tabstop>
+  <tabstop>dmiMax</tabstop>
+  <tabstop>saveDefaultNationality</tabstop>
+ </tabstops>
  <resources/>
  <connections>
   <connection>

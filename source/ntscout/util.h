@@ -18,11 +18,14 @@
 
 #include "country.h"
 
+#include <QPoint>
+
 class Util
 {
 public:
     static bool readCountry(CountryList& countryList);
     static bool writeCountry(CountryList& countryList);
+    static QPoint screenCenter(int width, int height);
 };
 
 #endif // UTIL_H

@@ -57,12 +57,14 @@ public slots:
     void countryUnselected(CountryWidget* widget);
     void updateCountryWidgets();
 
+    void setMarkedWidget(CountryWidget* widget);
     void markRight();
     void markLeft();
     void markUp();
     void markDown();
     void selectMarkedCountry();
     void selectMarkedNationality();
+    void showSearchDialog();
 
 signals:
     void canProceed(bool);

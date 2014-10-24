@@ -17,6 +17,7 @@
 #include "ui_countrywidget.h"
 #include "searchdialog.h"
 #include "settings.h"
+#include "util.h"
 
 #include <QMouseEvent>
 #include <QDebug>
@@ -39,6 +40,11 @@ CountryWidget::CountryWidget(QWidget *parent) :
 
     if (searchDialog == nullptr) {
         searchDialog = new SearchDialog;
+        int w = searchDialog->width();
+        int h = searchDialog->height();
+        QPoint point = Util::screenCenter(w, h);
+
+        searchDialog->setGeometry(point.x(), point.y(), w, h);
     }
 }
 
@@ -147,7 +153,7 @@ bool CountryWidget::isNationalitySelected()
 
 void CountryWidget::markFrame()
 {
-    setStyleSheet("#frame {border: 2px dotted rgb(59, 57, 54);}");
+    setStyleSheet("#frame {border: 2px dashed rgb(200, 0, 255);}");
 }
 
 void CountryWidget::unmarkFrame()
@@ -193,7 +199,7 @@ void CountryWidget::updateFrame()
     }
 }
 
-void CountryWidget::mousePressEvent(QMouseEvent* event)
+void CountryWidget::showSearchDialog()
 {
     searchDialog->setWindowTitle(nameEn);
     searchDialog->setValues(&searchValues);
@@ -203,6 +209,18 @@ void CountryWidget::mousePressEvent(QMouseEvent* event)
         searchDialog->updateValues();
         updateFrame();
     }
+}
+
+void CountryWidget::mousePressEvent(QMouseEvent* event)
+{
+    showSearchDialog();
 
     QWidget::mousePressEvent(event);
+}
+
+void CountryWidget::mouseMoveEvent(QMouseEvent* event)
+{
+    emit hovered(this);
+
+    QWidget::mouseMoveEvent(event);
 }

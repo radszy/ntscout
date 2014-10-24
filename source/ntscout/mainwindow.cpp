@@ -29,7 +29,6 @@
 #include "util.h"
 
 #include <QMessageBox>
-#include <QDesktopWidget>
 #include <QDesktopServices>
 #include <QProcess>
 #include <QUrl>
@@ -57,13 +56,13 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(progressWidget, SIGNAL(finished(bool)),
             ui->nextButton, SLOT(setEnabled(bool)));
 
-    QDesktopWidget desktop;
-    QRect screen = desktop.screenGeometry();
+//    QDesktopWidget desktop;
+//    QRect screen = desktop.screenGeometry();
     int width = 640;
     int height = 480;
-    setGeometry(screen.width() / 2 - width / 2,
-                screen.height() / 2 - height / 2,
-                width, height);
+
+    QPoint point = Util::screenCenter(width, height);
+    setGeometry(point.x(), point.y(),width, height);
 }
 
 MainWindow::~MainWindow()

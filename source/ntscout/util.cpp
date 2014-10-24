@@ -18,6 +18,7 @@
 #include <QFile>
 #include <QTextStream>
 #include <QString>
+#include <QDesktopWidget>
 
 bool Util::readCountry(CountryList& countryList)
 {
@@ -55,4 +56,12 @@ bool Util::writeCountry(CountryList& countryList)
             << country.users << "\n";
     }
     return true;
+}
+
+QPoint Util::screenCenter(int width, int height)
+{
+    QDesktopWidget desktop;
+    QRect screen = desktop.screenGeometry();
+    return QPoint(screen.width() / 2 - width / 2,
+                  screen.height() / 2 - height / 2);
 }
