@@ -41,6 +41,8 @@ public:
     void reset();
     void updateGrid();
     void checkIfCanProceed();
+    void clearMarkedWidget();
+
     void setCountryList(CountryList clist);
     QList<SearchValues*> getSearchValues();
 

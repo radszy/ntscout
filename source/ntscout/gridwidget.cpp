@@ -47,7 +47,7 @@ GridWidget::GridWidget(QWidget *parent) :
     createShortcut(this, Qt::Key_Down, "markDown()");
     createShortcut(this, Qt::Key_C, "selectMarkedCountry()");
     createShortcut(this, Qt::Key_N, "selectMarkedNationality()");
-    createShortcut(this, Qt::Key_Space, "showSearchDialog()");
+    createShortcut(this, Qt::CTRL + Qt::Key_Space, "showSearchDialog()");
 }
 
 GridWidget::~GridWidget()
@@ -126,6 +126,16 @@ void GridWidget::checkIfCanProceed()
     emit canProceed(country && nationality);
 }
 
+void GridWidget::clearMarkedWidget()
+{
+    if (markedWidget != nullptr) {
+        if (!countryWidgets.contains(markedWidget)) {
+            markedWidget->unmarkFrame();
+            markedWidget = nullptr;
+        }
+    }
+}
+
 QList<SearchValues*> GridWidget::getSearchValues()
 {
     QList<SearchValues*> searchValues;
@@ -154,6 +164,8 @@ void GridWidget::updateGrid()
             ui->gridLayout->addWidget(countryWidgets.at(k), i, j);
         }
     }
+
+    clearMarkedWidget();
 }
 
 void GridWidget::resizeEvent(QResizeEvent* event)
@@ -234,13 +246,6 @@ void GridWidget::searchCountry(QString text)
                 originalWidgets.at(i)->setVisible(true);
                 countryWidgets.append(originalWidgets.at(i));
             }
-        }
-    }
-
-    if (markedWidget != nullptr) {
-        if (!countryWidgets.contains(markedWidget)) {
-            markedWidget->unmarkFrame();
-            markedWidget = nullptr;
         }
     }
 
@@ -423,7 +428,8 @@ void GridWidget::selectMarkedNationality()
 
 void GridWidget::showSearchDialog()
 {
-    if (markedWidget == nullptr) {
+    if (!ui->scrollArea->hasFocus() ||
+        markedWidget == nullptr) {
         return;
     }
 
