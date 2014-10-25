@@ -30,6 +30,8 @@ public:
     explicit LoginWidget(QWidget *parent = 0);
     ~LoginWidget();
 
+    void disableFields();
+    void enableFields();
     void setInformation(const QString information);
 
     QString getLogin();

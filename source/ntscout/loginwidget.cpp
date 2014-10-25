@@ -28,6 +28,18 @@ LoginWidget::~LoginWidget()
     delete ui;
 }
 
+void LoginWidget::disableFields()
+{
+    ui->usernameField->setDisabled(true);
+    ui->accessKeyField->setDisabled(true);
+}
+
+void LoginWidget::enableFields()
+{
+    ui->usernameField->setEnabled(true);
+    ui->accessKeyField->setEnabled(true);
+}
+
 void LoginWidget::setInformation(const QString information)
 {
     ui->informationLabel->setText(information);

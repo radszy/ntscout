@@ -68,6 +68,7 @@ MainWindow::~MainWindow()
 
 void MainWindow::proceedToCountryWidget()
 {
+    loginWidget->disableFields();
     loginWidget->setInformation("");
     ui->nextButton->setDisabled(true);
 
@@ -77,6 +78,7 @@ void MainWindow::proceedToCountryWidget()
     BBApi bb(user, pass);
     QString error = bb.login();
     if (!error.isEmpty()) {
+        loginWidget->enableFields();
         loginWidget->setInformation(
                     "<html><font color=\"red\">"
                     "Unable to login: " +
