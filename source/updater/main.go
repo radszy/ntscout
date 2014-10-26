@@ -24,7 +24,7 @@ var user *string = flag.String("u", "", "Username used to login.")
 var pass *string = flag.String("p", "", "Password used to login.")
 
 var pwd, _ = filepath.Abs(filepath.Dir(os.Args[0]))
-var tmp = os.TempDir() + "/NTScout"
+var tmp = os.TempDir() + "\\NTScout"
 
 var buf bytes.Buffer
 var logger = log.New(&buf, "logger: ", log.Lshortfile)
@@ -46,25 +46,27 @@ func main() {
 	logger.Println("Updater version:", APP_VERSION)
 	logger.Println("NTScout version:", *ntsver)
 
-	fmt.Print("Updating binary files ")
+	fmt.Print("Updating binary files... ")
 	if updateBinary() {
-		fmt.Println("[X]")
+		fmt.Println("ok.")
 	} else {
-		fmt.Println("[ ]")
+		fmt.Println()
 	}
 
-	fmt.Print("Updating country data ")
+	fmt.Print("Updating country data... ")
 	if updateCountry() {
-		fmt.Println("[X]")
+		fmt.Println("ok.")
 	} else {
-		fmt.Println("[ ]")
+		fmt.Println()
 	}
 
-	cmd := exec.Command(pwd+"/NTScout", "--post-update")
+	cmd := exec.Command(pwd+"/NTScout.exe", "--post-update")
 	err := cmd.Start()
 	if err != nil {
 		logger.Println(err)
 	}
+
+	os.Mkdir("logs", 0777)
 
 	timestr := strconv.FormatInt(time.Now().Unix(), 10)
 	file, err := os.Create("logs/updater-" + timestr)
@@ -76,16 +78,16 @@ func main() {
 }
 
 func updateCountry() bool {
-	if !login(user, pass) {
+	if !Login(user, pass) {
 		return false
 	}
 
-	countries := countries()
+	countries := Countries()
 	if countries == nil {
 		return false
 	}
 
-	names := namesEn()
+	names := TranslatedNames()
 	if names == nil {
 		return false
 	}
@@ -95,7 +97,7 @@ func updateCountry() bool {
 		countries.Country[i].NameEn = names[i]
 	}
 
-	file, err := os.OpenFile("country.dat", os.O_WRONLY|os.O_TRUNC, 0777)
+	file, err := os.OpenFile(pwd+"/data/country.dat", os.O_WRONLY|os.O_TRUNC, 0777)
 	if err != nil {
 		logger.Println(err)
 		return false
@@ -105,18 +107,23 @@ func updateCountry() bool {
 	for _, c := range countries.Country {
 		file.WriteString(c.ID + "," + c.Name + "," + c.NameEn + "," +
 			c.Divisions + "," + c.Users + "\n")
+
+		_, err := os.Stat("flags/flag_" + c.ID + ".gif")
+		if os.IsNotExist(err) {
+			DownloadFlags(c.ID, pwd)
+		}
 	}
 
 	return true
 }
 
 func updateBinary() bool {
-	url := releases()
+	url := Releases(*ntsver)
 	if url == "" {
 		return false
 	}
 
-	if !download(url, os.TempDir()) ||
+	if !DownloadRelease(url, os.TempDir()) ||
 		!unzip(tmp+".zip", os.TempDir()) ||
 		!removeOldFiles() || !moveNewFiles() {
 		return false
@@ -134,7 +141,9 @@ func removeOldFiles() bool {
 	}
 
 	for _, entry := range entries {
-		if entry.Name() == "Updater" {
+		// don't delete updater while it's running (error on Windows)
+		// results are just for the user so keep them
+		if entry.Name() == "Updater.exe" || entry.Name() == "results" {
 			continue
 		}
 		err = os.RemoveAll(pwd + "/" + entry.Name())
@@ -155,7 +164,7 @@ func moveNewFiles() bool {
 	}
 
 	for _, entry := range entries {
-		if entry.Name() == "Updater" {
+		if entry.Name() == "Updater.exe" {
 			err = os.Rename(tmp+"/"+entry.Name(), pwd+"/"+entry.Name()+"-new")
 			if err != nil {
 				logger.Println(err)

@@ -9,6 +9,7 @@ import (
 	"net/http"
 	"net/http/cookiejar"
 	"os"
+	"strconv"
 	"strings"
 )
 
@@ -18,7 +19,7 @@ var client = &http.Client{
 	Jar: cookieJar,
 }
 
-type Countries struct {
+type CountryData struct {
 	XMLName xml.Name  `xml:"bbapi"`
 	Country []Country `xml:"countries>country"`
 }
@@ -32,7 +33,7 @@ type Country struct {
 	NameEn    string
 }
 
-func login(username, password *string) bool {
+func Login(username, password *string) bool {
 	url := "http://bbapi.buzzerbeater.com/login.aspx?" +
 		"login=" + *username + "&code=" + *password
 
@@ -52,7 +53,7 @@ func login(username, password *string) bool {
 	return bytes.Contains(data, []byte("loggedIn"))
 }
 
-func countries() *Countries {
+func Countries() *CountryData {
 	url := "http://bbapi.buzzerbeater.com/countries.aspx"
 
 	res, err := client.Get(url)
@@ -63,7 +64,7 @@ func countries() *Countries {
 	defer res.Body.Close()
 
 	data, err := ioutil.ReadAll(res.Body)
-	countries := new(Countries)
+	countries := new(CountryData)
 	err = xml.Unmarshal(data, countries)
 	if err != nil {
 		logger.Println(err)
@@ -73,7 +74,7 @@ func countries() *Countries {
 	return countries
 }
 
-func namesEn() []string {
+func TranslatedNames() []string {
 	url := "https://raw.githubusercontent.com/" +
 		"rsxee/NTScout/master/names-en.txt"
 
@@ -92,7 +93,7 @@ func namesEn() []string {
 	return strings.Split(string(data), "\n")
 }
 
-func releases() string {
+func Releases(ver float64) string {
 	url := "https://api.github.com/repos/rsxee/NTScout/releases"
 	res, err := client.Get(url)
 	if err != nil {
@@ -125,28 +126,61 @@ func releases() string {
 		return ""
 	}
 
+	tag, err := strconv.ParseFloat(releases[0].Tag_name, 64)
+	if tag <= ver {
+		logger.Println("no new releases")
+		return ""
+	}
+
 	return releases[0].Assets[0].Browser_download_url
 }
 
-func download(url, dir string) bool {
+func DownloadRelease(url, dir string) bool {
 	res, err := client.Get(url)
+	defer res.Body.Close()
 	if err != nil {
 		logger.Println(err)
 		return false
 	}
-	defer res.Body.Close()
 
 	out, err := os.Create(dir + "/NTScout.zip")
+	defer out.Close()
 	if err != nil {
 		logger.Println(err)
 		return false
 	}
-	defer out.Close()
 
 	_, err = io.Copy(out, res.Body)
 	if err != nil {
 		logger.Println(err)
 		return false
+	}
+
+	return true
+}
+
+func DownloadFlags(id, dir string) bool {
+	url := "http://www.buzzerbeater.com/images/flags/flag_" + id + ".gif"
+	res, err := client.Get(url)
+	defer res.Body.Close()
+	if err != nil {
+		logger.Println(err)
+		return false
+	}
+
+	if res.StatusCode != 404 {
+		out, err := os.Create(dir + "/flags/flag_" + id + ".gif")
+		defer out.Close()
+		if err != nil {
+			logger.Println(err)
+			return false
+		}
+
+		_, err = io.Copy(out, res.Body)
+		if err != nil {
+			logger.Println(err)
+			return false
+		}
 	}
 
 	return true
