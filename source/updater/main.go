@@ -43,28 +43,24 @@ func main() {
 		return
 	}
 
-	logger.Println("Updater version:", APP_VERSION)
-	logger.Println("NTScout version:", *ntsver)
+	fmt.Println("Please wait while program is updating data, it may take a while.")
 
-	fmt.Print("Updating binary files... ")
-	if updateBinary() {
-		fmt.Println("ok.")
-	} else {
-		fmt.Println()
-	}
-
-	fmt.Print("Updating country data... ")
-	if updateCountry() {
-		fmt.Println("ok.")
-	} else {
-		fmt.Println()
-	}
+	updateBinary()
+	updateCountry()
 
 	cmd := exec.Command(pwd+"/NTScout.exe", "--post-update")
 	err := cmd.Start()
 	if err != nil {
 		logger.Println(err)
 	}
+
+	if buf.Len() <= 0 {
+		return
+	}
+
+	logger.Println("~~~~~~~~~~~~~~~~")
+	logger.Println("Updater version:", APP_VERSION)
+	logger.Println("NTScout version:", *ntsver)
 
 	os.Mkdir("logs", 0777)
 
@@ -78,6 +74,8 @@ func main() {
 }
 
 func updateCountry() bool {
+	fmt.Print("\nUpdating country data... ")
+
 	if !Login(user, pass) {
 		return false
 	}
@@ -118,6 +116,8 @@ func updateCountry() bool {
 }
 
 func updateBinary() bool {
+	fmt.Print("\nUpdating binary files... ")
+
 	url := Releases(*ntsver)
 	if url == "" {
 		return false
@@ -134,6 +134,8 @@ func updateBinary() bool {
 }
 
 func removeOldFiles() bool {
+	fmt.Print("\n\tRemoving files... ")
+
 	entries, err := ioutil.ReadDir(pwd)
 	if err != nil {
 		logger.Println(err)
@@ -153,10 +155,13 @@ func removeOldFiles() bool {
 		}
 	}
 
+	fmt.Print("Ok!")
 	return true
 }
 
 func moveNewFiles() bool {
+	fmt.Print("\n\tCopying files... ")
+
 	entries, err := ioutil.ReadDir(tmp)
 	if err != nil {
 		logger.Println(err)
@@ -179,10 +184,13 @@ func moveNewFiles() bool {
 		}
 	}
 
+	fmt.Print("Ok!")
 	return true
 }
 
 func clean() {
+	fmt.Print("\n\tCleaning up... ")
+
 	err := os.RemoveAll(tmp)
 	if err != nil {
 		logger.Println(err)
@@ -192,9 +200,13 @@ func clean() {
 	if err != nil {
 		logger.Println(err)
 	}
+
+	fmt.Print("Ok!")
 }
 
 func unzip(src, dest string) bool {
+	fmt.Print("\n\tUnpacking... ")
+
 	r, err := zip.OpenReader(src)
 	if err != nil {
 		logger.Println(err)
@@ -239,5 +251,7 @@ func unzip(src, dest string) bool {
 			}
 		}
 	}
+
+	fmt.Print("Ok!")
 	return true
 }

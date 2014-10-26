@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"encoding/xml"
+	"fmt"
 	"io"
 	"io/ioutil"
 	"net/http"
@@ -34,6 +35,8 @@ type Country struct {
 }
 
 func Login(username, password *string) bool {
+	fmt.Print("\n\tLogging in... ")
+
 	url := "http://bbapi.buzzerbeater.com/login.aspx?" +
 		"login=" + *username + "&code=" + *password
 
@@ -50,10 +53,14 @@ func Login(username, password *string) bool {
 		return false
 	}
 
+	fmt.Print("Ok!")
+
 	return bytes.Contains(data, []byte("loggedIn"))
 }
 
 func Countries() *CountryData {
+	fmt.Print("\n\tFetching country data... ")
+
 	url := "http://bbapi.buzzerbeater.com/countries.aspx"
 
 	res, err := client.Get(url)
@@ -71,10 +78,14 @@ func Countries() *CountryData {
 		return nil
 	}
 
+	fmt.Print("Ok!")
+
 	return countries
 }
 
 func TranslatedNames() []string {
+	fmt.Print("\n\tFetching translated names... ")
+
 	url := "https://raw.githubusercontent.com/" +
 		"rsxee/NTScout/master/names-en.txt"
 
@@ -90,10 +101,14 @@ func TranslatedNames() []string {
 		return nil
 	}
 
+	fmt.Print("Ok!")
+
 	return strings.Split(string(data), "\n")
 }
 
 func Releases(ver float64) string {
+	fmt.Print("\n\tLooking for new releases... ")
+
 	url := "https://api.github.com/repos/rsxee/NTScout/releases"
 	res, err := client.Get(url)
 	if err != nil {
@@ -122,20 +137,24 @@ func Releases(ver float64) string {
 	}
 
 	if len(releases) == 0 {
-		logger.Println("no releases found")
+		fmt.Print("\n\tNo releases found")
 		return ""
 	}
 
 	tag, err := strconv.ParseFloat(releases[0].Tag_name, 64)
 	if tag <= ver {
-		logger.Println("no new releases")
+		fmt.Print("\n\tNo new releases found")
 		return ""
 	}
+
+	fmt.Print("Ok!")
 
 	return releases[0].Assets[0].Browser_download_url
 }
 
 func DownloadRelease(url, dir string) bool {
+	fmt.Print("\n\tDownloading new release...")
+
 	res, err := client.Get(url)
 	defer res.Body.Close()
 	if err != nil {
@@ -156,10 +175,13 @@ func DownloadRelease(url, dir string) bool {
 		return false
 	}
 
+	fmt.Print("Ok!")
 	return true
 }
 
 func DownloadFlags(id, dir string) bool {
+	fmt.Printf("\n\tDownloading flag: %s...", id)
+
 	url := "http://www.buzzerbeater.com/images/flags/flag_" + id + ".gif"
 	res, err := client.Get(url)
 	defer res.Body.Close()
@@ -183,5 +205,6 @@ func DownloadFlags(id, dir string) bool {
 		}
 	}
 
+	fmt.Print("Ok!")
 	return true
 }
