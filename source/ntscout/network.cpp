@@ -52,7 +52,6 @@ QList<QByteArray> Network::get(const QList<QUrl> urls)
 
         QNetworkReply* reply = QNetworkAccessManager::get(request);
         connect(reply, SIGNAL(finished()), this, SLOT(onFinished()));
-//        connect(reply, SIGNAL(finished()), reply, SLOT(deleteLater()));
         replies.append(reply);
     }
 
@@ -63,6 +62,7 @@ QList<QByteArray> Network::get(const QList<QUrl> urls)
     for (int i = 0; i < replies.count(); ++i) {
         result.append(replies.at(i)->readAll());
     }
+    qDeleteAll(replies);
     return result;
 }
 
