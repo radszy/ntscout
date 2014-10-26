@@ -3,6 +3,10 @@ NTScout
 
 NTScout is a free software helper application for the online basketball manager game BuzzerBeater.
 
-General usage: https://github.com/rsxee/NTScout/wiki/Usage
+### General usage: 
 
-How to compile for your operating system: https://github.com/rsxee/NTScout/wiki/Compiling
+https://github.com/rsxee/NTScout/wiki/Usage
+
+### Compile for your operating system: 
+
+https://github.com/rsxee/NTScout/wiki/Compiling
