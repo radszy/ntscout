@@ -59,6 +59,8 @@ MainWindow::MainWindow(QWidget *parent) :
     int width = 640, height = 480;
     QPoint point = Util::screenCenter(width, height);
     setGeometry(point.x(), point.y(), width, height);
+
+    setWindowTitle("NTScout " + version);
 }
 
 MainWindow::~MainWindow()
@@ -188,7 +190,7 @@ void MainWindow::updateTriggered()
     QStringList params;
     params << "-u" << BBApi::getName()
            << "-p" << BBApi::getPass()
-           << "-n" << "7.3";
+           << "-n" << version;
 
     QProcess::startDetached(path, params);
     qApp->exit();

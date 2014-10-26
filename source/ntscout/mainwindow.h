@@ -67,6 +67,8 @@ private:
     ProgressWidget* progressWidget;
     SummaryWidget* summaryWidget;
     SettingsDialog* settingsDialog;
+
+    const QString version = "7.3";
 };
 
 #endif // MAINWINDOW_H
