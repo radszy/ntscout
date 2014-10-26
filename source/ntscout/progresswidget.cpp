@@ -171,6 +171,9 @@ void ProgressWidget::filterPlayers()
 
         for (int j = 0; j < searchValues.count(); ++j) {
             const SearchValues* sv = searchValues.at(j);
+            if (!sv->nationalitySet) {
+                continue;
+            }
             if (p->nationalityid == sv->countryid) {
                 if (p->age < sv->age.first || p->age > sv->age.second)
                     continue;

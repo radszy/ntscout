@@ -68,7 +68,7 @@ private:
     SummaryWidget* summaryWidget;
     SettingsDialog* settingsDialog;
 
-    const QString version = "7.3";
+    const QString version = "7.4";
 };
 
 #endif // MAINWINDOW_H

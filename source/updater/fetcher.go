@@ -106,7 +106,7 @@ func TranslatedNames() []string {
 	return strings.Split(string(data), "\n")
 }
 
-func Releases(ver float64) string {
+func Releases(ntsver string) string {
 	fmt.Print("\n\tLooking for new releases... ")
 
 	url := "https://api.github.com/repos/rsxee/NTScout/releases"
@@ -137,13 +137,12 @@ func Releases(ver float64) string {
 	}
 
 	if len(releases) == 0 {
-		fmt.Print("\n\tNo releases found")
+		fmt.Print("\n\tNo releases found!")
 		return ""
 	}
 
-	tag, err := strconv.ParseFloat(releases[0].Tag_name, 64)
-	if tag <= ver {
-		fmt.Print("\n\tNo new releases found")
+	if !IsNewRelease(ntsver, releases[0].Tag_name) {
+		fmt.Print("\n\tNo new releases found!")
 		return ""
 	}
 
@@ -152,8 +151,23 @@ func Releases(ver float64) string {
 	return releases[0].Assets[0].Browser_download_url
 }
 
+func Atoi(s string) int {
+	ret, _ := strconv.Atoi(s)
+	return ret
+}
+
+func IsNewRelease(nts, tag string) bool {
+	nts_split := strings.Split(nts, ".")
+	tag_split := strings.Split(tag, ".")
+	nts_major, nts_minor := Atoi(nts_split[0]), Atoi(nts_split[1])
+	tag_major, tag_minor := Atoi(tag_split[0]), Atoi(tag_split[1])
+
+	return tag_major > nts_major ||
+		(tag_major == nts_major && tag_minor > nts_minor)
+}
+
 func DownloadRelease(url, dir string) bool {
-	fmt.Print("\n\tDownloading new release...")
+	fmt.Print("\n\tDownloading new release... ")
 
 	res, err := client.Get(url)
 	defer res.Body.Close()
@@ -180,7 +194,7 @@ func DownloadRelease(url, dir string) bool {
 }
 
 func DownloadFlags(id, dir string) bool {
-	fmt.Printf("\n\tDownloading flag: %s...", id)
+	fmt.Printf("\n\tDownloading flag: %s... ", id)
 
 	url := "http://www.buzzerbeater.com/images/flags/flag_" + id + ".gif"
 	res, err := client.Get(url)

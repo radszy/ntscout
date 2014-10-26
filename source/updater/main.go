@@ -19,7 +19,7 @@ import (
 const APP_VERSION = "0.1"
 
 var appver *bool = flag.Bool("v", false, "Print the version number.")
-var ntsver *float64 = flag.Float64("n", 0.0, "Version of NTScout")
+var ntsver *string = flag.String("n", "0.0", "Version of NTScout")
 var user *string = flag.String("u", "", "Username used to login.")
 var pass *string = flag.String("p", "", "Password used to login.")
 
@@ -37,7 +37,7 @@ func main() {
 		return
 	}
 
-	if *user == "" || *pass == "" || *ntsver == 0.0 {
+	if *user == "" || *pass == "" || *ntsver == "0.0" {
 		fmt.Println("You need to specify username, password and version of NTScout.")
 		flag.PrintDefaults()
 		return
