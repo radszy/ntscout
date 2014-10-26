@@ -37,10 +37,10 @@ int main(int argc, char *argv[])
     bool isPostUpdate = parser.isSet("post-update");
     if (isPostUpdate) {
         QThread::msleep(100);
-        QFile oldu("Updater"), newu("Updater-new");
+        QFile oldu("Updater.exe"), newu("Updater.exe-new");
         if (oldu.exists() && newu.exists()) {
             oldu.remove();
-            newu.rename("Updater");
+            newu.rename("Updater.exe");
         }
     }
 
