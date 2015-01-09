@@ -139,7 +139,11 @@ void ProgressWidget::start(QList<SearchValues*>& values)
 
     int tasks = qMin((int)Settings::tasks, divisionList.count());
 
-    QList<int> div[tasks];
+    QList<QList<int>> div;
+    for (int i = 0; i < tasks; i++) {
+        div.append(QList<int>());
+    }
+    
     int count = (int)qFloor(divisionList.count() / tasks);
     for (int i = 0; i < tasks; i++) {
         QList <int> d = divisionList.mid(i * count, (i + 1 == tasks ? -1 : count));
