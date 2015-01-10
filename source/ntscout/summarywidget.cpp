@@ -56,14 +56,14 @@ void SummaryWidget::setResults(const PlayerList& playerList)
         return;
     }
 
-    QString date (QDateTime::currentDateTime().toString(Qt::ISODate));
-    date.replace('T', ' ');
-    date.replace(':', '-');
-
     QDir dir;
     if (!dir.exists("results")) {
         dir.mkdir("results");
     }
+    
+    QString date (QDateTime::currentDateTime().toString(Qt::ISODate));
+    date.replace('T', '_');
+    date.replace(':', '-');
 
     QFile file("results/" + date + ".csv");
     if (!file.open(QIODevice::WriteOnly | QIODevice::Text)) {
