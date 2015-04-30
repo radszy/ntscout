@@ -19,11 +19,14 @@
 #include <QTextStream>
 #include <QString>
 #include <QDesktopWidget>
+#include <QDir>
+#include <QDebug>
 
-bool Util::readCountry(CountryList& countryList)
+bool Util::readCountry(CountryList& countryList, QString& error)
 {
     QFile file("data/country.dat");
     if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
+        error = "couldn't open country.dat";
         return false;
     }
     QTextStream stream(&file);
@@ -38,6 +41,12 @@ bool Util::readCountry(CountryList& countryList)
         country.users = list.at(4).toInt();
         countryList.append(country);
     }
+
+    if (countryList.isEmpty() || countryList.first().id != 1) {
+        error = "data seems corrupted";
+        return false;
+    }
+
     return true;
 }
 
@@ -56,6 +65,34 @@ bool Util::writeCountry(CountryList& countryList)
             << country.users << "\n";
     }
     return true;
+}
+
+void Util::copyFolder(QString sourceFolder, QString destFolder)
+{
+    QDir sourceDir(sourceFolder);
+    if(!sourceDir.exists()) {
+        return;
+    }
+
+    QDir destDir;
+    if (!destDir.exists(destFolder)) {
+        destDir.mkdir(destFolder);
+    }
+
+    QStringList files = sourceDir.entryList(QDir::Files);
+    for (int i = 0; i< files.count(); i++) {
+        QString srcName = sourceFolder + QDir::separator() + files[i];
+        QString destName = destFolder + QDir::separator() + files[i];
+        QFile::copy(srcName, destName);
+    }
+
+    files.clear();
+    files = sourceDir.entryList(QDir::AllDirs | QDir::NoDotAndDotDot);
+    for (int i = 0; i< files.count(); i++) {
+        QString srcName = sourceFolder + QDir::separator() + files[i];
+        QString destName = destFolder + QDir::separator() + files[i];
+        copyFolder(srcName, destName);
+    }
 }
 
 QPoint Util::screenCenter(int width, int height)

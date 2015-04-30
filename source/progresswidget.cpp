@@ -95,7 +95,6 @@ void ProgressWidget::start(QList<SearchValues*>& values)
 
     LeagueDataList dataList;
     int divCount = 0;
-    int leagueCount = 0;
     for (int i = 0; i < values.count(); ++i) {
         if (values.at(i)->countrySet) {
             LeagueData data;
@@ -104,14 +103,6 @@ void ProgressWidget::start(QList<SearchValues*>& values)
                 if (values.at(i)->div[j]) {
                     data.divisions.append(j + 1);
                     divCount++;
-                    switch(j + 1) {
-                        case 1: leagueCount += 1; break;
-                        case 2: leagueCount += 4; break;
-                        case 3: leagueCount += 16; break;
-                        case 4: leagueCount += 64; break;
-                        case 5: leagueCount += 256; break;
-                        case 6: leagueCount += 512; break;
-                    }
                 }
             }
             dataList.append(data);

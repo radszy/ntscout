@@ -16,6 +16,8 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
+#include "country.h"
+
 #include <QMainWindow>
 
 namespace Ui {
@@ -60,6 +62,8 @@ public slots:
     void enableNextButton(bool enabled);
 
 private:
+    void readDataFile(CountryList& clist);
+
     Ui::MainWindow *ui;
 
     LoginWidget* loginWidget;

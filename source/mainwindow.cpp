@@ -23,7 +23,6 @@
 #include "settingsdialog.h"
 
 #include "bbapi.h"
-#include "country.h"
 #include "player.h"
 #include "settings.h"
 #include "util.h"
@@ -32,6 +31,11 @@
 #include <QDesktopServices>
 #include <QProcess>
 #include <QUrl>
+
+#include <QFileDialog>
+#include <QFile>
+#include <QDir>
+
 #include <QDebug>
 
 MainWindow::MainWindow(QWidget *parent) :
@@ -74,28 +78,29 @@ void MainWindow::proceedToCountryWidget()
     loginWidget->setInformation("");
     ui->nextButton->setDisabled(true);
 
+    CountryList clist;
+    readDataFile(clist);
+
     QString user = loginWidget->getLogin();
     QString pass = loginWidget->getPassword();
+    if (user.isEmpty() || pass.isEmpty()) {
+        loginWidget->enableFields();
+        loginWidget->setError("Enter your login data first");
+        ui->nextButton->setEnabled(true);
+        return;
+    }
 
     BBApi bb(user, pass);
     QString error = bb.login();
     if (!error.isEmpty()) {
         loginWidget->enableFields();
-        loginWidget->setInformation(
-                    "<html><font color=\"red\">"
-                    "Unable to login: " +
-                    error + "</color></html>");
+        loginWidget->setError("Unable to login: " + error);
         ui->nextButton->setEnabled(true);
         return;
     }
 
     enableNextButton(false);
 
-    CountryList clist;
-    if (!Util::readCountry(clist)) {
-        QMessageBox::critical(this, "Error", "Could not read country.dat!");
-        qApp->exit();
-    }
     gridWidget->setCountryList(clist);
     ui->stackedWidget->setCurrentWidget(gridWidget);
 }
@@ -217,6 +222,61 @@ void MainWindow::enableNextButton(bool enabled)
     ui->nextButton->setToolTip(
                 enabled ? "" : "You need to select at least "
                                "one country and one nationality");
+}
+
+void MainWindow::readDataFile(CountryList& clist)
+{
+    QString error;
+    if (!Util::readCountry(clist, error)) {
+        QMessageBox msgBox;
+        msgBox.setText("Cannot proceed - " + error);
+        msgBox.setInformativeText("Would you like to show it's location?");
+        msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
+        msgBox.setDefaultButton(QMessageBox::Yes);
+        int ret = msgBox.exec();
+        if (ret == QMessageBox::Yes) {
+            QString fileName = QFileDialog::getOpenFileName(
+                this, "Select File", QDir::currentPath(),
+                "Country data (*.dat)");
+
+            if (fileName.isNull() || fileName.isEmpty()) {
+                QMessageBox::information(this, "Cannot proceed",
+                                         "Quitting");
+                qApp->exit();
+            } else {
+                QDir dir;
+                if (!dir.exists("data")) {
+                    dir.mkdir("data");
+                }
+
+                QFile::copy(fileName, "data/country.dat");
+
+                if (!dir.exists("flags")) {
+                    QMessageBox msgBox;
+                    msgBox.setText("It appears there's no flag directory either");
+                    msgBox.setInformativeText("Would you like to show it's location too?");
+                    msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
+                    msgBox.setDefaultButton(QMessageBox::Yes);
+                    int ret = msgBox.exec();
+                    if (ret == QMessageBox::Yes) {
+                        QString dir = QFileDialog::getExistingDirectory(
+                            this, tr("Select Directory"),
+                            QDir::currentPath(),
+                            QFileDialog::ShowDirsOnly
+                            | QFileDialog::DontResolveSymlinks);
+
+                        if (!dir.isNull() && !dir.isEmpty()) {
+                            Util::copyFolder(dir, "flags");
+                        }
+                    }
+                }
+
+                readDataFile(clist);
+            }
+        } else {
+            qApp->exit();
+        }
+    }
 }
 
 void MainWindow::closeEvent(QCloseEvent* event)

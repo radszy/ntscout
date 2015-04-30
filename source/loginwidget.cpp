@@ -45,6 +45,13 @@ void LoginWidget::setInformation(const QString information)
     ui->informationLabel->setText(information);
 }
 
+void LoginWidget::setError(const QString error)
+{
+    setInformation(
+        "<html><font color=\"red\">" +
+        error + "</color></html>");
+}
+
 QString LoginWidget::getLogin()
 {
     return ui->usernameField->text();

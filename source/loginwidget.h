@@ -33,6 +33,7 @@ public:
     void disableFields();
     void enableFields();
     void setInformation(const QString information);
+    void setError(const QString error);
 
     QString getLogin();
     QString getPassword();

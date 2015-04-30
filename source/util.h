@@ -23,8 +23,9 @@
 class Util
 {
 public:
-    static bool readCountry(CountryList& countryList);
+    static bool readCountry(CountryList& countryList, QString& error);
     static bool writeCountry(CountryList& countryList);
+    static void copyFolder(QString sourceFolder, QString destFolder);
     static QPoint screenCenter(int width, int height);
 };
 
