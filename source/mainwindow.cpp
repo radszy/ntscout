@@ -1,4 +1,4 @@
-//Copyright (C) <2014>  <RSX>
+//Copyright (C) <2015>  <RSX>
 
 //    This program is free software: you can redistribute it and/or modify
 //    it under the terms of the GNU General Public License as published by
@@ -28,6 +28,7 @@
 #include "util.h"
 
 #include <QMessageBox>
+#include <QCloseEvent>
 #include <QDesktopServices>
 #include <QProcess>
 #include <QUrl>
@@ -129,6 +130,7 @@ void MainWindow::proceedToSummaryWidget()
     ui->nextButton->setEnabled(true);
 
     PlayerList players = progressWidget->getResults();
+    summaryWidget->reset();
     summaryWidget->setResults(players);
     ui->stackedWidget->setCurrentWidget(summaryWidget);
 }
@@ -186,8 +188,7 @@ void MainWindow::updateTriggered()
 {
     qDebug() << "App path : " << qApp->applicationDirPath();
     if (BBApi::getName().isEmpty()) {
-        QMessageBox::information(this,
-            "Error", "Please login first", QMessageBox::Ok);
+        QMessageBox::information(this, "Error", "Please login first.", QMessageBox::Ok);
         return;
     }
 
@@ -240,8 +241,7 @@ void MainWindow::readDataFile(CountryList& clist)
                 "Country data (*.dat)");
 
             if (fileName.isNull() || fileName.isEmpty()) {
-                QMessageBox::information(this, "Cannot proceed",
-                                         "Quitting");
+                QMessageBox::information(this, "Cannot proceed.", "Quitting.");
                 qApp->exit();
             } else {
                 QDir dir;
@@ -253,7 +253,7 @@ void MainWindow::readDataFile(CountryList& clist)
 
                 if (!dir.exists("flags")) {
                     QMessageBox msgBox;
-                    msgBox.setText("It appears there's no flag directory either");
+                    msgBox.setText("It appears there's no flag directory either.");
                     msgBox.setInformativeText("Would you like to show it's location too?");
                     msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
                     msgBox.setDefaultButton(QMessageBox::Yes);
@@ -282,6 +282,15 @@ void MainWindow::readDataFile(CountryList& clist)
 void MainWindow::closeEvent(QCloseEvent* event)
 {
     if (ui->stackedWidget->currentIndex() == Progress) {
+        QMessageBox msgBox;
+        msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
+        msgBox.setText("Program is still searching for players.");
+        msgBox.setInformativeText("Are you sure you want to exit?");
+        if (msgBox.exec() == QMessageBox::No) {
+            event->ignore();
+            return;
+        }
+
         progressWidget->stop();
     }
 

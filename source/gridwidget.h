@@ -1,4 +1,4 @@
-//Copyright (C) <2014>  <RSX>
+//Copyright (C) <2015>  <RSX>
 
 //    This program is free software: you can redistribute it and/or modify
 //    it under the terms of the GNU General Public License as published by
@@ -28,6 +28,13 @@ namespace Ui {
 class GridWidget;
 }
 
+enum SortOrder {
+    ID,
+    Name,
+    Divisions,
+    Users
+};
+
 class GridWidget : public QWidget
 {
     Q_OBJECT
@@ -36,14 +43,14 @@ public:
     explicit GridWidget(QWidget *parent = 0);
     ~GridWidget();
 
-    QAction* createShortcut(QWidget* widget,
-        QKeySequence sequence, QString func);
+    QAction* createShortcut(QWidget* widget, const QKeySequence& sequence,
+                            const QString& func);
     void reset();
     void updateGrid();
     void checkIfCanProceed();
     void clearMarkedWidget();
 
-    void setCountryList(CountryList clist);
+    void setCountryList(const CountryList& list);
     QList<SearchValues*> getSearchValues();
 
     void resizeEvent(QResizeEvent* event);

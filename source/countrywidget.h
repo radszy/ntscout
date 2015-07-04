@@ -1,4 +1,4 @@
-//Copyright (C) <2014>  <RSX>
+//Copyright (C) <2015>  <RSX>
 
 //    This program is free software: you can redistribute it and/or modify
 //    it under the terms of the GNU General Public License as published by
@@ -38,10 +38,10 @@ public:
     void loadNationalityValues();
     void loadCountryValues();
     void setFlag(const QPixmap& pixmap);
-    void setName(const QString& name);
-    void setDivisions(int divisions);
-    void setUsers(int users);
-    void setID(int id);
+    void setName(const QString& value);
+    void setDivisions(int value);
+    void setUsers(int value);
+    void setID(int value);
     void setInitialToolTip(const QString& tooltip);
 
     QString getName() const {return name;}
@@ -51,12 +51,12 @@ public:
     int getUsers() const {return users;}
     SearchValues* getSearchValues() {return &searchValues;}
 
-    void selectAsCountry(bool select = true);
-    void selectAsNationality(bool select = true);
+    void selectAsCountry(bool value = true);
+    void selectAsNationality(bool value = true);
     void unselect();
-    bool isSelected();
-    bool isCountrySelected();
-    bool isNationalitySelected();
+    bool isSelected() const;
+    bool isCountrySelected() const;
+    bool isNationalitySelected() const;
 
     void markFrame();
     void unmarkFrame();

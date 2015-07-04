@@ -1,4 +1,4 @@
-//Copyright (C) <2014>  <RSX>
+//Copyright (C) <2015>  <RSX>
 
 //    This program is free software: you can redistribute it and/or modify
 //    it under the terms of the GNU General Public License as published by

@@ -1,4 +1,4 @@
-//Copyright (C) <2014>  <RSX>
+//Copyright (C) <2015>  <RSX>
 
 //    This program is free software: you can redistribute it and/or modify
 //    it under the terms of the GNU General Public License as published by
@@ -40,16 +40,14 @@ void LoginWidget::enableFields()
     ui->accessKeyField->setEnabled(true);
 }
 
-void LoginWidget::setInformation(const QString information)
+void LoginWidget::setInformation(const QString& information)
 {
     ui->informationLabel->setText(information);
 }
 
-void LoginWidget::setError(const QString error)
+void LoginWidget::setError(const QString& error)
 {
-    setInformation(
-        "<html><font color=\"red\">" +
-        error + "</color></html>");
+    setInformation("<html><font color=\"red\">" + error + "</color></html>");
 }
 
 QString LoginWidget::getLogin()

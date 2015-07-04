@@ -1,4 +1,4 @@
-//Copyright (C) <2014>  <RSX>
+//Copyright (C) <2015>  <RSX>
 
 //    This program is free software: you can redistribute it and/or modify
 //    it under the terms of the GNU General Public License as published by
@@ -30,12 +30,11 @@ CountryWidget::CountryWidget(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    searchValues.countrySet = false;
-    searchValues.divCount = 6;
-    loadCountryValues();
     searchValues.countryid = id;
-
+    searchValues.divCount = DivisionCount;
+    searchValues.countrySet = false;
     searchValues.nationalitySet = false;
+    loadCountryValues();
     loadNationalityValues();
 
     if (searchDialog == nullptr) {
@@ -64,7 +63,7 @@ void CountryWidget::loadNationalityValues()
 void CountryWidget::loadCountryValues()
 {
     for (int i = 0; i < searchValues.divCount; ++i) {
-        searchValues.div[i] = Settings::checkedDiv[i];
+        searchValues.div[i] = Settings::checkedDivisions[i];
     }
 }
 
@@ -73,10 +72,11 @@ void CountryWidget::setFlag(const QPixmap& pixmap)
     ui->flagLabel->setPixmap(pixmap);
 }
 
-void CountryWidget::setName(const QString& name)
+void CountryWidget::setName(const QString& value)
 {
-    this->name = name;
-    QString shortened = name;
+    name = value;
+    QString shortened(value);
+
     int max = 15;
     if (name.count() > max) {
         shortened = name.mid(0, max - 3) + "...";
@@ -84,30 +84,30 @@ void CountryWidget::setName(const QString& name)
     ui->nameLabel->setText(shortened);
 }
 
-void CountryWidget::setDivisions(int divisions)
+void CountryWidget::setDivisions(int value)
 {
-    this->divisions = divisions;
+    divisions = value;
     ui->divisionsLabel->setText("Divisions: " + QString::number(divisions));
 
-    searchValues.divCount = divisions;
+    searchValues.divCount = value;
     for (int i = 0; i < searchValues.divCount; ++i) {
         searchValues.div[i] = true;
     }
-    for (int i = searchValues.divCount; i < 6; ++i) {
+    for (int i = searchValues.divCount; i < DivisionCount; ++i) {
         searchValues.div[i] = false;
     }
 }
 
-void CountryWidget::setUsers(int users)
+void CountryWidget::setUsers(int value)
 {
-    this->users = users;
-    ui->usersLabel->setText("Users: " + QString::number(users));
+    users = value;
+    ui->usersLabel->setText("Users: " + QString::number(value));
 }
 
-void CountryWidget::setID(int id)
+void CountryWidget::setID(int value)
 {
-    this->id = id;
-    searchValues.countryid = id;
+    id = value;
+    searchValues.countryid = value;
 }
 
 void CountryWidget::setInitialToolTip(const QString& tooltip)
@@ -116,15 +116,15 @@ void CountryWidget::setInitialToolTip(const QString& tooltip)
     setToolTip(nameEn);
 }
 
-void CountryWidget::selectAsCountry(bool select)
+void CountryWidget::selectAsCountry(bool value /* = true */)
 {
-    searchValues.countrySet = select;
+    searchValues.countrySet = value;
     updateFrame();
 }
 
-void CountryWidget::selectAsNationality(bool select)
+void CountryWidget::selectAsNationality(bool value /* = true */)
 {
-    searchValues.nationalitySet = select;
+    searchValues.nationalitySet = value;
     updateFrame();
 }
 
@@ -135,21 +135,20 @@ void CountryWidget::unselect()
     updateFrame();
 }
 
-bool CountryWidget::isSelected()
+bool CountryWidget::isSelected() const
 {
     return searchValues.countrySet || searchValues.nationalitySet;
 }
 
-bool CountryWidget::isCountrySelected()
+bool CountryWidget::isCountrySelected() const
 {
     return searchValues.countrySet;
 }
 
-bool CountryWidget::isNationalitySelected()
+bool CountryWidget::isNationalitySelected() const
 {
     return searchValues.nationalitySet;
 }
-
 
 void CountryWidget::markFrame()
 {
@@ -163,15 +162,15 @@ void CountryWidget::unmarkFrame()
 
 void CountryWidget::updateFrame()
 {
-    int set = searchValues.countrySet +
-              searchValues.nationalitySet;
+    int set = searchValues.countrySet + searchValues.nationalitySet;
+
     switch (set) {
-        case 0:
+        case 0: // nothing set
             ui->frame->setStyleSheet("");
             setToolTip(nameEn);
             emit unselected(this);
             break;
-        case 1:
+        case 1: // country or nationality set
             if (searchValues.countrySet) {
                 ui->frame->setStyleSheet(
                         "#frame { border-color: rgb(4, 171, 147);"
@@ -186,7 +185,7 @@ void CountryWidget::updateFrame()
             }
             emit selected(this);
             break;
-        case 2:
+        case 2: // country and nationality set
             ui->frame->setStyleSheet(
                     "#frame { border-color: rgb(236, 27, 36);"
                     "background-color: rgb(255, 85, 127);}");
@@ -204,8 +203,7 @@ void CountryWidget::showSearchDialog()
     searchDialog->setWindowTitle(nameEn);
     searchDialog->setValues(&searchValues);
 
-    int ret = searchDialog->exec();
-    if (ret == QDialog::Accepted) {
+    if (searchDialog->exec() == QDialog::Accepted) {
         searchDialog->updateValues();
         updateFrame();
     }

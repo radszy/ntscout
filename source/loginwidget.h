@@ -1,4 +1,4 @@
-//Copyright (C) <2014>  <RSX>
+//Copyright (C) <2015>  <RSX>
 
 //    This program is free software: you can redistribute it and/or modify
 //    it under the terms of the GNU General Public License as published by
@@ -32,8 +32,8 @@ public:
 
     void disableFields();
     void enableFields();
-    void setInformation(const QString information);
-    void setError(const QString error);
+    void setInformation(const QString& information);
+    void setError(const QString& error);
 
     QString getLogin();
     QString getPassword();

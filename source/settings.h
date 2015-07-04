@@ -1,4 +1,4 @@
-//Copyright (C) <2014>  <RSX>
+//Copyright (C) <2015>  <RSX>
 
 //    This program is free software: you can redistribute it and/or modify
 //    it under the terms of the GNU General Public License as published by
@@ -17,6 +17,8 @@
 #define SETTINGS_H
 
 #include <QPair>
+
+#define DivisionCount 6
 
 enum Metrics {
     Centimeters,
@@ -40,7 +42,7 @@ public:
     static QPair <quint32, quint32> sal;
     static QPair <quint32, quint32> dmi;
 
-    static bool checkedDiv[6];
+    static bool checkedDivisions[DivisionCount];
 
 };
 

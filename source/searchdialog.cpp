@@ -1,4 +1,4 @@
-//Copyright (C) <2014>  <RSX>
+//Copyright (C) <2015>  <RSX>
 
 //    This program is free software: you can redistribute it and/or modify
 //    it under the terms of the GNU General Public License as published by
@@ -44,36 +44,32 @@ void SearchDialog::updateValues()
     searchValues->div[5] = ui->div6Check->isChecked();
 
     searchValues->nationalitySet = ui->nationalityGroup->isChecked();
-    searchValues->age = {ui->ageMin->value(), ui->ageMax->value()};
-    searchValues->salary = {ui->salMin->value(), ui->salMax->value()};
-    searchValues->potential = {ui->potMin->value(), ui->potMax->value()};
-    searchValues->dmi = {ui->dmiMin->value(), ui->dmiMax->value()};
+    searchValues->age = qMakePair(ui->ageMin->value(), ui->ageMax->value());
+    searchValues->salary = qMakePair(ui->salMin->value(), ui->salMax->value());
+    searchValues->potential = qMakePair(ui->potMin->value(), ui->potMax->value());
+    searchValues->dmi = qMakePair(ui->dmiMin->value(), ui->dmiMax->value());
 
     if (ui->saveDefaultCountry->isChecked()) {
-        Settings::checkedDiv[0] = ui->div1Check->isChecked() &&
-                                  !ui->div1Check->isHidden();
-        Settings::checkedDiv[1] = ui->div2Check->isChecked() &&
-                                  !ui->div2Check->isHidden();
-        Settings::checkedDiv[2] = ui->div3Check->isChecked() &&
-                                  !ui->div3Check->isHidden();
-        Settings::checkedDiv[3] = ui->div4Check->isChecked() &&
-                                  !ui->div4Check->isHidden();
-        Settings::checkedDiv[4] = ui->div5Check->isChecked() &&
-                                  !ui->div5Check->isHidden();
-        Settings::checkedDiv[5] = ui->div6Check->isChecked() &&
-                                  !ui->div6Check->isHidden();
+        Settings::checkedDivisions[0] = ui->div1Check->isChecked() &&
+                                        !ui->div1Check->isHidden();
+        Settings::checkedDivisions[1] = ui->div2Check->isChecked() &&
+                                        !ui->div2Check->isHidden();
+        Settings::checkedDivisions[2] = ui->div3Check->isChecked() &&
+                                        !ui->div3Check->isHidden();
+        Settings::checkedDivisions[3] = ui->div4Check->isChecked() &&
+                                        !ui->div4Check->isHidden();
+        Settings::checkedDivisions[4] = ui->div5Check->isChecked() &&
+                                        !ui->div5Check->isHidden();
+        Settings::checkedDivisions[5] = ui->div6Check->isChecked() &&
+                                        !ui->div6Check->isHidden();
         emit updateDefaultValues();
 
     }
     if (ui->saveDefaultNationality->isChecked()) {
-        Settings::age = {(quint8)ui->ageMin->value(),
-                         (quint8)ui->ageMax->value()};
-        Settings::pot = {(quint8)ui->potMin->value(),
-                         (quint8)ui->potMax->value()};
-        Settings::sal = {(quint32)ui->salMin->value(),
-                         (quint32)ui->salMax->value()};
-        Settings::dmi = {(quint32)ui->dmiMin->value(),
-                         (quint32)ui->dmiMax->value()};
+        Settings::age = qMakePair((quint8)ui->ageMin->value(), (quint8)ui->ageMax->value());
+        Settings::pot = qMakePair((quint8)ui->potMin->value(), (quint8)ui->potMax->value());
+        Settings::sal = qMakePair((quint32)ui->salMin->value(), (quint32)ui->salMax->value());
+        Settings::dmi = qMakePair((quint32)ui->dmiMin->value(), (quint32)ui->dmiMax->value());
         emit updateDefaultValues();
     }
 }
