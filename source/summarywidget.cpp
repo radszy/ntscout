@@ -89,10 +89,10 @@ void SummaryWidget::setResults(const PlayerList& playerList)
 
     QTextStream stream(&file);
     stream << "teamID;ID;Name;Position;Age;Height;Salary;Potential;DMI;Nationality;Link\n";
-    for (const auto& player : playerList) {
+    for (const Player& player : playerList) {
         stream << player.teamid << ";";
         stream << player.id << ";";
-        stream << player.firstname + " " + player.lastname << ";";
+        stream << QString("%1 %2;").arg(player.firstname, player.lastname);
         stream << player.bestpos << ";";
         stream << player.age << ";";
         stream << ((this->*convert)(player.height)) << ";";
@@ -100,13 +100,13 @@ void SummaryWidget::setResults(const PlayerList& playerList)
         stream << player.potential << ";";
         stream << player.dmi << ";";
         stream << player.nationalityname << ";";
-        stream << "http://www.buzzerbeater.com/player/" + QString::number(player.id) + "/overview.aspx\n";
+        stream << QString("http://www.buzzerbeater.com/player/%1/overview.aspx\n").arg(player.id);
     }
 
-    ui->resultsLabel->setText(QString("Found ") +
-                              QString::number(playerList.count()) +
-                              QString(" players."));
-    ui->fileLabel->setText(QString(date + ".csv"));
+    ui->resultsLabel->setText(QString("Found %1 player%2.")
+                              .arg(playerList.count())
+                              .arg(playerList.count() != 1 ? "s" : ""));
+    ui->fileLabel->setText(QString("%1.csv").arg(date));
 }
 
 void SummaryWidget::openFile()
@@ -142,6 +142,5 @@ QString SummaryWidget::toInches(int value)
 
 QString SummaryWidget::toFeet(int value)
 {
-    return QString::number(value / 12) + "'" +
-            QString::number(value % 12) + "\"";
+    return QString("%1'%2\"").arg(value / 12).arg(value % 12);
 }

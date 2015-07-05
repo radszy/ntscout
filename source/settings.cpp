@@ -37,13 +37,7 @@ bool Settings::read()
     }
 
     QDataStream stream(&file);
-    stream >> tasks;
-    stream >> metrics;
-    stream >> searchBots;
-    stream >> age;
-    stream >> pot;
-    stream >> sal;
-    stream >> dmi;
+    stream >> tasks >> metrics >> searchBots >> age >> pot >> sal >> dmi;
 
     for (int i = 0; i < DivisionCount; ++i) {
         stream >> checkedDivisions[i];
@@ -60,13 +54,7 @@ bool Settings::save()
     }
 
     QDataStream stream(&file);
-    stream << tasks;
-    stream << metrics;
-    stream << searchBots;
-    stream << age;
-    stream << pot;
-    stream << sal;
-    stream << dmi;
+    stream << tasks << metrics << searchBots << age << pot << sal << dmi;
 
     for (int i = 0; i < DivisionCount; ++i) {
         stream << checkedDivisions[i];

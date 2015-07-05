@@ -46,8 +46,8 @@ QList<QByteArray> Network::get(const QList<QUrl> urls)
     QList<QNetworkReply*> replies;
 
     runningRequests += urls.count();
-    for (int i = 0; i < urls.count(); ++i) {
-        QNetworkRequest request(urls.at(i));
+    for (const QUrl& url : urls) {
+        QNetworkRequest request(url);
         request.setAttribute(QNetworkRequest::HttpPipeliningAllowedAttribute, true);
 
         QNetworkReply* reply = QNetworkAccessManager::get(request);
@@ -59,9 +59,10 @@ QList<QByteArray> Network::get(const QList<QUrl> urls)
     connect(this, SIGNAL(finishedAll()), &loop, SLOT(quit()));
     loop.exec();
 
-    for (int i = 0; i < replies.count(); ++i) {
-        result.append(replies.at(i)->readAll());
+    for (QNetworkReply* reply : replies) {
+        result.append(reply->readAll());
     }
+
     qDeleteAll(replies);
     return result;
 }

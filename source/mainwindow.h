@@ -62,17 +62,16 @@ public slots:
     void enableNextButton(bool enabled);
 
 private:
-    void readDataFile(CountryList& clist);
-
-    Ui::MainWindow *ui;
+    void readDataFile(CountryList& list);
 
     LoginWidget* loginWidget;
     GridWidget* gridWidget;
     ProgressWidget* progressWidget;
     SummaryWidget* summaryWidget;
     SettingsDialog* settingsDialog;
+    Ui::MainWindow *ui;
 
-    const QString version = "7.4";
+    const QString version = "7.4.1";
 };
 
 #endif // MAINWINDOW_H

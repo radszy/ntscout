@@ -57,7 +57,7 @@ bool Util::writeCountry(CountryList& countryList)
         return false;
     }
     QTextStream stream(&file);
-    for (const auto& country : countryList) {
+    for (const Country& country : countryList) {
         stream << country.id << ","
             << country.name << ","
             << country.name_en << ","
@@ -80,17 +80,17 @@ void Util::copyFolder(QString sourceFolder, QString destFolder)
     }
 
     QStringList files = sourceDir.entryList(QDir::Files);
-    for (int i = 0; i< files.count(); i++) {
-        QString srcName = sourceFolder + QDir::separator() + files[i];
-        QString destName = destFolder + QDir::separator() + files[i];
+    for (const QString& file : files) {
+        QString srcName = sourceFolder + QDir::separator() + file;
+        QString destName = destFolder + QDir::separator() + file;
         QFile::copy(srcName, destName);
     }
 
     files.clear();
     files = sourceDir.entryList(QDir::AllDirs | QDir::NoDotAndDotDot);
-    for (int i = 0; i< files.count(); i++) {
-        QString srcName = sourceFolder + QDir::separator() + files[i];
-        QString destName = destFolder + QDir::separator() + files[i];
+    for (const QString& file : files) {
+        QString srcName = sourceFolder + QDir::separator() + file;
+        QString destName = destFolder + QDir::separator() + file;
         copyFolder(srcName, destName);
     }
 }
@@ -99,6 +99,5 @@ QPoint Util::screenCenter(int width, int height)
 {
     QDesktopWidget desktop;
     QRect screen = desktop.screenGeometry();
-    return QPoint(screen.width() / 2 - width / 2,
-                  screen.height() / 2 - height / 2);
+    return QPoint(screen.width() / 2 - width / 2, screen.height() / 2 - height / 2);
 }

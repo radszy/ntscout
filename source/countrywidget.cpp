@@ -77,9 +77,9 @@ void CountryWidget::setName(const QString& value)
     name = value;
     QString shortened(value);
 
-    int max = 15;
-    if (name.count() > max) {
-        shortened = name.mid(0, max - 3) + "...";
+    int maxWidth = 15;
+    if (name.count() > maxWidth) {
+        shortened = name.mid(0, maxWidth - 3) + "...";
     }
     ui->nameLabel->setText(shortened);
 }
@@ -87,7 +87,7 @@ void CountryWidget::setName(const QString& value)
 void CountryWidget::setDivisions(int value)
 {
     divisions = value;
-    ui->divisionsLabel->setText("Divisions: " + QString::number(divisions));
+    ui->divisionsLabel->setText(QString("Divisions: %1").arg(value));
 
     searchValues.divCount = value;
     for (int i = 0; i < searchValues.divCount; ++i) {
@@ -101,7 +101,7 @@ void CountryWidget::setDivisions(int value)
 void CountryWidget::setUsers(int value)
 {
     users = value;
-    ui->usersLabel->setText("Users: " + QString::number(value));
+    ui->usersLabel->setText(QString("Users: %1").arg(value));
 }
 
 void CountryWidget::setID(int value)

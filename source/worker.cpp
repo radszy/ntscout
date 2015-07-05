@@ -36,7 +36,7 @@ void Worker::run()
     BBApi bb;
     bb.login();
     connect(bb.getNetwork(),SIGNAL(finished(QNetworkReply*)),
-            parent,SLOT(requestDone()));
+            parent, SLOT(requestDone()));
 
     bb.teams(teams, leagues);
     if (teams.count() == 0) {

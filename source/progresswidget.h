@@ -16,6 +16,7 @@
 #ifndef PROGRESSWIDGET_H
 #define PROGRESSWIDGET_H
 
+#include "bbapi.h"
 #include "player.h"
 
 #include <QWidget>
@@ -60,6 +61,7 @@ signals:
     void finished(bool);
 
 private:
+    LeagueDataList getLeagueData(const QList<SearchValues*>& values, int& count);
     void filterPlayers();
     void setAsDone(QLabel* progress);
     void nextState() {state++;}

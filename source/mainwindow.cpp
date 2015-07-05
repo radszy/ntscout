@@ -41,15 +41,14 @@
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
+    loginWidget(new LoginWidget),
+    gridWidget(new GridWidget),
+    progressWidget(new ProgressWidget),
+    summaryWidget(new SummaryWidget),
+    settingsDialog(new SettingsDialog),
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-
-    loginWidget = new LoginWidget;
-    gridWidget = new GridWidget;
-    progressWidget = new ProgressWidget;
-    summaryWidget = new SummaryWidget;
-    settingsDialog = new SettingsDialog;
 
     ui->stackedWidget->addWidget(loginWidget);
     ui->stackedWidget->addWidget(gridWidget);
@@ -65,7 +64,7 @@ MainWindow::MainWindow(QWidget *parent) :
     QPoint point = Util::screenCenter(width, height);
     setGeometry(point.x(), point.y(), width, height);
 
-    setWindowTitle("NTScout " + version);
+    setWindowTitle(QString("NTScout %1").arg(version));
 }
 
 MainWindow::~MainWindow()
@@ -79,14 +78,14 @@ void MainWindow::proceedToCountryWidget()
     loginWidget->setInformation("");
     ui->nextButton->setDisabled(true);
 
-    CountryList clist;
-    readDataFile(clist);
+    CountryList list;
+    readDataFile(list);
 
     QString user = loginWidget->getLogin();
     QString pass = loginWidget->getPassword();
     if (user.isEmpty() || pass.isEmpty()) {
         loginWidget->enableFields();
-        loginWidget->setError("Enter your login data first");
+        loginWidget->setError("Enter your login data first.");
         ui->nextButton->setEnabled(true);
         return;
     }
@@ -102,7 +101,7 @@ void MainWindow::proceedToCountryWidget()
 
     enableNextButton(false);
 
-    gridWidget->setCountryList(clist);
+    gridWidget->setCountryList(list);
     ui->stackedWidget->setCurrentWidget(gridWidget);
 }
 
@@ -113,8 +112,8 @@ void MainWindow::proceedToProgressWidget()
     msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
     msgBox.setText("<p align=\"center\" style=\"font-size:14px\">Program is going to start searching now.</p>");
     msgBox.setInformativeText("<p align=\"center\" style=\"font-size:14px\">Do you want to proceed?</p>");
-    int ret = msgBox.exec();
-    if (ret == QMessageBox::Yes) {
+
+    if (msgBox.exec() == QMessageBox::Yes) {
         progressWidget->reset();
         ui->stackedWidget->setCurrentWidget(progressWidget);
         ui->backButton->setEnabled(true);
@@ -186,7 +185,6 @@ void MainWindow::backClicked()
 
 void MainWindow::updateTriggered()
 {
-    qDebug() << "App path : " << qApp->applicationDirPath();
     if (BBApi::getName().isEmpty()) {
         QMessageBox::information(this, "Error", "Please login first.", QMessageBox::Ok);
         return;
@@ -225,17 +223,17 @@ void MainWindow::enableNextButton(bool enabled)
                                "one country and one nationality");
 }
 
-void MainWindow::readDataFile(CountryList& clist)
+void MainWindow::readDataFile(CountryList& list)
 {
     QString error;
-    if (!Util::readCountry(clist, error)) {
+    if (!Util::readCountry(list, error)) {
         QMessageBox msgBox;
         msgBox.setText("Cannot proceed - " + error);
         msgBox.setInformativeText("Would you like to show it's location?");
         msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
         msgBox.setDefaultButton(QMessageBox::Yes);
-        int ret = msgBox.exec();
-        if (ret == QMessageBox::Yes) {
+
+        if (msgBox.exec() == QMessageBox::Yes) {
             QString fileName = QFileDialog::getOpenFileName(
                 this, "Select File", QDir::currentPath(),
                 "Country data (*.dat)");
@@ -257,8 +255,8 @@ void MainWindow::readDataFile(CountryList& clist)
                     msgBox.setInformativeText("Would you like to show it's location too?");
                     msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
                     msgBox.setDefaultButton(QMessageBox::Yes);
-                    int ret = msgBox.exec();
-                    if (ret == QMessageBox::Yes) {
+
+                    if (msgBox.exec() == QMessageBox::Yes) {
                         QString dir = QFileDialog::getExistingDirectory(
                             this, tr("Select Directory"),
                             QDir::currentPath(),
@@ -271,7 +269,7 @@ void MainWindow::readDataFile(CountryList& clist)
                     }
                 }
 
-                readDataFile(clist);
+                readDataFile(list);
             }
         } else {
             qApp->exit();
@@ -286,6 +284,7 @@ void MainWindow::closeEvent(QCloseEvent* event)
         msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
         msgBox.setText("Program is still searching for players.");
         msgBox.setInformativeText("Are you sure you want to exit?");
+
         if (msgBox.exec() == QMessageBox::No) {
             event->ignore();
             return;

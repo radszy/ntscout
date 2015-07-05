@@ -47,7 +47,7 @@ void LoginWidget::setInformation(const QString& information)
 
 void LoginWidget::setError(const QString& error)
 {
-    setInformation("<html><font color=\"red\">" + error + "</color></html>");
+    setInformation(QString("<html><font color=\"red\">%1</color></html>").arg(error));
 }
 
 QString LoginWidget::getLogin()
