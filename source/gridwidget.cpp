@@ -18,8 +18,7 @@
 #include "countrywidget.h"
 #include "searchdialog.h"
 
-#include <qmath.h>
-
+#include <QtMath>
 #include <QMenu>
 #include <QAction>
 #include <QDebug>

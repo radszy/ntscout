@@ -19,10 +19,12 @@
 #include "country.h"
 #include "player.h"
 
+#include <QObject>
 #include <QString>
 #include <QList>
 
 class Network;
+class QNetworkReply;
 
 struct LeagueData {
     int countryid;
@@ -31,8 +33,10 @@ struct LeagueData {
 
 typedef QList<LeagueData> LeagueDataList;
 
-class BBApi
+class BBApi : public QObject
 {
+    Q_OBJECT
+
 public:
     BBApi();
     BBApi(const QString &login, const QString &password);
@@ -44,6 +48,10 @@ public:
     bool leagues(QList<int>& results, const LeagueDataList leagues);
     bool teams(QList<int>& results, QList<int> league);
     bool roster(PlayerList& results, QList<int> team);
+    bool translatedNames(CountryList& list);
+    bool releases(QString &tag, QString &download);
+    QNetworkReply* downloadRelease(const QString& url);
+    QByteArray downloadFlag(int id);
 
     Network* getNetwork() {return manager;}
 

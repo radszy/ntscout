@@ -16,6 +16,7 @@
 #include "bbapi.h"
 #include "network.h"
 #include "settings.h"
+#include "updatewidget.h"
 
 #include <QUrl>
 #include <QNetworkAccessManager>
@@ -25,6 +26,11 @@
 #include <QDomDocument>
 #include <QDomNodeList>
 #include <QDomElement>
+
+#include <QJsonDocument>
+#include <QJsonObject>
+#include <QJsonArray>
+#include <QJsonValue>
 
 #include <QDebug>
 
@@ -212,4 +218,56 @@ bool BBApi::roster(PlayerList& results, QList<int> team)
     }
 
     return true;
+}
+
+
+// --- BBAPI UNRELATED ---
+bool BBApi::translatedNames(CountryList &list)
+{
+    QUrl url("https://raw.githubusercontent.com/"
+             "rsxee/NTScout/master/names-en.txt");
+    QByteArray data = manager->get(url);
+
+    auto array = data.split('\n');
+    auto len = qMin(list.count(), array.count());
+
+    for (int i = 0; i < len; ++i) {
+        list[i].name_en = array[i];
+    }
+
+    return true;
+}
+
+bool BBApi::releases(QString& tag, QString& download)
+{
+    QUrl url("https://api.github.com/repos/rsxee/NTScout/releases");
+    QByteArray data = manager->get(url);
+
+    QJsonDocument doc = QJsonDocument::fromBinaryData(data);
+    auto array = doc.array();
+    if (array.empty()) {
+        return false;
+    }
+
+    auto release = array.first().toObject();
+    tag = release.value("tag_name").toString("0.0");
+
+    auto assets = release.value("assets").toArray();
+    if (assets.empty()) {
+        return false;
+    }
+
+    download = assets.first().toObject().value("browser_download_url").toString();
+    return true;
+}
+
+QNetworkReply* BBApi::downloadRelease(const QString &url)
+{
+    return manager->getRaw(url);
+}
+
+QByteArray BBApi::downloadFlag(int id)
+{
+    QUrl url = QString("http://www.buzzerbeater.com/images/flags/flag_%1.gif").arg(id);
+    return manager->get(url);
 }

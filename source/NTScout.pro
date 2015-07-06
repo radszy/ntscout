@@ -23,7 +23,8 @@ FORMS += \
     progresswidget.ui \
     searchdialog.ui \
     settingsdialog.ui \
-    summarywidget.ui
+    summarywidget.ui \
+    updatewidget.ui
 
 HEADERS += \
     bbapi.h \
@@ -41,7 +42,9 @@ HEADERS += \
     settingsdialog.h \
     summarywidget.h \
     util.h \
-    worker.h
+    worker.h \
+    updatewidget.h \
+    version.h
 
 SOURCES += \
     bbapi.cpp \
@@ -57,5 +60,6 @@ SOURCES += \
     settingsdialog.cpp \
     summarywidget.cpp \
     util.cpp \
-    worker.cpp
+    worker.cpp \
+    updatewidget.cpp
 

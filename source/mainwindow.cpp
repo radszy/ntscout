@@ -21,11 +21,13 @@
 #include "progresswidget.h"
 #include "summarywidget.h"
 #include "settingsdialog.h"
+#include "updatewidget.h"
 
 #include "bbapi.h"
 #include "player.h"
 #include "settings.h"
 #include "util.h"
+#include "version.h"
 
 #include <QMessageBox>
 #include <QCloseEvent>
@@ -45,6 +47,7 @@ MainWindow::MainWindow(QWidget *parent) :
     gridWidget(new GridWidget),
     progressWidget(new ProgressWidget),
     summaryWidget(new SummaryWidget),
+    updateWidget(new UpdateWidget),
     settingsDialog(new SettingsDialog),
     ui(new Ui::MainWindow)
 {
@@ -54,6 +57,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->stackedWidget->addWidget(gridWidget);
     ui->stackedWidget->addWidget(progressWidget);
     ui->stackedWidget->addWidget(summaryWidget);
+    ui->stackedWidget->addWidget(updateWidget);
 
     connect(gridWidget, SIGNAL(canProceed(bool)),
             this, SLOT(enableNextButton(bool)));
@@ -64,11 +68,17 @@ MainWindow::MainWindow(QWidget *parent) :
     QPoint point = Util::screenCenter(width, height);
     setGeometry(point.x(), point.y(), width, height);
 
-    setWindowTitle(QString("NTScout %1").arg(version));
+    setWindowTitle(QString("NTScout %1").arg(Version::toString()));
 }
 
 MainWindow::~MainWindow()
 {
+    delete loginWidget;
+    delete gridWidget;
+    delete progressWidget;
+    delete summaryWidget;
+    delete updateWidget;
+    delete settingsDialog;
     delete ui;
 }
 
@@ -190,14 +200,17 @@ void MainWindow::updateTriggered()
         return;
     }
 
-    QString path = qApp->applicationDirPath() + "/Updater";
-    QStringList params;
-    params << "-u" << BBApi::getName()
-           << "-p" << BBApi::getPass()
-           << "-n" << version;
+    ui->stackedWidget->setCurrentWidget(updateWidget);
+    updateWidget->onStart();
 
-    QProcess::startDetached(path, params);
-    qApp->exit();
+//    QString path = qApp->applicationDirPath() + "/Updater";
+//    QStringList params;
+//    params << "-u" << BBApi::getName()
+//           << "-p" << BBApi::getPass()
+//           << "-n" << version;
+
+//    QProcess::startDetached(path, params);
+//    qApp->exit();
 }
 
 void MainWindow::settingsTriggered()

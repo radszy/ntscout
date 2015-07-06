@@ -21,11 +21,13 @@
 
 #include <QWidget>
 #include <QPair>
+#include <QTime>
 
 namespace Ui {
 class ProgressWidget;
 }
 
+class QTimer;
 class QMovie;
 class QLabel;
 class Worker;
@@ -56,6 +58,7 @@ public slots:
     void requestDone();
     void teamsFound(int count);
     void workerFinished(PlayerList playerList);
+    void updateTimer();
 
 signals:
     void finished(bool);
@@ -68,8 +71,7 @@ private:
     void progressDivisions();
     void progressLeagues();
     void progressTeams();
-    void updateProgress(const QPair<int,int>& pair,
-                        int curr, int prev);
+    void updateProgress(const QPair<int,int>& pair, int curr, int prev);
 
     QList<SearchValues*> searchValues;
     QList<Worker*> workers;
@@ -81,8 +83,12 @@ private:
     QPair <int, int> teams;
     QPair <int, int> players;
 
+    QTime time;
+    QString elapsedTime;
+
     Ui::ProgressWidget *ui;
     QMovie* movie;
+    QTimer* timer;
 
     int state;
 };

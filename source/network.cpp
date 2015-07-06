@@ -25,7 +25,15 @@ Network::Network(QObject *parent) :
     runningRequests = 0;
 }
 
-QByteArray Network::get(const QUrl url)
+QNetworkReply *Network::getRaw(const QUrl &url)
+{
+    QNetworkRequest request(url);
+    request.setAttribute(QNetworkRequest::HttpPipeliningAllowedAttribute, true);
+
+    return QNetworkAccessManager::get(request);
+}
+
+QByteArray Network::get(const QUrl &url)
 {
     QNetworkRequest request(url);
     request.setAttribute(QNetworkRequest::HttpPipeliningAllowedAttribute, true);
@@ -40,7 +48,7 @@ QByteArray Network::get(const QUrl url)
     return reply->readAll();
 }
 
-QList<QByteArray> Network::get(const QList<QUrl> urls)
+QList<QByteArray> Network::get(const QList<QUrl> &urls)
 {
     QList<QByteArray> result;
     QList<QNetworkReply*> replies;

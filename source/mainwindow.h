@@ -28,6 +28,7 @@ class LoginWidget;
 class GridWidget;
 class ProgressWidget;
 class SummaryWidget;
+class UpdateWidget;
 class SettingsDialog;
 
 class MainWindow : public QMainWindow
@@ -38,7 +39,8 @@ class MainWindow : public QMainWindow
         Login,
         Country,
         Progress,
-        Summary
+        Summary,
+        Update
     };
 
 public:
@@ -68,10 +70,9 @@ private:
     GridWidget* gridWidget;
     ProgressWidget* progressWidget;
     SummaryWidget* summaryWidget;
+    UpdateWidget* updateWidget;
     SettingsDialog* settingsDialog;
     Ui::MainWindow *ui;
-
-    const QString version = "7.4.1";
 };
 
 #endif // MAINWINDOW_H

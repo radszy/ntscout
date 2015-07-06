@@ -24,8 +24,9 @@ class Network : public QNetworkAccessManager
 public:
     explicit Network(QObject *parent = 0);
 
-    QByteArray get(const QUrl url);
-    QList<QByteArray> get(const QList<QUrl> urls);
+    QNetworkReply* getRaw(const QUrl &url);
+    QByteArray get(const QUrl& url);
+    QList<QByteArray> get(const QList<QUrl>& urls);
 
 public slots:
     void onFinished();

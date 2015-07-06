@@ -20,6 +20,7 @@
 #include <QString>
 #include <QDesktopWidget>
 #include <QDir>
+#include <QtMath>
 #include <QDebug>
 
 bool Util::readCountry(CountryList& countryList, QString& error)
@@ -67,6 +68,17 @@ bool Util::writeCountry(CountryList& countryList)
     return true;
 }
 
+bool Util::newFile(const QString &path, const QByteArray &data)
+{
+    QFile file(path);
+    if (!file.open(QIODevice::WriteOnly | QIODevice::Text)) {
+        return false;
+    }
+
+    file.write(data);
+    return true;
+}
+
 void Util::copyFolder(QString sourceFolder, QString destFolder)
 {
     QDir sourceDir(sourceFolder);
@@ -100,4 +112,17 @@ QPoint Util::screenCenter(int width, int height)
     QDesktopWidget desktop;
     QRect screen = desktop.screenGeometry();
     return QPoint(screen.width() / 2 - width / 2, screen.height() / 2 - height / 2);
+}
+
+QString Util::formatTime(int elapsed)
+{
+    int total = elapsed / 1000;
+    int hours = qFloor(total / 3600);
+    int minutes = floor((total / 60) % 60);
+    int seconds = total % 60;
+
+    return QString("%1:%2:%3")
+            .arg(hours, 2, 10, QChar('0'))
+            .arg(minutes, 2, 10, QChar('0'))
+            .arg(seconds, 2, 10, QChar('0'));
 }
