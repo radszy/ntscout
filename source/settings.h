@@ -36,6 +36,7 @@ public:
     static quint8 tasks;
     static quint8 metrics;
     static bool searchBots;
+    static bool createLogs;
 
     static QPair <quint8, quint8> age;
     static QPair <quint8, quint8> pot;

@@ -53,12 +53,13 @@ public:
     void stop();
 
     PlayerList getResults() {return filteredPlayers;}
+    QString getElapsedTime() {return elapsedTime;}
+    int getRequests() {return requests;}
 
 public slots:
     void requestDone();
     void teamsFound(int count);
     void workerFinished(PlayerList playerList);
-    void updateTimer();
 
 signals:
     void finished(bool);
@@ -78,19 +79,19 @@ private:
     QList<PlayerList> playerLists;
     PlayerList filteredPlayers;
 
-    QPair <int, int> divisions;
-    QPair <int, int> leagues;
-    QPair <int, int> teams;
-    QPair <int, int> players;
+    QPair<int, int> divisions;
+    QPair<int, int> leagues;
+    QPair<int, int> teams;
+    QPair<int, int> players;
 
     QTime time;
     QString elapsedTime;
 
     Ui::ProgressWidget *ui;
     QMovie* movie;
-    QTimer* timer;
 
     int state;
+    int requests;
 };
 
 #endif // PROGRESSWIDGET_H

@@ -30,7 +30,8 @@
       <widget class="QLabel" name="sortLabel">
        <property name="font">
         <font>
-         <pointsize>12</pointsize>
+         <family>Segoe UI</family>
+         <pointsize>11</pointsize>
         </font>
        </property>
        <property name="text">
@@ -42,7 +43,8 @@
       <widget class="QComboBox" name="sortBox">
        <property name="font">
         <font>
-         <pointsize>12</pointsize>
+         <family>Segoe UI</family>
+         <pointsize>11</pointsize>
         </font>
        </property>
        <item>
@@ -71,7 +73,8 @@
       <widget class="QLineEdit" name="searchField">
        <property name="font">
         <font>
-         <pointsize>12</pointsize>
+         <family>Segoe UI</family>
+         <pointsize>11</pointsize>
         </font>
        </property>
        <property name="placeholderText">
@@ -176,7 +179,7 @@
         <x>0</x>
         <y>0</y>
         <width>572</width>
-        <height>292</height>
+        <height>290</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout_2">

@@ -23,6 +23,7 @@
 quint8 Settings::tasks = QThread::idealThreadCount();
 quint8 Settings::metrics = 0;
 bool Settings::searchBots = false;
+bool Settings::createLogs = false;
 QPair <quint8, quint8> Settings::age = qMakePair(18, 99);
 QPair <quint8, quint8> Settings::pot = qMakePair(0, 11);
 QPair <quint32, quint32> Settings::sal = qMakePair(0, 999999);
@@ -37,7 +38,7 @@ bool Settings::read()
     }
 
     QDataStream stream(&file);
-    stream >> tasks >> metrics >> searchBots >> age >> pot >> sal >> dmi;
+    stream >> age >> pot >> sal >> dmi >> tasks >> metrics >> searchBots >> createLogs;
 
     for (int i = 0; i < DivisionCount; ++i) {
         stream >> checkedDivisions[i];
@@ -54,7 +55,7 @@ bool Settings::save()
     }
 
     QDataStream stream(&file);
-    stream << tasks << metrics << searchBots << age << pot << sal << dmi;
+    stream << age << pot << sal << dmi << tasks << metrics << searchBots << createLogs;
 
     for (int i = 0; i < DivisionCount; ++i) {
         stream << checkedDivisions[i];

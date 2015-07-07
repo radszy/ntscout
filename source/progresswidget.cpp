@@ -23,7 +23,6 @@
 #include "util.h"
 
 #include <QtMath>
-#include <QTimer>
 #include <QMovie>
 #include <QThread>
 #include <QDebug>
@@ -35,14 +34,11 @@ ProgressWidget::ProgressWidget(QWidget *parent) :
     ui->setupUi(this);
 
     state = 0;
+    requests = 0;
     divisions = qMakePair(0, 0);
     leagues = qMakePair(0, 0);
     teams = qMakePair(0, 0);
     players = qMakePair(0, 0);
-
-    timer = new QTimer;
-    timer->setInterval(500);
-    connect(timer, SIGNAL(timeout()), this, SLOT(updateTimer()));
 
     movie = new QMovie(":/icons/progress");
     ui->divisionsProgress->setMovie(movie);
@@ -53,13 +49,13 @@ ProgressWidget::ProgressWidget(QWidget *parent) :
 
 ProgressWidget::~ProgressWidget()
 {
-    delete timer;
     delete ui;
 }
 
 void ProgressWidget::reset()
 {
     state = 0;
+    requests = 0;
 
     divisions = qMakePair(0, 0);
     leagues = qMakePair(0, 0);
@@ -118,7 +114,6 @@ LeagueDataList ProgressWidget::getLeagueData(const QList<SearchValues*>& values,
 void ProgressWidget::start(QList<SearchValues*>& values)
 {
     time.start();
-    timer->start();
 
     searchValues.append(values);
 
@@ -204,8 +199,7 @@ void ProgressWidget::filterPlayers()
     ui->progressBar->setValue(ui->progressBar->maximum());
 
     elapsedTime = Util::formatTime(time.elapsed());
-    timer->stop();
-
+    requests = leagues.first + divisions.first + teams.first + 1;
     emit finished(true);
 }
 
@@ -260,11 +254,6 @@ void ProgressWidget::updateProgress(const QPair<int,int>& pair, int curr, int pr
     int n = pair.first * 100 / pair.second;
     int x = curr * n / 100 + prev;
     ui->progressBar->setValue(x);
-}
-
-void ProgressWidget::updateTimer()
-{
-    ui->timeLabel->setText(Util::formatTime(time.elapsed()));
 }
 
 void ProgressWidget::requestDone()

@@ -99,12 +99,12 @@
      <x>0</x>
      <y>0</y>
      <width>426</width>
-     <height>26</height>
+     <height>21</height>
     </rect>
    </property>
    <property name="font">
     <font>
-     <pointsize>11</pointsize>
+     <pointsize>9</pointsize>
     </font>
    </property>
    <widget class="QMenu" name="menuOptions">
@@ -145,7 +145,8 @@
    </property>
    <property name="font">
     <font>
-     <pointsize>10</pointsize>
+     <family>Segoe UI</family>
+     <pointsize>9</pointsize>
     </font>
    </property>
   </action>
@@ -159,7 +160,8 @@
    </property>
    <property name="font">
     <font>
-     <pointsize>10</pointsize>
+     <family>Segoe UI</family>
+     <pointsize>9</pointsize>
     </font>
    </property>
   </action>
@@ -173,7 +175,8 @@
    </property>
    <property name="font">
     <font>
-     <pointsize>10</pointsize>
+     <family>Segoe UI</family>
+     <pointsize>9</pointsize>
     </font>
    </property>
   </action>
@@ -187,7 +190,8 @@
    </property>
    <property name="font">
     <font>
-     <pointsize>10</pointsize>
+     <family>Segoe UI</family>
+     <pointsize>9</pointsize>
     </font>
    </property>
   </action>

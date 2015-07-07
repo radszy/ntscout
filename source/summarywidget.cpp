@@ -41,7 +41,7 @@ SummaryWidget::~SummaryWidget()
 
 void SummaryWidget::reset()
 {
-    ui->resultsLabel->setText("");
+    ui->resultLabel->setText("");
     ui->fileLabel->setText("");
     ui->openFile->setEnabled(true);
     ui->openDirectory->setEnabled(true);
@@ -50,7 +50,7 @@ void SummaryWidget::reset()
 void SummaryWidget::setResults(const PlayerList& playerList)
 {
     if (playerList.empty()) {
-        ui->resultsLabel->setText("No players found.");
+        ui->resultLabel->setText("No players found.");
         ui->openFile->setDisabled(true);
         ui->openDirectory->setDisabled(true);
         return;
@@ -103,7 +103,7 @@ void SummaryWidget::setResults(const PlayerList& playerList)
         stream << QString("http://www.buzzerbeater.com/player/%1/overview.aspx\n").arg(player.id);
     }
 
-    ui->resultsLabel->setText(QString("Found %1 player%2.")
+    ui->resultLabel->setText(QString("Found %1 player%2.")
                               .arg(playerList.count())
                               .arg(playerList.count() != 1 ? "s" : ""));
     ui->fileLabel->setText(QString("%1.csv").arg(date));

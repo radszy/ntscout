@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>572</width>
-    <height>442</height>
+    <height>355</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -84,8 +84,16 @@
          </property>
          <item>
           <widget class="QLabel" name="label_5">
+           <property name="font">
+            <font>
+             <family>Segoe UI</family>
+            </font>
+           </property>
+           <property name="styleSheet">
+            <string notr="true"/>
+           </property>
            <property name="text">
-            <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;justify&quot;&gt;&lt;span style=&quot; font-size:11pt;&quot;&gt;Please wait while program is searching. It may take a while, depending on the number of requests, your internet speed, Buzzerbeater response times and number of concurrent tasks.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+            <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;justify&quot;&gt;&lt;span style=&quot; font-size:10pt;&quot;&gt;Please wait while program is searching. It may take a while, depending on the number of requests, your internet speed, Buzzerbeater response times and number of concurrent tasks.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
            </property>
            <property name="wordWrap">
             <bool>true</bool>
@@ -114,11 +122,17 @@
          </item>
          <item>
           <layout class="QGridLayout" name="gridLayout">
+           <property name="topMargin">
+            <number>5</number>
+           </property>
+           <property name="bottomMargin">
+            <number>5</number>
+           </property>
            <property name="horizontalSpacing">
             <number>20</number>
            </property>
            <property name="verticalSpacing">
-            <number>15</number>
+            <number>10</number>
            </property>
            <item row="3" column="2">
             <widget class="QLabel" name="teamTasks">
@@ -130,7 +144,8 @@
              </property>
              <property name="font">
               <font>
-               <pointsize>14</pointsize>
+               <family>Segoe UI</family>
+               <pointsize>11</pointsize>
               </font>
              </property>
              <property name="text">
@@ -148,7 +163,8 @@
              </property>
              <property name="font">
               <font>
-               <pointsize>14</pointsize>
+               <family>Segoe UI</family>
+               <pointsize>11</pointsize>
               </font>
              </property>
              <property name="text">
@@ -230,36 +246,31 @@
             <widget class="QLabel" name="label_2">
              <property name="font">
               <font>
-               <pointsize>14</pointsize>
+               <family>Segoe UI</family>
+               <pointsize>11</pointsize>
               </font>
              </property>
              <property name="text">
               <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:11pt;&quot;&gt;Leagues&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
              </property>
+             <property name="alignment">
+              <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+             </property>
             </widget>
-           </item>
-           <item row="1" column="0">
-            <spacer name="horizontalSpacer">
-             <property name="orientation">
-              <enum>Qt::Horizontal</enum>
-             </property>
-             <property name="sizeHint" stdset="0">
-              <size>
-               <width>40</width>
-               <height>20</height>
-              </size>
-             </property>
-            </spacer>
            </item>
            <item row="4" column="1">
             <widget class="QLabel" name="label_4">
              <property name="font">
               <font>
-               <pointsize>14</pointsize>
+               <family>Segoe UI</family>
+               <pointsize>11</pointsize>
               </font>
              </property>
              <property name="text">
               <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:11pt;&quot;&gt;Players&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+             </property>
+             <property name="alignment">
+              <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
              </property>
             </widget>
            </item>
@@ -273,7 +284,8 @@
              </property>
              <property name="font">
               <font>
-               <pointsize>14</pointsize>
+               <family>Segoe UI</family>
+               <pointsize>11</pointsize>
               </font>
              </property>
              <property name="text">
@@ -284,7 +296,7 @@
            <item row="1" column="2">
             <widget class="QLabel" name="divisionTasks">
              <property name="sizePolicy">
-              <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+              <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
                <horstretch>0</horstretch>
                <verstretch>0</verstretch>
               </sizepolicy>
@@ -297,7 +309,8 @@
              </property>
              <property name="font">
               <font>
-               <pointsize>14</pointsize>
+               <family>Segoe UI</family>
+               <pointsize>11</pointsize>
               </font>
              </property>
              <property name="text">
@@ -327,18 +340,22 @@
            <item row="1" column="1">
             <widget class="QLabel" name="label">
              <property name="sizePolicy">
-              <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+              <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
                <horstretch>0</horstretch>
                <verstretch>0</verstretch>
               </sizepolicy>
              </property>
              <property name="font">
               <font>
-               <pointsize>14</pointsize>
+               <family>Segoe UI</family>
+               <pointsize>11</pointsize>
               </font>
              </property>
              <property name="text">
               <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:11pt;&quot;&gt;Divisions&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+             </property>
+             <property name="alignment">
+              <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
              </property>
             </widget>
            </item>
@@ -346,33 +363,30 @@
             <widget class="QLabel" name="label_3">
              <property name="font">
               <font>
-               <pointsize>14</pointsize>
+               <family>Segoe UI</family>
+               <pointsize>11</pointsize>
               </font>
              </property>
              <property name="text">
               <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:11pt;&quot;&gt;Teams&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
              </property>
-            </widget>
-           </item>
-           <item row="0" column="1">
-            <widget class="QLabel" name="label_6">
-             <property name="sizePolicy">
-              <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
-               <horstretch>0</horstretch>
-               <verstretch>0</verstretch>
-              </sizepolicy>
-             </property>
-             <property name="text">
-              <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:11pt;&quot;&gt;Time&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+             <property name="alignment">
+              <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
              </property>
             </widget>
            </item>
-           <item row="0" column="2">
-            <widget class="QLabel" name="timeLabel">
-             <property name="text">
-              <string/>
+           <item row="1" column="0">
+            <spacer name="horizontalSpacer">
+             <property name="orientation">
+              <enum>Qt::Horizontal</enum>
              </property>
-            </widget>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>40</width>
+               <height>20</height>
+              </size>
+             </property>
+            </spacer>
            </item>
           </layout>
          </item>
@@ -429,6 +443,7 @@
              </property>
              <property name="font">
               <font>
+               <family>Segoe UI</family>
                <pointsize>11</pointsize>
               </font>
              </property>
