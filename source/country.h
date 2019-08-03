@@ -11,6 +11,6 @@ struct Country {
 	int users;
 };
 
-typedef QList<Country> CountryList;
+using CountryList = QList<Country>;
 
 #endif // COUNTRY_H

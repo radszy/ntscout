@@ -19,6 +19,6 @@ struct Player {
 	int potential;
 };
 
-typedef QList<Player> PlayerList;
+using PlayerList = QList<Player>;
 
 #endif // PLAYER_H

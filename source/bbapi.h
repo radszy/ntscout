@@ -16,7 +16,7 @@ struct LeagueData {
 	QList<int> divisions;
 };
 
-typedef QList<LeagueData> LeagueDataList;
+using LeagueDataList = QList<LeagueData>;
 
 class BBApi : public QObject {
 	Q_OBJECT
