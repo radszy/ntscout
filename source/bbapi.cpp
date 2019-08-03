@@ -210,7 +210,7 @@ bool BBApi::roster(PlayerList& results, QList<int> team)
 bool BBApi::translatedNames(CountryList &list)
 {
     QUrl url("https://raw.githubusercontent.com/"
-             "rsxee/NTScout/master/names-en.txt");
+             "rszymanski/ntscout/master/names-en.txt");
     QByteArray data = manager->get(url);
 
     auto array = data.split('\n');
@@ -225,7 +225,7 @@ bool BBApi::translatedNames(CountryList &list)
 
 bool BBApi::releases(QString& tag, QString& download)
 {
-    QUrl url("https://api.github.com/repos/rsxee/NTScout/releases");
+    QUrl url("https://api.github.com/repos/rszymanski/ntscout/releases");
     QByteArray data = manager->get(url);
 
     QJsonDocument doc = QJsonDocument::fromBinaryData(data);

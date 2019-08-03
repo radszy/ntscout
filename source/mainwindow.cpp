@@ -205,7 +205,7 @@ void MainWindow::settingsTriggered()
 
 void MainWindow::reportTriggered()
 {
-    QDesktopServices::openUrl(QUrl("https://github.com/rsxee/NTScout/issues"));
+    QDesktopServices::openUrl(QUrl("https://github.com/rszymanski/ntscout/issues"));
 }
 
 void MainWindow::aboutTriggered()

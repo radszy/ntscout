@@ -87,7 +87,7 @@ func TranslatedNames() []string {
 	fmt.Print("\n\tFetching translated names... ")
 
 	url := "https://raw.githubusercontent.com/" +
-		"rsxee/NTScout/master/names-en.txt"
+		"rszymanski/ntscout/master/names-en.txt"
 
 	res, err := client.Get(url)
 	if err != nil {
@@ -109,7 +109,7 @@ func TranslatedNames() []string {
 func Releases(ntsver string) string {
 	fmt.Print("\n\tLooking for new releases... ")
 
-	url := "https://api.github.com/repos/rsxee/NTScout/releases"
+	url := "https://api.github.com/repos/rszymanski/ntscout/releases"
 	res, err := client.Get(url)
 	if err != nil {
 		logger.Println(err)
