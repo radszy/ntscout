@@ -18,65 +18,64 @@ class QLabel;
 class Worker;
 struct SearchValues;
 
-class ProgressWidget : public QWidget
-{
-    Q_OBJECT
+class ProgressWidget : public QWidget {
+	Q_OBJECT
 
-    enum State {
-        Divisions,
-        Leagues,
-        Teams,
-        Players
-    };
+	enum State {
+		Divisions,
+		Leagues,
+		Teams,
+		Players,
+	};
 
 public:
-    explicit ProgressWidget(QWidget *parent = nullptr);
-    ~ProgressWidget();
+	explicit ProgressWidget(QWidget* parent = nullptr);
+	~ProgressWidget();
 
-    void start(QList<SearchValues*>& values);
-    void reset();
-    void stop();
+	void start(QList<SearchValues*>& values);
+	void reset();
+	void stop();
 
-    PlayerList getResults() {return filteredPlayers;}
-    QString getElapsedTime() {return elapsedTime;}
-    int getRequests() {return requests;}
+	PlayerList getResults() { return filteredPlayers; }
+	QString getElapsedTime() { return elapsedTime; }
+	int getRequests() { return requests; }
 
 public slots:
-    void requestDone();
-    void teamsFound(int count);
-    void workerFinished(const PlayerList& playerList);
+	void requestDone();
+	void teamsFound(int count);
+	void workerFinished(const PlayerList& playerList);
 
-    signals:
-    void finished(bool);
+signals:
+	void finished(bool);
 
 private:
-    LeagueDataList getLeagueData(const QList<SearchValues*>& values, int& count);
-    void filterPlayers();
-    void setAsDone(QLabel* progress);
-    void nextState() {state++;}
-    void progressDivisions();
-    void progressLeagues();
-    void progressTeams();
-    void updateProgress(const QPair<int,int>& pair, int curr, int prev);
+	LeagueDataList getLeagueData(const QList<SearchValues*>& values, int& count);
+	void filterPlayers();
+	void setAsDone(QLabel* progress);
+	void nextState() { state++; }
+	void progressDivisions();
+	void progressLeagues();
+	void progressTeams();
+	void updateProgress(const QPair<int, int>& pair, int curr, int prev);
 
-    QList<SearchValues*> searchValues;
-    QList<Worker*> workers;
-    QList<PlayerList> playerLists;
-    PlayerList filteredPlayers;
+	QList<SearchValues*> searchValues;
+	QList<Worker*> workers;
+	QList<PlayerList> playerLists;
+	PlayerList filteredPlayers;
 
-    QPair<int, int> divisions;
-    QPair<int, int> leagues;
-    QPair<int, int> teams;
-    QPair<int, int> players;
+	QPair<int, int> divisions;
+	QPair<int, int> leagues;
+	QPair<int, int> teams;
+	QPair<int, int> players;
 
-    QTime time;
-    QString elapsedTime;
+	QTime time;
+	QString elapsedTime;
 
-    Ui::ProgressWidget *ui;
-    QMovie* movie;
+	Ui::ProgressWidget* ui;
+	QMovie* movie;
 
-    int state;
-    int requests;
+	int state;
+	int requests;
 };
 
 #endif // PROGRESSWIDGET_H
