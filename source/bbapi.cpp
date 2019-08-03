@@ -137,10 +137,10 @@ bool BBApi::teams(QList<int>& results, const QList<int>& league)
 
 		for (int j = 0; j < nodes.count(); ++j) {
 			int id = nodes.at(j).attributes().namedItem("id").toAttr().value().toInt();
-			if (Settings::searchBots == false) {
+			if (!Settings::searchBots) {
 				bool isBot =
 				        nodes.at(j).firstChildElement("isBot").text().toInt() == 1;
-				if (isBot == false) {
+				if (!isBot) {
 					results.append(id);
 				}
 			}
