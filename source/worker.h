@@ -5,7 +5,6 @@
 
 #include <QThread>
 
-class Network;
 class ProgressWidget;
 
 class Worker : public QThread {

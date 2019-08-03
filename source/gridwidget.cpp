@@ -3,6 +3,7 @@
 #include "countrywidget.h"
 #include "searchdialog.h"
 
+#include <algorithm>
 #include <QtMath>
 #include <QMenu>
 #include <QAction>
@@ -170,7 +171,7 @@ void GridWidget::sortBy(int index)
 	QList<CountryWidget*>& widgets =
 	        countryWidgets.count() < originalWidgets.count() ? countryWidgets : originalWidgets;
 
-	qSort(widgets.begin(),
+	std::sort(widgets.begin(),
 	      widgets.end(),
 	      [index](const CountryWidget* a, const CountryWidget* b) -> bool {
 		      switch (index) {

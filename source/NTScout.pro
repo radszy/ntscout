@@ -10,7 +10,9 @@ TARGET = NTScout
 TEMPLATE = app
 VERSION = 7.4.1
 
-QMAKE_CXXFLAGS = -std=c++11 -Werror -Wextra -pedantic
+DEFINES += QT_DEPRECATED_WARNINGS
+
+CONFIG+= strict_c++ c++17 warn_on
 
 RESOURCES += \
     resource.qrc

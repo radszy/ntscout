@@ -3,7 +3,8 @@
 #include <QFile>
 #include <QTextStream>
 #include <QString>
-#include <QDesktopWidget>
+#include <QGuiApplication>
+#include <QScreen>
 #include <QDir>
 #include <QtMath>
 #include <QDebug>
@@ -91,8 +92,7 @@ void Util::copyFolder(QString sourceFolder, QString destFolder)
 
 QPoint Util::screenCenter(int width, int height)
 {
-	QDesktopWidget desktop;
-	QRect screen = desktop.screenGeometry();
+	QRect screen = QGuiApplication::screens().first()->geometry();
 	return QPoint(screen.width() / 2 - width / 2, screen.height() / 2 - height / 2);
 }
 
