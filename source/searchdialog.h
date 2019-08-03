@@ -9,23 +9,22 @@ class SearchDialog;
 
 struct SearchValues;
 
-class SearchDialog : public QDialog
-{
-    Q_OBJECT
+class SearchDialog : public QDialog {
+	Q_OBJECT
 
 public:
-    explicit SearchDialog(QWidget *parent = 0);
-    ~SearchDialog();
+	explicit SearchDialog(QWidget* parent = 0);
+	~SearchDialog();
 
-    void updateValues();
-    void setValues(SearchValues* values);
+	void updateValues();
+	void setValues(SearchValues* values);
 
 signals:
-    void updateDefaultValues();
+	void updateDefaultValues();
 
 private:
-    SearchValues* searchValues;
-    Ui::SearchDialog *ui;
+	SearchValues* searchValues;
+	Ui::SearchDialog* ui;
 };
 
 #endif // SEARCHDIALOG_H

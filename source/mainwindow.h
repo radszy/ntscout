@@ -16,48 +16,47 @@ class SummaryWidget;
 class UpdateWidget;
 class SettingsDialog;
 
-class MainWindow : public QMainWindow
-{
-    Q_OBJECT
+class MainWindow : public QMainWindow {
+	Q_OBJECT
 
-    enum Page {
-        Login,
-        Country,
-        Progress,
-        Summary,
-        Update
-    };
+	enum Page {
+		Login,
+		Country,
+		Progress,
+		Summary,
+		Update,
+	};
 
 public:
-    explicit MainWindow(QWidget *parent = 0);
-    ~MainWindow();
+	explicit MainWindow(QWidget* parent = 0);
+	~MainWindow();
 
-    void proceedToCountryWidget();
-    void proceedToProgressWidget();
-    void proceedToSummaryWidget();
-    void goBackToCountryWidget();
+	void proceedToCountryWidget();
+	void proceedToProgressWidget();
+	void proceedToSummaryWidget();
+	void goBackToCountryWidget();
 
-    void closeEvent(QCloseEvent* event);
+	void closeEvent(QCloseEvent* event);
 
 public slots:
-    void nextClicked();
-    void backClicked();
-    void updateTriggered();
-    void settingsTriggered();
-    void reportTriggered();
-    void aboutTriggered();
-    void enableNextButton(bool enabled);
+	void nextClicked();
+	void backClicked();
+	void updateTriggered();
+	void settingsTriggered();
+	void reportTriggered();
+	void aboutTriggered();
+	void enableNextButton(bool enabled);
 
 private:
-    void readDataFile(CountryList& list);
+	void readDataFile(CountryList& list);
 
-    LoginWidget* loginWidget;
-    GridWidget* gridWidget;
-    ProgressWidget* progressWidget;
-    SummaryWidget* summaryWidget;
-    UpdateWidget* updateWidget;
-    SettingsDialog* settingsDialog;
-    Ui::MainWindow *ui;
+	LoginWidget* loginWidget;
+	GridWidget* gridWidget;
+	ProgressWidget* progressWidget;
+	SummaryWidget* summaryWidget;
+	UpdateWidget* updateWidget;
+	SettingsDialog* settingsDialog;
+	Ui::MainWindow* ui;
 };
 
 #endif // MAINWINDOW_H

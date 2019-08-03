@@ -7,20 +7,19 @@ namespace Ui {
 class SettingsDialog;
 }
 
-class SettingsDialog : public QDialog
-{
-    Q_OBJECT
+class SettingsDialog : public QDialog {
+	Q_OBJECT
 
 public:
-    explicit SettingsDialog(QWidget *parent = 0);
-    ~SettingsDialog();
+	explicit SettingsDialog(QWidget* parent = 0);
+	~SettingsDialog();
 
 public slots:
-    void apply();
-    int exec();
+	void apply();
+	int exec();
 
 private:
-    Ui::SettingsDialog *ui;
+	Ui::SettingsDialog* ui;
 };
 
 #endif // SETTINGSDIALOG_H

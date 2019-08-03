@@ -9,28 +9,27 @@ namespace Ui {
 class SummaryWidget;
 }
 
-class SummaryWidget : public QWidget
-{
-    Q_OBJECT
+class SummaryWidget : public QWidget {
+	Q_OBJECT
 
 public:
-    explicit SummaryWidget(QWidget *parent = 0);
-    ~SummaryWidget();
+	explicit SummaryWidget(QWidget* parent = 0);
+	~SummaryWidget();
 
-    void reset();
-    void setResults(const PlayerList& playerList);
+	void reset();
+	void setResults(const PlayerList& playerList);
 
 public slots:
-    void openFile();
-    void openDirectory();
+	void openFile();
+	void openDirectory();
 
 private:
-    QString toCentimeters(int value);
-    QString toMeters(int value);
-    QString toInches(int value);
-    QString toFeet(int value);
+	QString toCentimeters(int value);
+	QString toMeters(int value);
+	QString toInches(int value);
+	QString toFeet(int value);
 
-    Ui::SummaryWidget *ui;
+	Ui::SummaryWidget* ui;
 };
 
 #endif // SUMMARYWIDGET_H

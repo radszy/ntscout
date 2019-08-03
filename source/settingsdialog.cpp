@@ -3,30 +3,30 @@
 
 #include "settings.h"
 
-SettingsDialog::SettingsDialog(QWidget *parent) :
-    QDialog(parent),
-    ui(new Ui::SettingsDialog)
+SettingsDialog::SettingsDialog(QWidget* parent)
+        : QDialog(parent)
+        , ui(new Ui::SettingsDialog)
 {
-    ui->setupUi(this);
+	ui->setupUi(this);
 }
 
 SettingsDialog::~SettingsDialog()
 {
-    delete ui;
+	delete ui;
 }
 
 void SettingsDialog::apply()
 {
-    Settings::tasks = ui->tasks->value();
-    Settings::metrics = ui->metrics->currentIndex();
-    Settings::searchBots = ui->bots->isChecked();
+	Settings::tasks = ui->tasks->value();
+	Settings::metrics = ui->metrics->currentIndex();
+	Settings::searchBots = ui->bots->isChecked();
 }
 
 int SettingsDialog::exec()
 {
-    ui->tasks->setValue(Settings::tasks);
-    ui->metrics->setCurrentIndex(Settings::metrics);
-    ui->bots->setChecked(Settings::searchBots);
+	ui->tasks->setValue(Settings::tasks);
+	ui->metrics->setCurrentIndex(Settings::metrics);
+	ui->bots->setChecked(Settings::searchBots);
 
-    return QDialog::exec();
+	return QDialog::exec();
 }

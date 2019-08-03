@@ -3,13 +3,12 @@
 
 #include <QString>
 
-struct Country
-{
-    QString name;
-    QString name_en;
-    int id;
-    int divisions;
-    int users;
+struct Country {
+	QString name;
+	QString name_en;
+	int id;
+	int divisions;
+	int users;
 };
 
 typedef QList<Country> CountryList;
