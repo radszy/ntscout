@@ -12,7 +12,7 @@ class Worker : public QThread {
 public:
 	explicit Worker(const QList<int>& leagueList, ProgressWidget* parent = nullptr);
 
-	void run();
+	void run() override;
 	bool isDone() { return done; }
 
 public slots:

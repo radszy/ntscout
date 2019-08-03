@@ -36,7 +36,7 @@ public:
 	void proceedToSummaryWidget();
 	void goBackToCountryWidget();
 
-	void closeEvent(QCloseEvent* event);
+	void closeEvent(QCloseEvent* event) override;
 
 public slots:
 	void nextClicked();

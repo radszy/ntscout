@@ -16,7 +16,7 @@ public:
 
 public slots:
 	void apply();
-	int exec();
+	int exec() override;
 
 private:
 	Ui::SettingsDialog* ui;

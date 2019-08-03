@@ -36,7 +36,7 @@ public:
 	void setCountryList(const CountryList& list);
 	QList<SearchValues*> getSearchValues();
 
-	void resizeEvent(QResizeEvent* event);
+	void resizeEvent(QResizeEvent* event) override;
 
 public slots:
 	void sortBy(int index);

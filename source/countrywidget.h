@@ -48,8 +48,8 @@ public:
 	void showSearchDialog();
 	static SearchDialog* getSearchDialog() { return searchDialog; }
 
-	void mousePressEvent(QMouseEvent* event);
-	void mouseMoveEvent(QMouseEvent* event);
+	void mousePressEvent(QMouseEvent* event) override;
+	void mouseMoveEvent(QMouseEvent* event) override;
 
 signals:
 	void selected(CountryWidget*);
