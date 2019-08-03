@@ -103,10 +103,10 @@ void MainWindow::proceedToProgressWidget()
 	QMessageBox msgBox;
 	msgBox.setTextFormat(Qt::RichText);
 	msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
-	msgBox.setText("<p align=\"center\" style=\"font-size:14px\">Program is going to start "
-	               "searching now.</p>");
+	msgBox.setText(
+	        R"(<p align="center" style="font-size:14px">Program is going to start searching now.</p>)");
 	msgBox.setInformativeText(
-	        "<p align=\"center\" style=\"font-size:14px\">Do you want to proceed?</p>");
+	        R"(<p align="center" style="font-size:14px">Do you want to proceed?</p>)");
 
 	if (msgBox.exec() == QMessageBox::Yes) {
 		progressWidget->reset();

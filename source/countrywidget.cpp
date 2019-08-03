@@ -16,7 +16,7 @@ CountryWidget::CountryWidget(QWidget* parent)
 	ui->setupUi(this);
 
 	searchValues.countryid = id;
-	searchValues.divCount = DivisionCount;
+	searchValues.divCount = Settings::MAX_DIVISION_COUNT;
 	searchValues.countrySet = false;
 	searchValues.nationalitySet = false;
 	loadCountryValues();
@@ -78,7 +78,7 @@ void CountryWidget::setDivisions(int value)
 	for (int i = 0; i < searchValues.divCount; ++i) {
 		searchValues.div[i] = true;
 	}
-	for (int i = searchValues.divCount; i < DivisionCount; ++i) {
+	for (int i = searchValues.divCount; i < Settings::MAX_DIVISION_COUNT; ++i) {
 		searchValues.div[i] = false;
 	}
 }

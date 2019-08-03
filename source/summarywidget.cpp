@@ -110,12 +110,12 @@ void SummaryWidget::openDirectory()
 
 QString SummaryWidget::toCentimeters(int value)
 {
-	return QString::number(int(value * 2.54 + 0.5));
+	return QString::number(qRound(value * 2.54));
 }
 
 QString SummaryWidget::toMeters(int value)
 {
-	QString result = QString::number(int(value * 2.54 + 0.5) / 100.0);
+	QString result = QString::number(qRound(value * 2.54) / 100.0);
 	if (result.count() == 3) {
 		result.append("0");
 	}

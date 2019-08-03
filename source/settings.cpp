@@ -13,7 +13,7 @@ QPair<quint8, quint8> Settings::age = qMakePair(18, 99);
 QPair<quint8, quint8> Settings::pot = qMakePair(0, 11);
 QPair<quint32, quint32> Settings::sal = qMakePair(0, 999999);
 QPair<quint32, quint32> Settings::dmi = qMakePair(0, 99999999);
-bool Settings::checkedDivisions[DivisionCount] = {true};
+std::array<bool, Settings::MAX_DIVISION_COUNT> Settings::checkedDivisions = {true};
 
 bool Settings::read()
 {
@@ -25,8 +25,8 @@ bool Settings::read()
 	QDataStream stream(&file);
 	stream >> age >> pot >> sal >> dmi >> tasks >> metrics >> searchBots >> createLogs;
 
-	for (int i = 0; i < DivisionCount; ++i) {
-		stream >> checkedDivisions[i];
+	for (auto division : checkedDivisions) {
+		stream >> division;
 	}
 
 	return true;
@@ -42,8 +42,8 @@ bool Settings::save()
 	QDataStream stream(&file);
 	stream << age << pot << sal << dmi << tasks << metrics << searchBots << createLogs;
 
-	for (int i = 0; i < DivisionCount; ++i) {
-		stream << checkedDivisions[i];
+	for (auto division : checkedDivisions) {
+		stream << division;
 	}
 
 	return true;

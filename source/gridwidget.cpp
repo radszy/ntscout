@@ -101,7 +101,7 @@ void GridWidget::setCountryList(const CountryList& list)
 	}
 
 	if (!originalWidgets.isEmpty()) {
-		SearchDialog* dialog = originalWidgets.front()->getSearchDialog();
+		SearchDialog* dialog = CountryWidget::getSearchDialog();
 		connect(dialog, SIGNAL(updateDefaultValues()), this, SLOT(updateCountryWidgets()));
 	}
 }

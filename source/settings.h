@@ -2,8 +2,7 @@
 #define SETTINGS_H
 
 #include <QPair>
-
-#define DivisionCount 6
+#include <array>
 
 enum Metrics {
 	Centimeters,
@@ -12,8 +11,10 @@ enum Metrics {
 	Feet,
 };
 
-class Settings {
+class Settings {	
 public:
+	static constexpr int MAX_DIVISION_COUNT = 6;
+
 	static bool read();
 	static bool save();
 
@@ -27,7 +28,7 @@ public:
 	static QPair<quint32, quint32> sal;
 	static QPair<quint32, quint32> dmi;
 
-	static bool checkedDivisions[DivisionCount];
+	static std::array<bool, MAX_DIVISION_COUNT> checkedDivisions;
 };
 
 #endif // SETTINGS_H

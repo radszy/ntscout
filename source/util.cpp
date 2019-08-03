@@ -99,8 +99,8 @@ QPoint Util::screenCenter(int width, int height)
 QString Util::formatTime(int elapsed)
 {
 	int total = elapsed / 1000;
-	int hours = qFloor(total / 3600);
-	int minutes = floor((total / 60) % 60);
+	int hours = qFloor(total / 3600.0);
+	int minutes = qFloor((total / 60) % 60);
 	int seconds = total % 60;
 
 	return QString("%1:%2:%3")
