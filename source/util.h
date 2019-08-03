@@ -10,7 +10,7 @@ public:
 	static bool readCountry(CountryList& countryList, QString& error);
 	static bool writeCountry(CountryList& countryList);
 	static bool newFile(const QString& path, const QByteArray& data);
-	static void copyFolder(QString sourceFolder, QString destFolder);
+	static void copyFolder(const QString& sourceFolder, const QString& destFolder);
 	static QPoint screenCenter(int width, int height);
 	static QString formatTime(int elapsed);
 };

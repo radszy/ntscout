@@ -62,7 +62,7 @@ bool Util::newFile(const QString& path, const QByteArray& data)
 	return true;
 }
 
-void Util::copyFolder(QString sourceFolder, QString destFolder)
+void Util::copyFolder(const QString& sourceFolder, const QString& destFolder)
 {
 	QDir sourceDir(sourceFolder);
 	if (!sourceDir.exists()) {
