@@ -33,7 +33,7 @@ public:
 	void checkIfCanProceed();
 	void clearMarkedWidget();
 
-	void setCountryList(const CountryList& list);
+	void setCountries(const Countries& countries);
 	QList<SearchValues*> getSearchValues();
 
 	void resizeEvent(QResizeEvent* event) override;
@@ -62,7 +62,7 @@ signals:
 	void canProceed(bool);
 
 private:
-	CountryList countryList;
+	Countries mCountries;
 	QList<CountryWidget*> originalWidgets;
 	QList<CountryWidget*> countryWidgets;
 	QList<CountryWidget*> selectedWidgets;

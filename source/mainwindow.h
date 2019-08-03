@@ -48,7 +48,7 @@ public slots:
 	void enableNextButton(bool enabled);
 
 private:
-	void readDataFile(CountryList& list);
+	void readDataFile(Countries& list);
 
 	LoginWidget* loginWidget;
 	GridWidget* gridWidget;

@@ -71,10 +71,11 @@ void GridWidget::reset()
 	}
 }
 
-void GridWidget::setCountryList(const CountryList& list)
+void GridWidget::setCountries(const Countries& countries)
 {
-	countryList = list;
-	for (auto&& country : countryList) {
+	mCountries = countries;
+
+	for (const Country& country : mCountries) {
 		auto widget = new CountryWidget;
 		widget->setFlag(QPixmap("flags/flag_" + QString::number(country.id) + ".gif"));
 		widget->setName(country.name_en);

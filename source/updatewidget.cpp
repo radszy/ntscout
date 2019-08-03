@@ -43,14 +43,13 @@ bool UpdateWidget::updateCountryData()
 
 	ui->updateList->addItem("Updating country data.");
 
-	CountryList list;
-	bbapi.countries(list);
-	bbapi.translatedNames(list);
-
-	Util::writeCountry(list);
+	Countries countries;
+	bbapi.countries(countries);
+	bbapi.translatedNames(countries);
+	Util::writeCountry(countries);
 
 	QDir dir;
-	for (const Country& country : list) {
+	for (const Country& country : countries) {
 		QString path = QString("/flags/flag_%1.gif").arg(country.id);
 		if (!dir.exists(path)) {
 			ui->updateList->addItem(

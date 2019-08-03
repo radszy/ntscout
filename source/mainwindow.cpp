@@ -71,8 +71,8 @@ void MainWindow::proceedToCountryWidget()
 	loginWidget->setInformation("");
 	ui->nextButton->setDisabled(true);
 
-	CountryList list;
-	readDataFile(list);
+	Countries countries;
+	readDataFile(countries);
 
 	QString user = loginWidget->getLogin();
 	QString pass = loginWidget->getPassword();
@@ -94,7 +94,7 @@ void MainWindow::proceedToCountryWidget()
 
 	enableNextButton(false);
 
-	gridWidget->setCountryList(list);
+	gridWidget->setCountries(countries);
 	ui->stackedWidget->setCurrentWidget(gridWidget);
 }
 
@@ -222,7 +222,7 @@ void MainWindow::enableNextButton(bool enabled)
 	                                     "one country and one nationality");
 }
 
-void MainWindow::readDataFile(CountryList& list)
+void MainWindow::readDataFile(Countries& list)
 {
 	QString error;
 	if (!Util::readCountry(list, error)) {

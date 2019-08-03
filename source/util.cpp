@@ -9,13 +9,14 @@
 #include <QtMath>
 #include <QDebug>
 
-bool Util::readCountry(CountryList& countryList, QString& error)
+bool Util::readCountry(Countries& countries, QString& error)
 {
 	QFile file("data/country.dat");
 	if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
 		error = "couldn't open country.dat";
 		return false;
 	}
+
 	QTextStream stream(&file);
 	QString input;
 	while (!(input = stream.readLine()).isEmpty()) {
@@ -26,10 +27,10 @@ bool Util::readCountry(CountryList& countryList, QString& error)
 		country.name_en = list.at(2);
 		country.divisions = list.at(3).toInt();
 		country.users = list.at(4).toInt();
-		countryList.append(country);
+		countries.append(country);
 	}
 
-	if (countryList.isEmpty() || countryList.first().id != 1) {
+	if (countries.isEmpty() || countries.first().id != 1) {
 		error = "data seems corrupted";
 		return false;
 	}
@@ -37,17 +38,19 @@ bool Util::readCountry(CountryList& countryList, QString& error)
 	return true;
 }
 
-bool Util::writeCountry(CountryList& countryList)
+bool Util::writeCountry(const Countries& countries)
 {
 	QFile file("data/country.dat");
 	if (!file.open(QIODevice::WriteOnly | QIODevice::Text)) {
 		return false;
 	}
+
 	QTextStream stream(&file);
-	for (const Country& country : countryList) {
+	for (const Country& country : countries) {
 		stream << country.id << "," << country.name << "," << country.name_en << ","
 		       << country.divisions << "," << country.users << "\n";
 	}
+
 	return true;
 }
 

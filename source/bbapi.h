@@ -28,11 +28,11 @@ public:
 
 	QString login(const QString& login, const QString& password);
 	QString login();
-	bool countries(CountryList& result);
+	bool countries(Countries& result);
 	bool leagues(QList<int>& results, const LeagueDataList& leagues);
 	bool teams(QList<int>& results, const QList<int>& league);
 	bool roster(PlayerList& results, const QList<int>& team);
-	bool translatedNames(CountryList& list);
+	bool translatedNames(Countries& countries);
 	bool releases(QString& tag, QString& download);
 	QNetworkReply* downloadRelease(const QString& url);
 	QByteArray downloadFlag(int id);

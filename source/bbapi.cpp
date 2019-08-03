@@ -66,7 +66,7 @@ QString BBApi::login()
 	return login(name, pass);
 }
 
-bool BBApi::countries(CountryList& result)
+bool BBApi::countries(Countries& result)
 {
 	QUrl url("http://bbapi.buzzerbeater.com/countries.aspx");
 	QByteArray data = manager->get(url);
@@ -207,17 +207,17 @@ bool BBApi::roster(PlayerList& results, const QList<int>& team)
 }
 
 // --- BBAPI UNRELATED ---
-bool BBApi::translatedNames(CountryList& list)
+bool BBApi::translatedNames(Countries& countries)
 {
 	QUrl url("https://raw.githubusercontent.com/"
 	         "rszymanski/ntscout/master/names-en.txt");
 	QByteArray data = manager->get(url);
 
-	auto array = data.split('\n');
-	auto len = qMin(list.count(), array.count());
+	const QList<QByteArray> names = data.split('\n');
+	const int len = qMin(countries.count(), names.count());
 
 	for (int i = 0; i < len; ++i) {
-		list[i].name_en = array[i];
+		countries[i].name_en = names[i];
 	}
 
 	return true;
