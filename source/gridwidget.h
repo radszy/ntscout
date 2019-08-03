@@ -40,7 +40,7 @@ public:
 
 public slots:
 	void sortBy(int index);
-	void searchCountry(QString text);
+	void searchCountry(const QString& text);
 	void selectAllCountry();
 	void selectAllNationality();
 	void unselectAll();

@@ -172,20 +172,20 @@ void GridWidget::sortBy(int index)
 	        countryWidgets.count() < originalWidgets.count() ? countryWidgets : originalWidgets;
 
 	std::sort(widgets.begin(),
-	      widgets.end(),
-	      [index](const CountryWidget* a, const CountryWidget* b) -> bool {
-		      switch (index) {
-			      case ID:
-				      return a->getID() < b->getID();
-			      case Name:
-				      return a->getName() < b->getName();
-			      case Divisions:
-				      return a->getDivisions() < b->getDivisions();
-			      case Users:
-			      default:
-				      return a->getUsers() < b->getUsers();
-		      }
-	      });
+	          widgets.end(),
+	          [index](const CountryWidget* a, const CountryWidget* b) -> bool {
+		          switch (index) {
+			          case ID:
+				          return a->getID() < b->getID();
+			          case Name:
+				          return a->getName() < b->getName();
+			          case Divisions:
+				          return a->getDivisions() < b->getDivisions();
+			          case Users:
+			          default:
+				          return a->getUsers() < b->getUsers();
+		          }
+	          });
 
 	// updateGrid is based on countryWidgets
 	if (countryWidgets.count() >= originalWidgets.count()) {
@@ -196,7 +196,7 @@ void GridWidget::sortBy(int index)
 	updateGrid();
 }
 
-void GridWidget::searchCountry(QString text)
+void GridWidget::searchCountry(const QString& text)
 {
 	for (CountryWidget* widget : originalWidgets) {
 		widget->setVisible(false);

@@ -90,7 +90,7 @@ bool BBApi::countries(CountryList& result)
 	return true;
 }
 
-bool BBApi::leagues(QList<int>& results, const LeagueDataList leagues)
+bool BBApi::leagues(QList<int>& results, const LeagueDataList& leagues)
 {
 	QList<QUrl> urls;
 	for (int i = 0; i < leagues.count(); ++i) {
@@ -119,7 +119,7 @@ bool BBApi::leagues(QList<int>& results, const LeagueDataList leagues)
 	return true;
 }
 
-bool BBApi::teams(QList<int>& results, QList<int> league)
+bool BBApi::teams(QList<int>& results, const QList<int>& league)
 {
 	QList<QUrl> urls;
 	for (int i = 0; i < league.count(); ++i) {
@@ -153,7 +153,7 @@ bool BBApi::teams(QList<int>& results, QList<int> league)
 	return true;
 }
 
-bool BBApi::roster(PlayerList& results, QList<int> team)
+bool BBApi::roster(PlayerList& results, const QList<int>& team)
 {
 	QList<QUrl> urls;
 	for (int i = 0; i < team.count(); ++i) {

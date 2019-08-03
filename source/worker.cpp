@@ -6,7 +6,7 @@
 
 #include <QDebug>
 
-Worker::Worker(QList<int> leagueList, ProgressWidget* parent)
+Worker::Worker(const QList<int>& leagueList, ProgressWidget* parent)
         : QThread(parent)
 {
 	done = false;

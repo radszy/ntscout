@@ -44,9 +44,9 @@ public:
 public slots:
     void requestDone();
     void teamsFound(int count);
-    void workerFinished(PlayerList playerList);
+    void workerFinished(const PlayerList& playerList);
 
-signals:
+    signals:
     void finished(bool);
 
 private:

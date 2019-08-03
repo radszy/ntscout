@@ -268,7 +268,7 @@ void ProgressWidget::teamsFound(int count)
 	ui->teamTasks->setText(QString("%1 / %2").arg(teams.first).arg(teams.second));
 }
 
-void ProgressWidget::workerFinished(PlayerList playerList)
+void ProgressWidget::workerFinished(const PlayerList& playerList)
 {
 	playerLists.append(playerList);
 
