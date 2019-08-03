@@ -16,7 +16,7 @@ class CountryWidget : public QWidget {
 	Q_OBJECT
 
 public:
-	explicit CountryWidget(QWidget* parent = 0);
+	explicit CountryWidget(QWidget* parent = nullptr);
 	~CountryWidget();
 
 	void loadNationalityValues();

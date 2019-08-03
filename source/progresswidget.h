@@ -30,7 +30,7 @@ class ProgressWidget : public QWidget
     };
 
 public:
-    explicit ProgressWidget(QWidget *parent = 0);
+    explicit ProgressWidget(QWidget *parent = nullptr);
     ~ProgressWidget();
 
     void start(QList<SearchValues*>& values);

@@ -13,7 +13,7 @@ class SearchDialog : public QDialog {
 	Q_OBJECT
 
 public:
-	explicit SearchDialog(QWidget* parent = 0);
+	explicit SearchDialog(QWidget* parent = nullptr);
 	~SearchDialog();
 
 	void updateValues();

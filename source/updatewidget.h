@@ -11,7 +11,7 @@ class UpdateWidget : public QWidget {
 	Q_OBJECT
 
 public:
-	explicit UpdateWidget(QWidget* parent = 0);
+	explicit UpdateWidget(QWidget* parent = nullptr);
 	~UpdateWidget();
 
 public slots:

@@ -10,7 +10,7 @@ class ProgressWidget;
 class Worker : public QThread {
 	Q_OBJECT
 public:
-	explicit Worker(const QList<int>& leagueList, ProgressWidget* parent = 0);
+	explicit Worker(const QList<int>& leagueList, ProgressWidget* parent = nullptr);
 
 	void run();
 	bool isDone() { return done; }

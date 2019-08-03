@@ -13,7 +13,7 @@ class SummaryWidget : public QWidget {
 	Q_OBJECT
 
 public:
-	explicit SummaryWidget(QWidget* parent = 0);
+	explicit SummaryWidget(QWidget* parent = nullptr);
 	~SummaryWidget();
 
 	void reset();

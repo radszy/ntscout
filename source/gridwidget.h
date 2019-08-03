@@ -24,7 +24,7 @@ class GridWidget : public QWidget {
 	Q_OBJECT
 
 public:
-	explicit GridWidget(QWidget* parent = 0);
+	explicit GridWidget(QWidget* parent = nullptr);
 	~GridWidget();
 
 	QAction* createShortcut(QWidget* widget, const QKeySequence& sequence, const QString& func);

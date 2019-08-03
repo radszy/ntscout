@@ -6,7 +6,7 @@
 class Network : public QNetworkAccessManager {
 	Q_OBJECT
 public:
-	explicit Network(QObject* parent = 0);
+	explicit Network(QObject* parent = nullptr);
 
 	QNetworkReply* getRaw(const QUrl& url);
 	QByteArray get(const QUrl& url);
