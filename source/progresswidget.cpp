@@ -131,7 +131,7 @@ void ProgressWidget::start(QList<SearchValues*>& values)
 	}
 
 	for (int i = 0; i < tasks; ++i) {
-		Worker* worker = new Worker(div[i], this);
+		auto worker = new Worker(div[i], this);
 		connect(worker,
 		        SIGNAL(finished(PlayerList)),
 		        this,

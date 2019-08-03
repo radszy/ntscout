@@ -16,7 +16,7 @@ GridWidget::GridWidget(QWidget* parent)
 {
 	ui->setupUi(this);
 
-	QMenu* menu = new QMenu(ui->selectAll);
+	auto menu = new QMenu(ui->selectAll);
 	QAction* actCountry = menu->addAction("Country");
 	QAction* actNationality = menu->addAction("Nationality");
 	ui->selectAll->setMenu(menu);
@@ -44,11 +44,11 @@ QAction* GridWidget::createShortcut(QWidget* widget,
                                     const QKeySequence& sequence,
                                     const QString& func)
 {
-	QAction* act = new QAction(widget);
-	act->setShortcut(sequence);
-	widget->addAction(act);
-	connect(act, "2triggered()", widget, QString("1" + func).toLatin1());
-	return act;
+	auto action = new QAction(widget);
+	action->setShortcut(sequence);
+	widget->addAction(action);
+	connect(action, "2triggered()", widget, QString("1" + func).toLatin1());
+	return action;
 }
 
 void GridWidget::reset()
@@ -75,7 +75,7 @@ void GridWidget::setCountryList(const CountryList& list)
 {
 	countryList = list;
 	for (auto&& country : countryList) {
-		CountryWidget* widget = new CountryWidget;
+		auto widget = new CountryWidget;
 		widget->setFlag(QPixmap("flags/flag_" + QString::number(country.id) + ".gif"));
 		widget->setName(country.name_en);
 		widget->setInitialToolTip(country.name);
