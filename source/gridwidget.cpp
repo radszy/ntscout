@@ -11,21 +11,21 @@
 
 GridWidget::GridWidget(QWidget* parent)
         : QWidget(parent)
-        , markedWidget(nullptr)
-        , ui(new Ui::GridWidget)
+        , mMarkedWidget(nullptr)
+        , mUi(new Ui::GridWidget)
 {
-	ui->setupUi(this);
+	mUi->setupUi(this);
 
-	auto menu = new QMenu(ui->selectAll);
+	auto menu = new QMenu(mUi->selectAll);
 	QAction* actCountry = menu->addAction("Country");
 	QAction* actNationality = menu->addAction("Nationality");
-	ui->selectAll->setMenu(menu);
+	mUi->selectAll->setMenu(menu);
 
 	connect(actCountry, SIGNAL(triggered()), this, SLOT(selectAllCountry()));
 	connect(actNationality, SIGNAL(triggered()), this, SLOT(selectAllNationality()));
 
-	createShortcut(ui->searchField, Qt::CTRL + Qt::Key_F, "setFocus()");
-	createShortcut(ui->scrollArea, Qt::CTRL + Qt::Key_G, "setFocus()");
+	createShortcut(mUi->searchField, Qt::CTRL + Qt::Key_F, "setFocus()");
+	createShortcut(mUi->scrollArea, Qt::CTRL + Qt::Key_G, "setFocus()");
 	createShortcut(this, Qt::Key_Right, "markRight()");
 	createShortcut(this, Qt::Key_Left, "markLeft()");
 	createShortcut(this, Qt::Key_Up, "markUp()");
@@ -37,7 +37,7 @@ GridWidget::GridWidget(QWidget* parent)
 
 GridWidget::~GridWidget()
 {
-	delete ui;
+	delete mUi;
 }
 
 QAction* GridWidget::createShortcut(QWidget* widget,
@@ -53,18 +53,18 @@ QAction* GridWidget::createShortcut(QWidget* widget,
 
 void GridWidget::reset()
 {
-	ui->showSelected->setChecked(false);
-	ui->searchField->setText("");
+	mUi->showSelected->setChecked(false);
+	mUi->searchField->setText("");
 
-	countryWidgets.clear();
-	for (CountryWidget* widget : originalWidgets) {
+	mCountryWidgets.clear();
+	for (CountryWidget* widget : mOriginalWidgets) {
 		widget->setVisible(true);
 		widget->unselect();
-		countryWidgets.append(widget);
+		mCountryWidgets.append(widget);
 	}
 
-	if (ui->sortBox->currentIndex() != ID) {
-		ui->sortBox->setCurrentIndex(ID);
+	if (mUi->sortBox->currentIndex() != ID) {
+		mUi->sortBox->setCurrentIndex(ID);
 	}
 	else {
 		sortBy(ID);
@@ -84,8 +84,8 @@ void GridWidget::setCountries(const Countries& countries)
 		widget->setUsers(country.users);
 		widget->setID(country.id);
 
-		originalWidgets.append(widget);
-		countryWidgets.append(widget);
+		mOriginalWidgets.append(widget);
+		mCountryWidgets.append(widget);
 
 		connect(widget,
 		        SIGNAL(selected(CountryWidget*)),
@@ -101,29 +101,31 @@ void GridWidget::setCountries(const Countries& countries)
 		        SLOT(setMarkedWidget(CountryWidget*)));
 	}
 
-	if (!originalWidgets.isEmpty()) {
+	if (!mOriginalWidgets.isEmpty()) {
 		SearchDialog* dialog = CountryWidget::getSearchDialog();
 		connect(dialog, SIGNAL(updateDefaultValues()), this, SLOT(updateCountryWidgets()));
 	}
 }
 
-void GridWidget::checkIfCanProceed()
+void GridWidget::emitCanProceed()
 {
 	bool country = false;
 	bool nationality = false;
-	for (int i = 0; i < selectedWidgets.count(); ++i) {
-		country |= selectedWidgets.at(i)->isCountrySelected();
-		nationality |= selectedWidgets.at(i)->isNationalitySelected();
+
+	for (CountryWidget* const widget : mSelectedWidgets) {
+		country |= widget->isCountrySelected();
+		nationality |= widget->isNationalitySelected();
 	}
+
 	emit canProceed(country && nationality);
 }
 
 void GridWidget::clearMarkedWidget()
 {
-	if (markedWidget != nullptr) {
-		if (!countryWidgets.contains(markedWidget)) {
-			markedWidget->unmarkFrame();
-			markedWidget = nullptr;
+	if (mMarkedWidget != nullptr) {
+		if (!mCountryWidgets.contains(mMarkedWidget)) {
+			mMarkedWidget->unmarkFrame();
+			mMarkedWidget = nullptr;
 		}
 	}
 }
@@ -131,7 +133,7 @@ void GridWidget::clearMarkedWidget()
 QList<SearchValues*> GridWidget::getSearchValues()
 {
 	QList<SearchValues*> searchValues;
-	for (CountryWidget* widget : selectedWidgets) {
+	for (CountryWidget* widget : mSelectedWidgets) {
 		searchValues.append(widget->getSearchValues());
 	}
 	return searchValues;
@@ -139,21 +141,21 @@ QList<SearchValues*> GridWidget::getSearchValues()
 
 void GridWidget::updateGrid()
 {
-	if (countryWidgets.isEmpty()) {
+	if (mCountryWidgets.isEmpty()) {
 		return;
 	}
 
-	int cols = qMax(1, size().width() / countryWidgets.front()->width());
-	int rows = qCeil(countryWidgets.count() / (double)cols);
+	int cols = qMax(1, size().width() / mCountryWidgets.front()->width());
+	int rows = qCeil(mCountryWidgets.count() / (double)cols);
 
-	for (CountryWidget* widget : originalWidgets) {
-		ui->gridLayout->removeWidget(widget);
+	for (CountryWidget* widget : mOriginalWidgets) {
+		mUi->gridLayout->removeWidget(widget);
 	}
 
 	int k = 0;
 	for (int i = 0; i < rows; ++i) {
-		for (int j = 0; j < cols && k < countryWidgets.count(); ++j, ++k) {
-			ui->gridLayout->addWidget(countryWidgets.at(k), i, j);
+		for (int j = 0; j < cols && k < mCountryWidgets.count(); ++j, ++k) {
+			mUi->gridLayout->addWidget(mCountryWidgets.at(k), i, j);
 		}
 	}
 
@@ -169,8 +171,9 @@ void GridWidget::resizeEvent(QResizeEvent* event)
 
 void GridWidget::sortBy(int index)
 {
-	QList<CountryWidget*>& widgets =
-	        countryWidgets.count() < originalWidgets.count() ? countryWidgets : originalWidgets;
+	CountryWidgets& widgets = mCountryWidgets.count() < mOriginalWidgets.count()
+	                                  ? mCountryWidgets
+	                                  : mOriginalWidgets;
 
 	std::sort(widgets.begin(),
 	          widgets.end(),
@@ -189,9 +192,9 @@ void GridWidget::sortBy(int index)
 	          });
 
 	// updateGrid is based on countryWidgets
-	if (countryWidgets.count() >= originalWidgets.count()) {
-		countryWidgets.clear();
-		countryWidgets.append(originalWidgets);
+	if (mCountryWidgets.count() >= mOriginalWidgets.count()) {
+		mCountryWidgets.clear();
+		mCountryWidgets.append(mOriginalWidgets);
 	}
 
 	updateGrid();
@@ -199,23 +202,23 @@ void GridWidget::sortBy(int index)
 
 void GridWidget::searchCountry(const QString& text)
 {
-	for (CountryWidget* widget : originalWidgets) {
+	for (CountryWidget* widget : mOriginalWidgets) {
 		widget->setVisible(false);
 	}
-	countryWidgets.clear();
+	mCountryWidgets.clear();
 
 	if (text.isEmpty()) {
-		for (CountryWidget* widget : originalWidgets) {
+		for (CountryWidget* widget : mOriginalWidgets) {
 			widget->setVisible(true);
-			countryWidgets.append(widget);
+			mCountryWidgets.append(widget);
 		}
 	}
 	else {
-		for (CountryWidget* widget : originalWidgets) {
+		for (CountryWidget* widget : mOriginalWidgets) {
 			if (widget->getName().contains(text, Qt::CaseInsensitive) ||
 			    widget->getNameEn().contains(text, Qt::CaseInsensitive)) {
 				widget->setVisible(true);
-				countryWidgets.append(widget);
+				mCountryWidgets.append(widget);
 			}
 		}
 	}
@@ -225,21 +228,21 @@ void GridWidget::searchCountry(const QString& text)
 
 void GridWidget::selectAllCountry()
 {
-	for (CountryWidget* widget : countryWidgets) {
+	for (CountryWidget* widget : mCountryWidgets) {
 		widget->selectAsCountry();
 	}
 }
 
 void GridWidget::selectAllNationality()
 {
-	for (CountryWidget* widget : countryWidgets) {
+	for (CountryWidget* widget : mCountryWidgets) {
 		widget->selectAsNationality();
 	}
 }
 
 void GridWidget::unselectAll()
 {
-	for (CountryWidget* widget : countryWidgets) {
+	for (CountryWidget* widget : mCountryWidgets) {
 		widget->unselect();
 		widget->loadNationalityValues();
 		widget->loadCountryValues();
@@ -248,21 +251,21 @@ void GridWidget::unselectAll()
 
 void GridWidget::showSelected()
 {
-	for (CountryWidget* widget : originalWidgets) {
+	for (CountryWidget* widget : mOriginalWidgets) {
 		widget->setVisible(false);
 	}
-	countryWidgets.clear();
+	mCountryWidgets.clear();
 
-	if (ui->showSelected->isChecked()) {
-		for (CountryWidget* widget : originalWidgets) {
+	if (mUi->showSelected->isChecked()) {
+		for (CountryWidget* widget : mOriginalWidgets) {
 			if (widget->isSelected()) {
 				widget->setVisible(true);
-				countryWidgets.append(widget);
+				mCountryWidgets.append(widget);
 			}
 		}
 	}
 	else {
-		searchCountry(ui->searchField->text());
+		searchCountry(mUi->searchField->text());
 	}
 
 	updateGrid();
@@ -270,25 +273,25 @@ void GridWidget::showSelected()
 
 void GridWidget::countrySelected(CountryWidget* widget)
 {
-	if (!selectedWidgets.contains(widget)) {
-		selectedWidgets.append(widget);
+	if (!mSelectedWidgets.contains(widget)) {
+		mSelectedWidgets.append(widget);
 	}
-	checkIfCanProceed();
+	emitCanProceed();
 }
 
 void GridWidget::countryUnselected(CountryWidget* widget)
 {
-	selectedWidgets.removeOne(widget);
-	if (selectedWidgets.empty() && ui->showSelected->isChecked()) {
-		ui->showSelected->setChecked(false);
+	mSelectedWidgets.removeOne(widget);
+	if (mSelectedWidgets.empty() && mUi->showSelected->isChecked()) {
+		mUi->showSelected->setChecked(false);
 		showSelected();
 	}
-	checkIfCanProceed();
+	emitCanProceed();
 }
 
 void GridWidget::updateCountryWidgets()
 {
-	for (CountryWidget* country : originalWidgets) {
+	for (CountryWidget* country : mOriginalWidgets) {
 		if (!country->isSelected()) {
 			country->loadNationalityValues();
 			country->loadCountryValues();
@@ -298,134 +301,134 @@ void GridWidget::updateCountryWidgets()
 
 void GridWidget::setMarkedWidget(CountryWidget* widget)
 {
-	if (markedWidget != nullptr) {
-		markedWidget->unmarkFrame();
+	if (mMarkedWidget != nullptr) {
+		mMarkedWidget->unmarkFrame();
 	}
-	markedWidget = widget;
-	markedWidget->markFrame();
+	mMarkedWidget = widget;
+	mMarkedWidget->markFrame();
 }
 
 void GridWidget::markRight()
 {
-	if (!ui->scrollArea->hasFocus() || countryWidgets.isEmpty()) {
+	if (!mUi->scrollArea->hasFocus() || mCountryWidgets.isEmpty()) {
 		return;
 	}
 
-	if (markedWidget != nullptr) {
-		markedWidget->unmarkFrame();
+	if (mMarkedWidget != nullptr) {
+		mMarkedWidget->unmarkFrame();
 
-		int cols = ui->gridLayout->columnCount();
-		int index = countryWidgets.indexOf(markedWidget);
+		const int cols = mUi->gridLayout->columnCount();
+		const int index = mCountryWidgets.indexOf(mMarkedWidget);
 
-		if ((index + 1) % cols != 0 && index < countryWidgets.count() - 1) {
-			markedWidget = countryWidgets.at(index + 1);
+		if ((index + 1) % cols != 0 && index < mCountryWidgets.count() - 1) {
+			mMarkedWidget = mCountryWidgets.at(index + 1);
 		}
 	}
 	else {
-		markedWidget = countryWidgets.first();
+		mMarkedWidget = mCountryWidgets.first();
 	}
 
-	markedWidget->markFrame();
-	ui->scrollArea->ensureWidgetVisible(markedWidget);
+	mMarkedWidget->markFrame();
+	mUi->scrollArea->ensureWidgetVisible(mMarkedWidget);
 }
 
 void GridWidget::markLeft()
 {
-	if (!ui->scrollArea->hasFocus() || countryWidgets.isEmpty()) {
+	if (!mUi->scrollArea->hasFocus() || mCountryWidgets.isEmpty()) {
 		return;
 	}
 
-	if (markedWidget != nullptr) {
-		markedWidget->unmarkFrame();
+	if (mMarkedWidget != nullptr) {
+		mMarkedWidget->unmarkFrame();
 
-		int cols = ui->gridLayout->columnCount();
-		int index = countryWidgets.indexOf(markedWidget);
+		const int cols = mUi->gridLayout->columnCount();
+		const int index = mCountryWidgets.indexOf(mMarkedWidget);
 
 		if ((index + 1) % cols != 1) {
-			markedWidget = countryWidgets.at(index - 1);
+			mMarkedWidget = mCountryWidgets.at(index - 1);
 		}
 	}
 	else {
-		markedWidget = countryWidgets.first();
+		mMarkedWidget = mCountryWidgets.first();
 	}
 
-	markedWidget->markFrame();
-	ui->scrollArea->ensureWidgetVisible(markedWidget);
+	mMarkedWidget->markFrame();
+	mUi->scrollArea->ensureWidgetVisible(mMarkedWidget);
 }
 
 void GridWidget::markDown()
 {
-	if (!ui->scrollArea->hasFocus() || countryWidgets.isEmpty()) {
+	if (!mUi->scrollArea->hasFocus() || mCountryWidgets.isEmpty()) {
 		return;
 	}
 
-	if (markedWidget != nullptr) {
-		markedWidget->unmarkFrame();
+	if (mMarkedWidget != nullptr) {
+		mMarkedWidget->unmarkFrame();
 
-		int cols = ui->gridLayout->columnCount();
-		int index = countryWidgets.indexOf(markedWidget);
+		const int cols = mUi->gridLayout->columnCount();
+		const int index = mCountryWidgets.indexOf(mMarkedWidget);
 
-		if (index + cols < countryWidgets.count()) {
-			markedWidget = countryWidgets.at(index + cols);
+		if (index + cols < mCountryWidgets.count()) {
+			mMarkedWidget = mCountryWidgets.at(index + cols);
 		}
 	}
 	else {
-		markedWidget = countryWidgets.first();
+		mMarkedWidget = mCountryWidgets.first();
 	}
 
-	markedWidget->markFrame();
-	ui->scrollArea->ensureWidgetVisible(markedWidget);
-}
-
-void GridWidget::selectMarkedCountry()
-{
-	if (markedWidget == nullptr) {
-		return;
-	}
-
-	bool select = !markedWidget->isCountrySelected();
-	markedWidget->selectAsCountry(select);
-}
-
-void GridWidget::selectMarkedNationality()
-{
-	if (markedWidget == nullptr) {
-		return;
-	}
-
-	bool select = !markedWidget->isNationalitySelected();
-	markedWidget->selectAsNationality(select);
-}
-
-void GridWidget::showSearchDialog()
-{
-	if (!ui->scrollArea->hasFocus() || markedWidget == nullptr) {
-		return;
-	}
-
-	markedWidget->showSearchDialog();
+	mMarkedWidget->markFrame();
+	mUi->scrollArea->ensureWidgetVisible(mMarkedWidget);
 }
 
 void GridWidget::markUp()
 {
-	if (!ui->scrollArea->hasFocus() || countryWidgets.isEmpty()) {
+	if (!mUi->scrollArea->hasFocus() || mCountryWidgets.isEmpty()) {
 		return;
 	}
 
-	if (markedWidget != nullptr) {
-		markedWidget->unmarkFrame();
+	if (mMarkedWidget != nullptr) {
+		mMarkedWidget->unmarkFrame();
 
-		int cols = ui->gridLayout->columnCount();
-		int index = countryWidgets.indexOf(markedWidget);
+		const int cols = mUi->gridLayout->columnCount();
+		const int index = mCountryWidgets.indexOf(mMarkedWidget);
 
 		if (index >= cols) {
-			markedWidget = countryWidgets.at(index - cols);
+			mMarkedWidget = mCountryWidgets.at(index - cols);
 		}
 	}
 	else {
-		markedWidget = countryWidgets.first();
+		mMarkedWidget = mCountryWidgets.first();
 	}
 
-	markedWidget->markFrame();
-	ui->scrollArea->ensureWidgetVisible(markedWidget);
+	mMarkedWidget->markFrame();
+	mUi->scrollArea->ensureWidgetVisible(mMarkedWidget);
+}
+
+void GridWidget::selectMarkedCountry()
+{
+	if (mMarkedWidget == nullptr) {
+		return;
+	}
+
+	const bool select = !mMarkedWidget->isCountrySelected();
+	mMarkedWidget->selectAsCountry(select);
+}
+
+void GridWidget::selectMarkedNationality()
+{
+	if (mMarkedWidget == nullptr) {
+		return;
+	}
+
+	const bool select = !mMarkedWidget->isNationalitySelected();
+	mMarkedWidget->selectAsNationality(select);
+}
+
+void GridWidget::showSearchDialog()
+{
+	if (!mUi->scrollArea->hasFocus() || mMarkedWidget == nullptr) {
+		return;
+	}
+
+	mMarkedWidget->showSearchDialog();
 }

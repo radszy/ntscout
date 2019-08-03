@@ -30,7 +30,7 @@ public:
 	QAction* createShortcut(QWidget* widget, const QKeySequence& sequence, const QString& func);
 	void reset();
 	void updateGrid();
-	void checkIfCanProceed();
+	void emitCanProceed();
 	void clearMarkedWidget();
 
 	void setCountries(const Countries& countries);
@@ -52,8 +52,8 @@ public slots:
 	void setMarkedWidget(CountryWidget* widget);
 	void markRight();
 	void markLeft();
-	void markUp();
 	void markDown();
+	void markUp();
 	void selectMarkedCountry();
 	void selectMarkedNationality();
 	void showSearchDialog();
@@ -63,12 +63,14 @@ signals:
 
 private:
 	Countries mCountries;
-	QList<CountryWidget*> originalWidgets;
-	QList<CountryWidget*> countryWidgets;
-	QList<CountryWidget*> selectedWidgets;
-	CountryWidget* markedWidget;
 
-	Ui::GridWidget* ui;
+	using CountryWidgets = QList<CountryWidget*>;
+	CountryWidgets mOriginalWidgets;
+	CountryWidgets mCountryWidgets;
+	CountryWidgets mSelectedWidgets;
+	CountryWidget* mMarkedWidget;
+
+	Ui::GridWidget* mUi;
 };
 
 #endif // GRIDWIDGET_H
