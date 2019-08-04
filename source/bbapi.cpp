@@ -23,12 +23,12 @@ QString BBApi::mName = QString();
 QString BBApi::mPass = QString();
 
 BBApi::BBApi()
-        : mManager(new Network)
+        : mNetwork(new Network)
 {
 }
 
 BBApi::BBApi(const QString& login, const QString& password)
-        : mManager(new Network)
+        : mNetwork(new Network)
 {
 	mName = login;
 	mPass = password;
@@ -36,15 +36,13 @@ BBApi::BBApi(const QString& login, const QString& password)
 
 BBApi::~BBApi()
 {
-	delete mManager;
+	delete mNetwork;
 }
 
 QString BBApi::login(const QString& login, const QString& password)
 {
-	QUrl url("http://bbapi.buzzerbeater.com/login.aspx"
-	         "?login=" +
-	         login + "&code=" + password);
-	QByteArray data = mManager->get(url);
+	QUrl url("http://bbapi.buzzerbeater.com/login.aspx?login=" + login + "&code=" + password);
+	QByteArray data = mNetwork->get(url);
 
 	QDomDocument doc;
 	doc.setContent(data);
@@ -58,7 +56,7 @@ QString BBApi::login(const QString& login, const QString& password)
 		return "";
 	}
 
-	return "???";
+	return "Unrecognized error";
 }
 
 QString BBApi::login()
@@ -69,15 +67,15 @@ QString BBApi::login()
 bool BBApi::countries(Countries& result)
 {
 	QUrl url("http://bbapi.buzzerbeater.com/countries.aspx");
-	QByteArray data = mManager->get(url);
+	QByteArray data = mNetwork->get(url);
 
 	QDomDocument doc;
 	doc.setContent(data);
-	const auto& nodes = doc.elementsByTagName("country");
+	const QDomNodeList& nodes = doc.elementsByTagName("country");
 
 	for (int i = 0; i < nodes.count(); ++i) {
-		const auto& node = nodes.at(i);
-		const auto& attr = node.attributes();
+		const QDomNode& node = nodes.at(i);
+		const QDomNamedNodeMap& attr = node.attributes();
 
 		Country country;
 		country.id = attr.namedItem("id").toAttr().value().toInt();
@@ -90,62 +88,67 @@ bool BBApi::countries(Countries& result)
 	return true;
 }
 
-bool BBApi::leagues(QList<int>& results, const LeagueDataList& leagues)
+bool BBApi::leagues(Ids& results, const Leagues& leagues)
 {
 	QList<QUrl> urls;
-	for (int i = 0; i < leagues.count(); ++i) {
-		LeagueData data = leagues.at(i);
-		for (int j = 0; j < data.divisions.count(); ++j) {
-			QUrl url("http://bbapi.buzzerbeater.com/leagues.aspx"
-			         "?countryid=" +
-			         QString::number(data.countryid) +
-			         "&level=" + QString::number(data.divisions.at(j)));
+
+	for (const League& league : leagues) {
+		for (const Id divisionId : league.divisionIds) {
+			QUrl url("http://bbapi.buzzerbeater.com/leagues.aspx?countryid=" +
+			         QString::number(league.countryId) +
+			         "&level=" + QString::number(divisionId));
 			urls.append(url);
 		}
 	}
-	QList<QByteArray> data = mManager->get(urls);
 
-	for (int i = 0; i < data.count(); ++i) {
+	QList<QByteArray> data = mNetwork->get(urls);
+
+	for (const QByteArray& content : data) {
 		QDomDocument doc;
-		doc.setContent(data.at(i));
-		const auto& nodes = doc.elementsByTagName("league");
+		doc.setContent(content);
+		const QDomNodeList& nodes = doc.elementsByTagName("league");
 
 		for (int j = 0; j < nodes.count(); ++j) {
-			int id = nodes.at(j).attributes().namedItem("id").toAttr().value().toInt();
-			results.append(id);
+			Id leagueId =
+			        nodes.at(j).attributes().namedItem("id").toAttr().value().toInt();
+			results.append(leagueId);
 		}
 	}
 
 	return true;
 }
 
-bool BBApi::teams(QList<int>& results, const QList<int>& league)
+bool BBApi::teams(Ids& results, const Ids& leaguesIds)
 {
 	QList<QUrl> urls;
-	for (int i = 0; i < league.count(); ++i) {
-		QUrl url("http://bbapi.buzzerbeater.com/standings.aspx?"
-		         "leagueid=" +
-		         QString::number(league.at(i)));
+
+	for (Id leagueId : leaguesIds) {
+		QUrl url("http://bbapi.buzzerbeater.com/standings.aspx?leagueid=" +
+		         QString::number(leagueId));
 		urls.append(url);
 	}
-	QList<QByteArray> data = mManager->get(urls);
 
-	for (int i = 0; i < data.count(); ++i) {
+	QList<QByteArray> data = mNetwork->get(urls);
+
+	for (const QByteArray& content : data) {
 		QDomDocument doc;
-		doc.setContent(data.at(i));
-		const auto& nodes = doc.elementsByTagName("team");
+		doc.setContent(content);
+		const QDomNodeList& nodes = doc.elementsByTagName("team");
 
 		for (int j = 0; j < nodes.count(); ++j) {
-			int id = nodes.at(j).attributes().namedItem("id").toAttr().value().toInt();
+			Id teamId =
+			        nodes.at(j).attributes().namedItem("id").toAttr().value().toInt();
+
 			if (!Settings::searchBots) {
 				bool isBot =
 				        nodes.at(j).firstChildElement("isBot").text().toInt() == 1;
+
 				if (!isBot) {
-					results.append(id);
+					results.append(teamId);
 				}
 			}
 			else {
-				results.append(id);
+				results.append(teamId);
 			}
 		}
 	}
@@ -153,48 +156,49 @@ bool BBApi::teams(QList<int>& results, const QList<int>& league)
 	return true;
 }
 
-bool BBApi::roster(PlayerList& results, const QList<int>& team)
+bool BBApi::roster(PlayerList& results, const Ids& teamIds)
 {
 	QList<QUrl> urls;
-	for (int i = 0; i < team.count(); ++i) {
-		QUrl url("http://bbapi.buzzerbeater.com/roster.aspx?"
-		         "teamid=" +
-		         QString::number(team.at(i)));
+
+	for (Id teamId : teamIds) {
+		QUrl url("http://bbapi.buzzerbeater.com/roster.aspx?teamid=" +
+		         QString::number(teamId));
 		urls.append(url);
 	}
-	QList<QByteArray> data = mManager->get(urls);
 
-	for (int i = 0; i < data.count(); ++i) {
+	QList<QByteArray> data = mNetwork->get(urls);
+
+	for (const QByteArray& content : data) {
 		QDomDocument doc;
-		doc.setContent(data.at(i));
-		int teamid = doc.elementsByTagName("roster")
-		                     .at(0)
-		                     .attributes()
-		                     .namedItem("teamid")
-		                     .toAttr()
-		                     .value()
-		                     .toInt();
+		doc.setContent(content);
+		Id teamId = doc.elementsByTagName("roster")
+		                    .at(0)
+		                    .attributes()
+		                    .namedItem("teamid")
+		                    .toAttr()
+		                    .value()
+		                    .toInt();
 
-		const auto& nodes = doc.elementsByTagName("player");
+		const QDomNodeList& nodes = doc.elementsByTagName("player");
 
 		for (int j = 0; j < nodes.count(); ++j) {
-			const auto& node = nodes.at(j);
+			const QDomNode& node = nodes.at(j);
 
 			Player player;
-			player.teamid = teamid;
+			player.teamId = teamId;
 			player.id = node.attributes().namedItem("id").toAttr().value().toInt();
 			player.firstname = node.firstChildElement("firstName").text();
 			player.lastname = node.firstChildElement("lastName").text();
 
 			const auto& nationality = node.firstChildElement("nationality");
-			player.nationalityname = nationality.text();
-			player.nationalityid = nationality.attribute("id").toInt();
+			player.nationalityName = nationality.text();
+			player.nationalityId = nationality.attribute("id").toInt();
 
 			player.age = node.firstChildElement("age").text().toInt();
 			player.height = node.firstChildElement("height").text().toInt();
 			player.dmi = node.firstChildElement("dmi").text().toInt();
 			player.salary = node.firstChildElement("salary").text().toInt();
-			player.bestpos = node.firstChildElement("bestPosition").text();
+			player.bestPos = node.firstChildElement("bestPosition").text();
 			player.potential = node.firstChildElement("skills")
 			                           .firstChildElement("potential")
 			                           .text()
@@ -211,7 +215,7 @@ bool BBApi::translatedNames(Countries& countries)
 {
 	QUrl url("https://raw.githubusercontent.com/"
 	         "rszymanski/ntscout/master/names-en.txt");
-	QByteArray data = mManager->get(url);
+	QByteArray data = mNetwork->get(url);
 
 	const QList<QByteArray> names = data.split('\n');
 	const int len = qMin(countries.count(), names.count());
@@ -226,18 +230,18 @@ bool BBApi::translatedNames(Countries& countries)
 bool BBApi::releases(QString& tag, QString& download)
 {
 	QUrl url("https://api.github.com/repos/rszymanski/ntscout/releases");
-	QByteArray data = mManager->get(url);
+	QByteArray data = mNetwork->get(url);
 
 	QJsonDocument doc = QJsonDocument::fromBinaryData(data);
-	auto array = doc.array();
+	QJsonArray array = doc.array();
 	if (array.empty()) {
 		return false;
 	}
 
-	auto release = array.first().toObject();
+	QJsonObject release = array.first().toObject();
 	tag = release.value("tag_name").toString("0.0");
 
-	auto assets = release.value("assets").toArray();
+	QJsonArray assets = release.value("assets").toArray();
 	if (assets.empty()) {
 		return false;
 	}
@@ -248,11 +252,11 @@ bool BBApi::releases(QString& tag, QString& download)
 
 QNetworkReply* BBApi::downloadRelease(const QString& url)
 {
-	return mManager->getRaw(url);
+	return mNetwork->getRaw(url);
 }
 
 QByteArray BBApi::downloadFlag(int id)
 {
 	QUrl url = QString("http://www.buzzerbeater.com/images/flags/flag_%1.gif").arg(id);
-	return mManager->get(url);
+	return mNetwork->get(url);
 }

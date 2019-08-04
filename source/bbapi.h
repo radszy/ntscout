@@ -11,12 +11,15 @@
 class Network;
 class QNetworkReply;
 
-struct LeagueData {
-	int countryid;
-	QList<int> divisions;
+using Id = int;
+using Ids = QList<Id>;
+
+struct League {
+	Id countryId;
+	Ids divisionIds;
 };
 
-using LeagueDataList = QList<LeagueData>;
+using Leagues = QList<League>;
 
 class BBApi : public QObject {
 	Q_OBJECT
@@ -29,20 +32,20 @@ public:
 	QString login(const QString& login, const QString& password);
 	QString login();
 	bool countries(Countries& result);
-	bool leagues(QList<int>& results, const LeagueDataList& leagues);
-	bool teams(QList<int>& results, const QList<int>& league);
-	bool roster(PlayerList& results, const QList<int>& team);
+	bool leagues(Ids& results, const Leagues& leagues);
+	bool teams(Ids& results, const Ids& leaguesIds);
+	bool roster(PlayerList& results, const Ids& teamIds);
 	bool translatedNames(Countries& countries);
 	bool releases(QString& tag, QString& download);
 	QNetworkReply* downloadRelease(const QString& url);
 	QByteArray downloadFlag(int id);
 
-	Network* network() const { return mManager; }
+	Network* network() const { return mNetwork; }
 	static QString name() { return mName; }
 	static QString pass() { return mPass; }
 
 private:
-	Network* mManager;
+	Network* mNetwork;
 
 	static QString mName;
 	static QString mPass;

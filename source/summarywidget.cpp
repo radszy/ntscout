@@ -76,16 +76,16 @@ void SummaryWidget::setResults(const PlayerList& playerList)
 	QTextStream stream(&file);
 	stream << "teamID;ID;Name;Position;Age;Height;Salary;Potential;DMI;Nationality;Link\n";
 	for (const Player& player : playerList) {
-		stream << player.teamid << ";";
+		stream << player.teamId << ";";
 		stream << player.id << ";";
 		stream << QString("%1 %2;").arg(player.firstname, player.lastname);
-		stream << player.bestpos << ";";
+		stream << player.bestPos << ";";
 		stream << player.age << ";";
 		stream << ((this->*convert)(player.height)) << ";";
 		stream << player.salary << ";";
 		stream << player.potential << ";";
 		stream << player.dmi << ";";
-		stream << player.nationalityname << ";";
+		stream << player.nationalityName << ";";
 		stream << QString("http://www.buzzerbeater.com/player/%1/overview.aspx\n")
 		                  .arg(player.id);
 	}

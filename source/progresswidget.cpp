@@ -18,7 +18,7 @@ ProgressWidget::ProgressWidget(QWidget* parent)
 {
 	ui->setupUi(this);
 
-	state = 0;
+	state = State::Divisions;
 	requests = 0;
 	divisions = qMakePair(0, 0);
 	leagues = qMakePair(0, 0);
@@ -39,7 +39,7 @@ ProgressWidget::~ProgressWidget()
 
 void ProgressWidget::reset()
 {
-	state = 0;
+	state = State::Divisions;
 	requests = 0;
 
 	divisions = qMakePair(0, 0);
@@ -75,20 +75,20 @@ void ProgressWidget::stop()
 	reset();
 }
 
-LeagueDataList ProgressWidget::getLeagueData(const QList<SearchValues*>& values, int& count)
+Leagues ProgressWidget::getLeagueData(const QList<SearchValues*>& values, int& count)
 {
-	LeagueDataList list;
+	Leagues list;
 
 	for (SearchValues* value : values) {
 		if (value->countrySet) {
-			LeagueData data;
-			data.countryid = value->countryid;
+			League data;
+			data.countryId = value->countryid;
 			for (int i = 0; i < value->divCount; i++) {
 				if (value->div[i]) {
-					data.divisions.append(i + 1);
+					data.divisionIds.append(i + 1);
 				}
 			}
-			count += data.divisions.count();
+			count += data.divisionIds.count();
 			list.append(data);
 		}
 	}
@@ -103,7 +103,7 @@ void ProgressWidget::start(QList<SearchValues*>& values)
 	searchValues.append(values);
 
 	int divCount = 0;
-	LeagueDataList dataList = getLeagueData(values, divCount);
+	Leagues dataList = getLeagueData(values, divCount);
 	divisions = qMakePair(0, divCount);
 	ui->divisionTasks->setText(QString("%1 / %2").arg(divisions.first).arg(divisions.second));
 
@@ -159,7 +159,7 @@ void ProgressWidget::filterPlayers()
 				continue;
 			}
 
-			if (player.nationalityid == value->countryid) {
+			if (player.nationalityId == value->countryid) {
 				if (player.age < value->age.first ||
 				    player.age > value->age.second ||
 				    player.potential < value->potential.first ||
@@ -195,6 +195,26 @@ void ProgressWidget::setAsDone(QLabel* progress)
 {
 	progress->setMovie(nullptr);
 	progress->setPixmap(QPixmap(":/icons/done"));
+}
+
+void ProgressWidget::nextState()
+{
+	switch (state) {
+		case State::Divisions:
+			state = State::Leagues;
+			break;
+
+		case State::Leagues:
+			state = State::Teams;
+			break;
+
+		case State::Teams:
+			state = State::Players;
+			break;
+
+		case State::Players:
+			break;
+	}
 }
 
 void ProgressWidget::progressDivisions()
@@ -247,16 +267,16 @@ void ProgressWidget::updateProgress(const QPair<int, int>& pair, int curr, int p
 void ProgressWidget::requestDone()
 {
 	switch (state) {
-		case Divisions:
+		case State::Divisions:
 			progressDivisions();
 			break;
-		case Leagues:
+		case State::Leagues:
 			progressLeagues();
 			break;
-		case Teams:
+		case State::Teams:
 			progressTeams();
 			break;
-		case Players:
+		case State::Players:
 			Q_UNREACHABLE();
 			break;
 	}

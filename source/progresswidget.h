@@ -21,13 +21,6 @@ struct SearchValues;
 class ProgressWidget : public QWidget {
 	Q_OBJECT
 
-	enum State {
-		Divisions,
-		Leagues,
-		Teams,
-		Players,
-	};
-
 public:
 	explicit ProgressWidget(QWidget* parent = nullptr);
 	~ProgressWidget();
@@ -49,10 +42,17 @@ signals:
 	void finished(bool);
 
 private:
-	LeagueDataList getLeagueData(const QList<SearchValues*>& values, int& count);
+	enum class State {
+		Divisions,
+		Leagues,
+		Teams,
+		Players,
+	};
+
+	Leagues getLeagueData(const QList<SearchValues*>& values, int& count);
 	void filterPlayers();
 	void setAsDone(QLabel* progress);
-	void nextState() { state++; }
+	void nextState();
 	void progressDivisions();
 	void progressLeagues();
 	void progressTeams();
@@ -74,7 +74,7 @@ private:
 	Ui::ProgressWidget* ui;
 	QMovie* movie;
 
-	int state;
+	State state;
 	int requests;
 };
 

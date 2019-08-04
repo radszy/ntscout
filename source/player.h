@@ -6,16 +6,16 @@
 struct Player {
 	QString firstname;
 	QString lastname;
-	QString nationalityname;
-	QString bestpos;
+	QString nationalityName;
+	QString bestPos;
 	int id;
-	int teamid;
-	int nationalityid;
+	int teamId;
+	int nationalityId;
 	int age;
 	int height;
 	int dmi;
 	int salary;
-	int gameshape;
+	int gameShape;
 	int potential;
 };
 
