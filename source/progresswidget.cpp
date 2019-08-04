@@ -109,7 +109,7 @@ void ProgressWidget::start(QList<SearchValues*>& values)
 
 	BBApi bb;
 	bb.login();
-	connect(bb.getNetwork(), SIGNAL(finished(QNetworkReply*)), this, SLOT(requestDone()));
+	connect(bb.network(), SIGNAL(finished(QNetworkReply*)), this, SLOT(requestDone()));
 
 	QList<int> divisionList;
 	bb.leagues(divisionList, dataList);

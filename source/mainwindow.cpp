@@ -180,7 +180,7 @@ void MainWindow::backClicked()
 
 void MainWindow::updateTriggered()
 {
-	if (BBApi::getName().isEmpty()) {
+	if (BBApi::name().isEmpty()) {
 		QMessageBox::information(this, "Error", "Please login first.", QMessageBox::Ok);
 		return;
 	}

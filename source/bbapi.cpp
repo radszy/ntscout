@@ -19,24 +19,24 @@
 
 #include <QDebug>
 
-QString BBApi::name = QString();
-QString BBApi::pass = QString();
+QString BBApi::mName = QString();
+QString BBApi::mPass = QString();
 
 BBApi::BBApi()
-        : manager(new Network)
+        : mManager(new Network)
 {
 }
 
 BBApi::BBApi(const QString& login, const QString& password)
-        : manager(new Network)
+        : mManager(new Network)
 {
-	name = login;
-	pass = password;
+	mName = login;
+	mPass = password;
 }
 
 BBApi::~BBApi()
 {
-	delete manager;
+	delete mManager;
 }
 
 QString BBApi::login(const QString& login, const QString& password)
@@ -44,7 +44,7 @@ QString BBApi::login(const QString& login, const QString& password)
 	QUrl url("http://bbapi.buzzerbeater.com/login.aspx"
 	         "?login=" +
 	         login + "&code=" + password);
-	QByteArray data = manager->get(url);
+	QByteArray data = mManager->get(url);
 
 	QDomDocument doc;
 	doc.setContent(data);
@@ -63,13 +63,13 @@ QString BBApi::login(const QString& login, const QString& password)
 
 QString BBApi::login()
 {
-	return login(name, pass);
+	return login(mName, mPass);
 }
 
 bool BBApi::countries(Countries& result)
 {
 	QUrl url("http://bbapi.buzzerbeater.com/countries.aspx");
-	QByteArray data = manager->get(url);
+	QByteArray data = mManager->get(url);
 
 	QDomDocument doc;
 	doc.setContent(data);
@@ -103,7 +103,7 @@ bool BBApi::leagues(QList<int>& results, const LeagueDataList& leagues)
 			urls.append(url);
 		}
 	}
-	QList<QByteArray> data = manager->get(urls);
+	QList<QByteArray> data = mManager->get(urls);
 
 	for (int i = 0; i < data.count(); ++i) {
 		QDomDocument doc;
@@ -128,7 +128,7 @@ bool BBApi::teams(QList<int>& results, const QList<int>& league)
 		         QString::number(league.at(i)));
 		urls.append(url);
 	}
-	QList<QByteArray> data = manager->get(urls);
+	QList<QByteArray> data = mManager->get(urls);
 
 	for (int i = 0; i < data.count(); ++i) {
 		QDomDocument doc;
@@ -162,7 +162,7 @@ bool BBApi::roster(PlayerList& results, const QList<int>& team)
 		         QString::number(team.at(i)));
 		urls.append(url);
 	}
-	QList<QByteArray> data = manager->get(urls);
+	QList<QByteArray> data = mManager->get(urls);
 
 	for (int i = 0; i < data.count(); ++i) {
 		QDomDocument doc;
@@ -211,7 +211,7 @@ bool BBApi::translatedNames(Countries& countries)
 {
 	QUrl url("https://raw.githubusercontent.com/"
 	         "rszymanski/ntscout/master/names-en.txt");
-	QByteArray data = manager->get(url);
+	QByteArray data = mManager->get(url);
 
 	const QList<QByteArray> names = data.split('\n');
 	const int len = qMin(countries.count(), names.count());
@@ -226,7 +226,7 @@ bool BBApi::translatedNames(Countries& countries)
 bool BBApi::releases(QString& tag, QString& download)
 {
 	QUrl url("https://api.github.com/repos/rszymanski/ntscout/releases");
-	QByteArray data = manager->get(url);
+	QByteArray data = mManager->get(url);
 
 	QJsonDocument doc = QJsonDocument::fromBinaryData(data);
 	auto array = doc.array();
@@ -248,11 +248,11 @@ bool BBApi::releases(QString& tag, QString& download)
 
 QNetworkReply* BBApi::downloadRelease(const QString& url)
 {
-	return manager->getRaw(url);
+	return mManager->getRaw(url);
 }
 
 QByteArray BBApi::downloadFlag(int id)
 {
 	QUrl url = QString("http://www.buzzerbeater.com/images/flags/flag_%1.gif").arg(id);
-	return manager->get(url);
+	return mManager->get(url);
 }

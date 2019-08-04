@@ -37,16 +37,15 @@ public:
 	QNetworkReply* downloadRelease(const QString& url);
 	QByteArray downloadFlag(int id);
 
-	Network* getNetwork() { return manager; }
-
-	static QString getName() { return name; }
-	static QString getPass() { return pass; }
+	Network* network() const { return mManager; }
+	static QString name() { return mName; }
+	static QString pass() { return mPass; }
 
 private:
-	Network* manager;
+	Network* mManager;
 
-	static QString name;
-	static QString pass;
+	static QString mName;
+	static QString mPass;
 };
 
 #endif // BBAPI_H
