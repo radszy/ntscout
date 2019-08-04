@@ -29,9 +29,9 @@ public:
 	void reset();
 	void stop();
 
-	PlayerList getResults() { return filteredPlayers; }
-	QString getElapsedTime() { return elapsedTime; }
-	int getRequests() { return requests; }
+	PlayerList getResults() { return mFilteredPlayers; }
+	QString getElapsedTime() { return mElapsedTime; }
+	int getRequests() { return mRequests; }
 
 public slots:
 	void requestDone();
@@ -49,33 +49,54 @@ private:
 		Players,
 	};
 
-	Leagues getLeagueData(const QList<SearchValues*>& values, int& count);
+	class Progress {
+	public:
+		Progress() = default;
+		Progress(int value, int max)
+		        : mValue(value)
+		        , mMax(max)
+		{
+		}
+
+		void increment() { mValue++; }
+		int value() const { return mValue; }
+		int max() const { return mMax; }
+		bool isDone() { return mValue >= mMax; }
+		int percent() const { return mValue * 100 / mMax; }
+		QString toString() { return QString("%1 / %2").arg(mValue).arg(mMax); }
+
+	private:
+		int mValue = 0;
+		int mMax = 0;
+	};
+
+	Leagues leagues(const QList<SearchValues*>& values, int& count);
 	void filterPlayers();
 	void setAsDone(QLabel* progress);
 	void nextState();
 	void progressDivisions();
 	void progressLeagues();
 	void progressTeams();
-	void updateProgress(const QPair<int, int>& pair, int curr, int prev);
+	void updateTotalProgress(const Progress& progress, int previous, int current);
 
-	QList<SearchValues*> searchValues;
-	QList<Worker*> workers;
-	QList<PlayerList> playerLists;
-	PlayerList filteredPlayers;
+	QList<SearchValues*> mSearchValues;
+	QList<Worker*> mWorkers;
+	QList<PlayerList> mPlayerList;
+	PlayerList mFilteredPlayers;
 
-	QPair<int, int> divisions;
-	QPair<int, int> leagues;
-	QPair<int, int> teams;
-	QPair<int, int> players;
+	Progress mDivisions;
+	Progress mLeagues;
+	Progress mTeams;
+	Progress mPlayers;
 
-	QTime time;
-	QString elapsedTime;
+	QTime mTime;
+	QString mElapsedTime;
 
-	Ui::ProgressWidget* ui;
-	QMovie* movie;
+	Ui::ProgressWidget* mUi;
+	QMovie* mMovie;
 
-	State state;
-	int requests;
+	State mState;
+	int mRequests;
 };
 
 #endif // PROGRESSWIDGET_H

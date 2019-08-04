@@ -14,119 +14,121 @@
 
 ProgressWidget::ProgressWidget(QWidget* parent)
         : QWidget(parent)
-        , ui(new Ui::ProgressWidget)
+        , mUi(new Ui::ProgressWidget)
 {
-	ui->setupUi(this);
+	mUi->setupUi(this);
 
-	state = State::Divisions;
-	requests = 0;
-	divisions = qMakePair(0, 0);
-	leagues = qMakePair(0, 0);
-	teams = qMakePair(0, 0);
-	players = qMakePair(0, 0);
+	mState = State::Divisions;
+	mRequests = 0;
+	mDivisions = Progress();
+	mLeagues = Progress();
+	mTeams = Progress();
+	mPlayers = Progress();
 
-	movie = new QMovie(":/icons/progress");
-	ui->divisionsProgress->setMovie(movie);
-	movie->start();
+	mMovie = new QMovie(":/icons/progress");
+	mUi->divisionsProgress->setMovie(mMovie);
+	mMovie->start();
 
 	qRegisterMetaType<PlayerList>("PlayerList");
 }
 
 ProgressWidget::~ProgressWidget()
 {
-	delete ui;
+	delete mUi;
 }
 
 void ProgressWidget::reset()
 {
-	state = State::Divisions;
-	requests = 0;
+	mState = State::Divisions;
+	mRequests = 0;
 
-	divisions = qMakePair(0, 0);
-	leagues = qMakePair(0, 0);
-	teams = qMakePair(0, 0);
-	players = qMakePair(0, 0);
+	mDivisions = Progress();
+	mLeagues = Progress();
+	mTeams = Progress();
+	mPlayers = Progress();
 
-	ui->progressBar->setValue(0);
-	ui->divisionTasks->setText("");
-	ui->divisionsProgress->setPixmap(QPixmap());
-	ui->divisionsProgress->setMovie(movie);
-	ui->leagueTasks->setText("");
-	ui->leaguesProgress->setPixmap(QPixmap());
-	ui->teamTasks->setText("");
-	ui->teamsProgress->setPixmap(QPixmap());
-	ui->playerTasks->setText("");
-	ui->playersProgress->setPixmap(QPixmap());
+	mUi->progressBar->setValue(0);
+	mUi->divisionTasks->setText("");
+	mUi->divisionsProgress->setPixmap(QPixmap());
+	mUi->divisionsProgress->setMovie(mMovie);
+	mUi->leagueTasks->setText("");
+	mUi->leaguesProgress->setPixmap(QPixmap());
+	mUi->teamTasks->setText("");
+	mUi->teamsProgress->setPixmap(QPixmap());
+	mUi->playerTasks->setText("");
+	mUi->playersProgress->setPixmap(QPixmap());
 
-	searchValues.clear();
-	playerLists.clear();
-	filteredPlayers.clear();
+	mSearchValues.clear();
+	mPlayerList.clear();
+	mFilteredPlayers.clear();
 
-	qDeleteAll(workers);
-	workers.clear();
+	qDeleteAll(mWorkers);
+	mWorkers.clear();
 }
 
 void ProgressWidget::stop()
 {
-	for (Worker* worker : workers) {
+	for (Worker* worker : mWorkers) {
 		worker->quit();
 		worker->wait();
 	}
 	reset();
 }
 
-Leagues ProgressWidget::getLeagueData(const QList<SearchValues*>& values, int& count)
+Leagues ProgressWidget::leagues(const QList<SearchValues*>& values, int& count)
 {
-	Leagues list;
+	Leagues leagues;
 
 	for (SearchValues* value : values) {
 		if (value->countrySet) {
-			League data;
-			data.countryId = value->countryid;
+			League league;
+			league.countryId = value->countryid;
+
 			for (int i = 0; i < value->divCount; i++) {
 				if (value->div[i]) {
-					data.divisionIds.append(i + 1);
+					league.divisionIds.append(i + 1);
 				}
 			}
-			count += data.divisionIds.count();
-			list.append(data);
+
+			count += league.divisionIds.count();
+			leagues.append(league);
 		}
 	}
 
-	return list;
+	return leagues;
 }
 
 void ProgressWidget::start(QList<SearchValues*>& values)
 {
-	time.start();
+	mTime.start();
 
-	searchValues.append(values);
+	mSearchValues.append(values);
 
 	int divCount = 0;
-	Leagues dataList = getLeagueData(values, divCount);
-	divisions = qMakePair(0, divCount);
-	ui->divisionTasks->setText(QString("%1 / %2").arg(divisions.first).arg(divisions.second));
+	Leagues dataList = leagues(values, divCount);
+	mDivisions = Progress(0, divCount);
+	mUi->divisionTasks->setText(mDivisions.toString());
 
 	BBApi bb;
 	bb.login();
 	connect(bb.network(), SIGNAL(finished(QNetworkReply*)), this, SLOT(requestDone()));
 
-	QList<int> divisionList;
-	bb.leagues(divisionList, dataList);
+	Ids divisionIds;
+	bb.leagues(divisionIds, dataList);
 
-	leagues = qMakePair(0, divisionList.count());
-	ui->leagueTasks->setText(QString("%1 / %2").arg(leagues.first).arg(leagues.second));
+	mLeagues = Progress(0, divisionIds.count());
+	mUi->leagueTasks->setText(mLeagues.toString());
 
-	int tasks = qMin((int)Settings::tasks, divisionList.count());
+	int tasks = qMin((int)Settings::tasks, divisionIds.count());
 
 	QList<QList<int>> div;
 	for (int i = 0; i < tasks; i++) {
 		div.append(QList<int>());
 	}
 
-	int count = (int)qFloor(divisionList.count() / tasks);
+	int count = (int)qFloor(divisionIds.count() / tasks);
 	for (int i = 0; i < tasks; i++) {
-		QList<int> d = divisionList.mid(i * count, (i + 1 == tasks ? -1 : count));
+		QList<int> d = divisionIds.mid(i * count, (i + 1 == tasks ? -1 : count));
 		div[i].append(d);
 	}
 
@@ -138,7 +140,7 @@ void ProgressWidget::start(QList<SearchValues*>& values)
 		        SLOT(workerFinished(PlayerList)));
 		connect(worker, SIGNAL(foundTeams(int)), this, SLOT(teamsFound(int)));
 		worker->start();
-		workers.append(worker);
+		mWorkers.append(worker);
 	}
 
 	nextState();
@@ -147,14 +149,13 @@ void ProgressWidget::start(QList<SearchValues*>& values)
 void ProgressWidget::filterPlayers()
 {
 	PlayerList playerList;
-	for (int i = 0; i < playerLists.count(); ++i) {
-		playerList.append(playerLists.at(i));
+
+	for (int i = 0; i < mPlayerList.count(); ++i) {
+		playerList.append(mPlayerList.at(i));
 	}
 
-	players = qMakePair(0, playerList.count());
-
 	for (const Player& player : playerList) {
-		for (const SearchValues* value : searchValues) {
+		for (const SearchValues* value : mSearchValues) {
 			if (!value->nationalitySet) {
 				continue;
 			}
@@ -171,23 +172,19 @@ void ProgressWidget::filterPlayers()
 					continue;
 				}
 
-				filteredPlayers.append(player);
+				mFilteredPlayers.append(player);
 			}
 		}
 	}
-	ui->playerTasks->setText(QString("%1 / %1").arg(players.second));
 
-	if (players.second == 0) {
-		setAsDone(ui->teamsProgress);
-		ui->playerTasks->setText(QString("%1 / %2").arg(players.first).arg(players.second));
-	}
+	mPlayers = Progress(playerList.count(), playerList.count());
+	mUi->playerTasks->setText(mPlayers.toString());
+	setAsDone(mUi->playersProgress);
 
-	ui->playersProgress->setMovie(nullptr);
-	ui->playersProgress->setPixmap(QPixmap(":/icons/done"));
-	ui->progressBar->setValue(ui->progressBar->maximum());
+	mUi->progressBar->setValue(mUi->progressBar->maximum());
 
-	elapsedTime = Util::formatTime(time.elapsed());
-	requests = leagues.first + divisions.first + teams.first + 1;
+	mElapsedTime = Util::formatTime(mTime.elapsed());
+	mRequests = mLeagues.value() + mDivisions.value() + mTeams.value() + 1;
 	emit finished(true);
 }
 
@@ -199,17 +196,17 @@ void ProgressWidget::setAsDone(QLabel* progress)
 
 void ProgressWidget::nextState()
 {
-	switch (state) {
+	switch (mState) {
 		case State::Divisions:
-			state = State::Leagues;
+			mState = State::Leagues;
 			break;
 
 		case State::Leagues:
-			state = State::Teams;
+			mState = State::Teams;
 			break;
 
 		case State::Teams:
-			state = State::Players;
+			mState = State::Players;
 			break;
 
 		case State::Players:
@@ -219,54 +216,54 @@ void ProgressWidget::nextState()
 
 void ProgressWidget::progressDivisions()
 {
-	divisions.first++;
-	ui->divisionTasks->setText(QString("%1 / %2").arg(divisions.first).arg(divisions.second));
+	mDivisions.increment();
+	mUi->divisionTasks->setText(mDivisions.toString());
 
-	if (divisions.first == divisions.second) {
-		setAsDone(ui->divisionsProgress);
-		ui->leaguesProgress->setMovie(movie);
+	if (mDivisions.isDone()) {
+		setAsDone(mUi->divisionsProgress);
+		mUi->leaguesProgress->setMovie(mMovie);
 	}
 
-	updateProgress(divisions, 5, 0);
+	updateTotalProgress(mDivisions, 0, 5);
 }
 
 void ProgressWidget::progressLeagues()
 {
-	leagues.first++;
-	ui->leagueTasks->setText(QString("%1 / %2").arg(leagues.first).arg(leagues.second));
+	mLeagues.increment();
+	mUi->leagueTasks->setText(mLeagues.toString());
 
-	if (leagues.first == leagues.second) {
+	if (mLeagues.isDone()) {
 		nextState();
-		setAsDone(ui->leaguesProgress);
-		ui->teamsProgress->setMovie(movie);
+		setAsDone(mUi->leaguesProgress);
+		mUi->teamsProgress->setMovie(mMovie);
 	}
 
-	updateProgress(leagues, 15, 5);
+	updateTotalProgress(mLeagues, 5, 15);
 }
 
 void ProgressWidget::progressTeams()
 {
-	teams.first++;
-	ui->teamTasks->setText(QString("%1 / %2").arg(teams.first).arg(teams.second));
+	mTeams.increment();
+	mUi->teamTasks->setText(mTeams.toString());
 
-	if (teams.first == teams.second) {
-		setAsDone(ui->teamsProgress);
-		ui->playersProgress->setMovie(movie);
+	if (mTeams.isDone()) {
+		setAsDone(mUi->teamsProgress);
+		mUi->playersProgress->setMovie(mMovie);
 	}
 
-	updateProgress(teams, 80, 20);
+	updateTotalProgress(mTeams, 20, 80);
 }
 
-void ProgressWidget::updateProgress(const QPair<int, int>& pair, int curr, int prev)
+void ProgressWidget::updateTotalProgress(const Progress& progress, int previous, int current)
 {
-	int n = pair.first * 100 / pair.second;
-	int x = curr * n / 100 + prev;
-	ui->progressBar->setValue(x);
+	const int percent = progress.percent();
+	const int total = current * percent / 100 + previous;
+	mUi->progressBar->setValue(total);
 }
 
 void ProgressWidget::requestDone()
 {
-	switch (state) {
+	switch (mState) {
 		case State::Divisions:
 			progressDivisions();
 			break;
@@ -284,15 +281,15 @@ void ProgressWidget::requestDone()
 
 void ProgressWidget::teamsFound(int count)
 {
-	teams.second += count;
-	ui->teamTasks->setText(QString("%1 / %2").arg(teams.first).arg(teams.second));
+	mTeams = Progress(mTeams.value(), mTeams.max() + count);
+	mUi->teamTasks->setText(mTeams.toString());
 }
 
 void ProgressWidget::workerFinished(const PlayerList& playerList)
 {
-	playerLists.append(playerList);
+	mPlayerList.append(playerList);
 
-	for (Worker* worker : workers) {
+	for (Worker* worker : mWorkers) {
 		if (!worker->isDone()) {
 			return;
 		}
