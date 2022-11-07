@@ -232,7 +232,7 @@ bool BBApi::releases(QString& tag, QString& download)
 	QUrl url("https://api.github.com/repos/rszymanski/ntscout/releases");
 	QByteArray data = mNetwork->get(url);
 
-	QJsonDocument doc = QJsonDocument::fromBinaryData(data);
+	QJsonDocument doc = QJsonDocument::fromJson(data);
 	QJsonArray array = doc.array();
 	if (array.empty()) {
 		return false;

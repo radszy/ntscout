@@ -6,7 +6,7 @@
 
 #include <QWidget>
 #include <QPair>
-#include <QTime>
+#include <QElapsedTimer>
 
 namespace Ui {
 class ProgressWidget;
@@ -89,7 +89,7 @@ private:
 	Progress mTeams;
 	Progress mPlayers;
 
-	QTime mTime;
+	QElapsedTimer mTime;
 	QString mElapsedTime;
 
 	Ui::ProgressWidget* mUi;
